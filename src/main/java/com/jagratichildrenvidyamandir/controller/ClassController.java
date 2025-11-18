@@ -26,7 +26,7 @@ public class ClassController {
         this.classService = classService;
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<ClassDTO> create(@RequestBody ClassDTO dto) {
         return new ResponseEntity<>(classService.createClass(dto), HttpStatus.CREATED);
     }
@@ -37,7 +37,7 @@ public class ClassController {
         return data == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(data);
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<ClassDTO> getAll() {
         return classService.getAllClasses();
     }

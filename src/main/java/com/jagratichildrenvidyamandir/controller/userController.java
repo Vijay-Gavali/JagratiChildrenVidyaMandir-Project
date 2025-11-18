@@ -1,5 +1,5 @@
 package com.jagratichildrenvidyamandir.controller;
 
-public class userController {
+public class UserController {
 
 }

@@ -1,5 +1,5 @@
 package com.jagratichildrenvidyamandir.mapper;
 
-public class userMapper {
+public class UserMapper {
 
 }

@@ -1,6 +1,5 @@
 package com.jagratichildrenvidyamandir.service;
 
-
-public class userService {
+public class UserService {
 
 }
