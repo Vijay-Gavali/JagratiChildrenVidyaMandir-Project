@@ -28,10 +28,10 @@ public class User {
     String tcNumber;
     String ssmId;
     String passoutClass;
+    String aprId;
     
     public User() {
 		// TODO Auto-generated constructor stub
 	}
-    
-
+   
 }
