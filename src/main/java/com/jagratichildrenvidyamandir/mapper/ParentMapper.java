@@ -9,7 +9,6 @@ public class ParentMapper {
 
     public ParentDTO toDto(Parent entity) {
         if (entity == null) return null;
-
         ParentDTO dto = new ParentDTO();
         dto.setParentId(entity.getParentId());
         dto.setParentName(entity.getParentName());
@@ -21,14 +20,13 @@ public class ParentMapper {
 
     public Parent toEntity(ParentDTO dto) {
         if (dto == null) return null;
-
-        Parent parent = new Parent();
-        parent.setParentId(dto.getParentId());
-        parent.setParentName(dto.getParentName());
-        parent.setPhone(dto.getPhone());
-        parent.setEmail(dto.getEmail());
-        parent.setPassword(dto.getPassword());
-        return parent;
+        Parent p = new Parent();
+        p.setParentId(dto.getParentId());
+        p.setParentName(dto.getParentName());
+        p.setPhone(dto.getPhone());
+        p.setEmail(dto.getEmail());
+        p.setPassword(dto.getPassword());
+        return p;
     }
 
     public void updateEntityFromDto(ParentDTO dto, Parent entity) {

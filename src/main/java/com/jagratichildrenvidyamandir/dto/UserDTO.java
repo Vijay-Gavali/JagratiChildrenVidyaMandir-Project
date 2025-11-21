@@ -23,8 +23,7 @@ public class UserDTO {
     private String ssmId;
     private String passoutClass;
 
-    public UserDTO() {
-    }
+    public UserDTO() {}
 
     public UserDTO(Integer userId, String name, String admissionNo, String admissionDate, String password,
                    String fatherName, String motherName, String dob, String studentPhone, String email,
@@ -52,65 +51,45 @@ public class UserDTO {
         this.passoutClass = passoutClass;
     }
 
-    // ------------------- GETTERS & SETTERS -------------------
-
+    // Getters & setters (all fields)
     public Integer getUserId() { return userId; }
     public void setUserId(Integer userId) { this.userId = userId; }
-
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
     public String getAdmissionNo() { return admissionNo; }
     public void setAdmissionNo(String admissionNo) { this.admissionNo = admissionNo; }
-
     public String getAdmissionDate() { return admissionDate; }
     public void setAdmissionDate(String admissionDate) { this.admissionDate = admissionDate; }
-
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-
     public String getFatherName() { return fatherName; }
     public void setFatherName(String fatherName) { this.fatherName = fatherName; }
-
     public String getMotherName() { return motherName; }
     public void setMotherName(String motherName) { this.motherName = motherName; }
-
     public String getDob() { return dob; }
     public void setDob(String dob) { this.dob = dob; }
-
     public String getStudentPhone() { return studentPhone; }
     public void setStudentPhone(String studentPhone) { this.studentPhone = studentPhone; }
-
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
-
     public String getParentPhone() { return parentPhone; }
     public void setParentPhone(String parentPhone) { this.parentPhone = parentPhone; }
-
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
-
     public String getGender() { return gender; }
     public void setGender(String gender) { this.gender = gender; }
-
     public String getStudentAadharNo() { return studentAadharNo; }
     public void setStudentAadharNo(String studentAadharNo) { this.studentAadharNo = studentAadharNo; }
-
     public String getParentAadharNo() { return parentAadharNo; }
     public void setParentAadharNo(String parentAadharNo) { this.parentAadharNo = parentAadharNo; }
-
     public String getStudentClass() { return studentClass; }
     public void setStudentClass(String studentClass) { this.studentClass = studentClass; }
-
     public String getRte() { return rte; }
     public void setRte(String rte) { this.rte = rte; }
-
     public String getTcNumber() { return tcNumber; }
     public void setTcNumber(String tcNumber) { this.tcNumber = tcNumber; }
-
     public String getSsmId() { return ssmId; }
     public void setSsmId(String ssmId) { this.ssmId = ssmId; }
-
     public String getPassoutClass() { return passoutClass; }
     public void setPassoutClass(String passoutClass) { this.passoutClass = passoutClass; }
 }

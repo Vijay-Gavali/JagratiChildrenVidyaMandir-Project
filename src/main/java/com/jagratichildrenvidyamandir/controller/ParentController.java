@@ -1,6 +1,7 @@
 package com.jagratichildrenvidyamandir.controller;
 
 import com.jagratichildrenvidyamandir.dto.ParentDTO;
+import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.service.ParentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class ParentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ParentDTO> get(@PathVariable Integer id) {
-        ParentDTO data = service.getParentById(id);
-        return data == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(data);
+        ParentDTO dto = service.getParentById(id);
+        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
     @GetMapping("/getAll")
@@ -47,5 +48,23 @@ public class ParentController {
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         boolean deleted = service.deleteParent(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    // Parent login: phone + password -> returns children list
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+        ParentDTO p = service.authenticateParent(req.getPhone(), req.getPassword());
+        if (p == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        List<UserDTO> children = service.getChildrenByParentPhone(p.getPhone());
+        return ResponseEntity.ok(children);
+    }
+
+    public static class LoginRequest {
+        private String phone;
+        private String password;
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
     }
 }

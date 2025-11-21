@@ -4,6 +4,7 @@ import com.jagratichildrenvidyamandir.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByEmail(String email);
     boolean existsByStudentPhone(String studentPhone);
     boolean existsByStudentAadharNo(String studentAadharNo);
+
+    // NEW: find students by parentPhone
+    List<User> findByParentPhone(String parentPhone);
 }

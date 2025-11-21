@@ -11,33 +11,19 @@ public class User {
     private Integer userId;
 
     private String name;
-
-    @Column(unique = true)
     private String admissionNo;
-
     private String admissionDate;
-
     private String password;
-
     private String fatherName;
     private String motherName;
     private String dob;
-
-    @Column(unique = true)
     private String studentPhone;
-
-    @Column(unique = true)
     private String email;
-
     private String parentPhone;
     private String address;
     private String gender;
-
-    @Column(unique = true)
     private String studentAadharNo;
-
     private String parentAadharNo;
-
     private String studentClass;
     private String rte;
     private String tcNumber;
@@ -46,10 +32,11 @@ public class User {
 
     public User() {}
 
-    public User(Integer userId, String name, String admissionNo, String admissionDate, String password,
-                String fatherName, String motherName, String dob, String studentPhone, String email,
-                String parentPhone, String address, String gender, String studentAadharNo, String parentAadharNo,
-                String studentClass, String rte, String tcNumber, String ssmId, String passoutClass) {
+    // Full constructor (keep existing fields)
+    public User(Integer userId, String name, String admissionNo, String admissionDate, String password, String fatherName,
+                String motherName, String dob, String studentPhone, String email, String parentPhone, String address,
+                String gender, String studentAadharNo, String parentAadharNo, String studentClass, String rte,
+                String tcNumber, String ssmId, String passoutClass) {
         this.userId = userId;
         this.name = name;
         this.admissionNo = admissionNo;
@@ -72,8 +59,7 @@ public class User {
         this.passoutClass = passoutClass;
     }
 
-    // ------------------- GETTERS & SETTERS -------------------
-
+    // Getters & setters for all fields
     public Integer getUserId() { return userId; }
     public void setUserId(Integer userId) { this.userId = userId; }
 

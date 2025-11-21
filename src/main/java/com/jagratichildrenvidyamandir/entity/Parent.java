@@ -30,7 +30,6 @@ public class Parent {
         this.password = password;
     }
 
-    // ---------- Getters & Setters ----------
     public Integer getParentId() { return parentId; }
     public void setParentId(Integer parentId) { this.parentId = parentId; }
 
