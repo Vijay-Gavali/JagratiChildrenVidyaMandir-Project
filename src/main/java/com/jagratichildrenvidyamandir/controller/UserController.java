@@ -18,7 +18,7 @@ public class UserController {
         this.service = service;
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
         UserDTO created = service.createUser(dto);
         if (created == null) return ResponseEntity.status(HttpStatus.CONFLICT).build();
