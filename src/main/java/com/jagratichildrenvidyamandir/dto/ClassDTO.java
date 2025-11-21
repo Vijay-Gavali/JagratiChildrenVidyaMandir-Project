@@ -1,41 +1,54 @@
 package com.jagratichildrenvidyamandir.dto;
 
+import java.util.List;
+
 public class ClassDTO {
 
-    private Integer classId;
-    private String className;
-    private Integer fees;
+	private Integer classId;
+	private String className;
+	private Integer fees;
 
-    public ClassDTO() {
-    }
+	// students list included when fetching by id
+	private List<UserDTO> students;
 
-    public ClassDTO(Integer classId, String className, Integer fees) {
-        this.classId = classId;
-        this.className = className;
-        this.fees = fees;
-    }
+	public ClassDTO() {
+	}
 
-    public Integer getClassId() {
-        return classId;
-    }
+	public ClassDTO(Integer classId, String className, Integer fees) {
+		this.classId = classId;
+		this.className = className;
+		this.fees = fees;
+	}
 
-    public void setClassId(Integer classId) {
-        this.classId = classId;
-    }
+	public Integer getClassId() {
+		return classId;
+	}
 
-    public String getClassName() {
-        return className;
-    }
+	public void setClassId(Integer classId) {
+		this.classId = classId;
+	}
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
+	public String getClassName() {
+		return className;
+	}
 
-    public Integer getFees() {
-        return fees;
-    }
+	public void setClassName(String className) {
+		this.className = className;
+	}
 
-    public void setFees(Integer fees) {
-        this.fees = fees;
-    }
+	public Integer getFees() {
+		return fees;
+	}
+
+	public void setFees(Integer fees) {
+		this.fees = fees;
+	}
+
+	public List<UserDTO> getStudents() {
+		return students;
+	}
+
+	public void setStudents(List<UserDTO> students) {
+		this.students = students;
+	}
 }

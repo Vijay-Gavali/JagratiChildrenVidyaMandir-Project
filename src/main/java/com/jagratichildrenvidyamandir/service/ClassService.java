@@ -2,7 +2,7 @@ package com.jagratichildrenvidyamandir.service;
 
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.mapper.ClassMapper;
-import com.jagratichildrenvidyamandir.entity.Class;
+import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +22,9 @@ public class ClassService {
 
     // CREATE
     public ClassDTO createClass(ClassDTO dto) {
-        Class entity = mapper.toEntity(dto);
+    	ClassEntity entity = mapper.toEntity(dto);
         entity.setClassId(null); // auto-increment
-        Class saved = repository.save(entity);
+        ClassEntity saved = repository.save(entity);
         return mapper.toDto(saved);
     }
 
@@ -48,7 +48,7 @@ public class ClassService {
         return repository.findById(id)
                 .map(existing -> {
                     mapper.updateEntityFromDto(dto, existing);
-                    Class updated = repository.save(existing);
+                    ClassEntity updated = repository.save(existing);
                     return mapper.toDto(updated);
                 })
                 .orElse(null);
