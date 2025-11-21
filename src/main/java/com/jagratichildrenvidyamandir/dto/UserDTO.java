@@ -188,4 +188,5 @@ public class UserDTO {
 	public void setStudentClassId(Integer studentClassId) {
 		this.studentClassId = studentClassId;
 	}
+
 }

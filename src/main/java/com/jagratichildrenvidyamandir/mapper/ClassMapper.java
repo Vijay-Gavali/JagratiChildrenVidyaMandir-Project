@@ -68,7 +68,6 @@ public class ClassMapper {
 		dto.setTcNumber(user.getTcNumber());
 
 		// optional: add class name if needed
-		// dto.setStudentClass(user.getStudentClass().getClassName());
 
 		return dto;
 	}

@@ -12,38 +12,46 @@ import java.util.List;
 @RequestMapping("/api/attendance")
 public class AttendanceController {
 
-    private final AttendanceService service;
+    private final AttendanceService attendanceService;
 
     public AttendanceController(AttendanceService service) {
-        this.service = service;
+        this.attendanceService = service;
     }
 
     @PostMapping
     public ResponseEntity<AttendanceDTO> create(@RequestBody AttendanceDTO dto) {
-        return new ResponseEntity<>(service.createAttendance(dto), HttpStatus.CREATED);
+        return new ResponseEntity<>(attendanceService.createAttendance(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AttendanceDTO> get(@PathVariable Integer id) {
-        AttendanceDTO dto = service.getAttendanceById(id);
+        AttendanceDTO dto = attendanceService.getAttendanceById(id);
         return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
     @GetMapping
     public List<AttendanceDTO> getAll() {
-        return service.getAllAttendance();
+        return attendanceService.getAllAttendance();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AttendanceDTO> update(@PathVariable Integer id, @RequestBody AttendanceDTO dto) {
-        AttendanceDTO updated = service.updateAttendance(id, dto);
+        AttendanceDTO updated = attendanceService.updateAttendance(id, dto);
         return updated == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        return service.deleteAttendance(id)
+        return attendanceService.deleteAttendance(id)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
+    
+    // get attendance using userID
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceByUserId(@PathVariable Integer userId) {
+        List<AttendanceDTO> list = attendanceService.getAttendanceByUserId(userId);
+        return ResponseEntity.ok(list);
+    }
+
 }

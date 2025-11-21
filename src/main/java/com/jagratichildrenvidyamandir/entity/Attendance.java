@@ -16,9 +16,20 @@ public class Attendance {
 	private LocalDate date;
 
 	@Column(name = "status")
-	private String status; // Present / Absent
+	private String status;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	public Attendance() {
+	}
+
+	public Attendance(Integer attendanceId, LocalDate date, String status) {
+		super();
+		this.attendanceId = attendanceId;
+		this.date = date;
+		this.status = status;
 	}
 
 	public Integer getAttendanceId() {
@@ -43,5 +54,13 @@ public class Attendance {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
