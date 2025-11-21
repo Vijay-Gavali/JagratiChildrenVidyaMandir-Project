@@ -1,9 +1,13 @@
 package com.jagratichildrenvidyamandir.service;
 
 import com.jagratichildrenvidyamandir.dto.ParentDTO;
+import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.entity.Parent;
+import com.jagratichildrenvidyamandir.entity.User;
 import com.jagratichildrenvidyamandir.mapper.ParentMapper;
+import com.jagratichildrenvidyamandir.mapper.UserMapper;
 import com.jagratichildrenvidyamandir.repository.ParentRepository;
+import com.jagratichildrenvidyamandir.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,63 +16,66 @@ import java.util.stream.Collectors;
 @Service
 public class ParentService {
 
-    private final ParentRepository repository;
-    private final ParentMapper mapper;
+    private final ParentRepository parentRepo;
+    private final ParentMapper parentMapper;
+    private final UserRepository userRepo;
+    private final UserMapper userMapper;
 
-    public ParentService(ParentRepository repository, ParentMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
+    public ParentService(ParentRepository parentRepo, ParentMapper parentMapper,
+                         UserRepository userRepo, UserMapper userMapper) {
+        this.parentRepo = parentRepo;
+        this.parentMapper = parentMapper;
+        this.userRepo = userRepo;
+        this.userMapper = userMapper;
     }
 
-    // CREATE
     public ParentDTO createParent(ParentDTO dto) {
-        if (repository.existsByPhone(dto.getPhone())) return null;
-        if (repository.existsByEmail(dto.getEmail())) return null;
-
-        Parent entity = mapper.toEntity(dto);
-        entity.setParentId(null);
-
-        Parent saved = repository.save(entity);
-        return mapper.toDto(saved);
+        if (dto == null) return null;
+        if (dto.getPhone() != null && parentRepo.existsByPhone(dto.getPhone())) return null;
+        if (dto.getEmail() != null && parentRepo.existsByEmail(dto.getEmail())) return null;
+        Parent p = parentMapper.toEntity(dto);
+        p.setParentId(null);
+        Parent saved = parentRepo.save(p);
+        return parentMapper.toDto(saved);
     }
 
-    // GET BY ID
     public ParentDTO getParentById(Integer id) {
-        return repository.findById(id)
-                .map(mapper::toDto)
-                .orElse(null);
+        return parentRepo.findById(id).map(parentMapper::toDto).orElse(null);
     }
 
-    // GET ALL
     public List<ParentDTO> getAllParents() {
-        return repository.findAll()
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        return parentRepo.findAll().stream().map(parentMapper::toDto).collect(Collectors.toList());
     }
 
-    // UPDATE
     public ParentDTO updateParent(Integer id, ParentDTO dto) {
-        return repository.findById(id)
-                .map(existing -> {
-                    // unique checks
-                    if (!existing.getPhone().equals(dto.getPhone()) && repository.existsByPhone(dto.getPhone()))
-                        return null;
+        return parentRepo.findById(id).map(existing -> {
+            if (dto.getPhone() != null && !dto.getPhone().equals(existing.getPhone())
+                    && parentRepo.existsByPhone(dto.getPhone())) return null;
+            if (dto.getEmail() != null && !dto.getEmail().equals(existing.getEmail())
+                    && parentRepo.existsByEmail(dto.getEmail())) return null;
+            parentMapper.updateEntityFromDto(dto, existing);
+            Parent updated = parentRepo.save(existing);
+            return parentMapper.toDto(updated);
+        }).orElse(null);
+    }
 
-                    if (!existing.getEmail().equals(dto.getEmail()) && repository.existsByEmail(dto.getEmail()))
-                        return null;
+    public boolean deleteParent(Integer id) {
+        if (!parentRepo.existsById(id)) return false;
+        parentRepo.deleteById(id);
+        return true;
+    }
 
-                    mapper.updateEntityFromDto(dto, existing);
-                    Parent updated = repository.save(existing);
-                    return mapper.toDto(updated);
-                })
+    // Authenticate parent (phone + password) - plain compare
+    public ParentDTO authenticateParent(String phone, String password) {
+        return parentRepo.findByPhone(phone)
+                .filter(p -> p.getPassword() != null && p.getPassword().equals(password))
+                .map(parentMapper::toDto)
                 .orElse(null);
     }
 
-    // DELETE
-    public boolean deleteParent(Integer id) {
-        if (!repository.existsById(id)) return false;
-        repository.deleteById(id);
-        return true;
+    // Get children by parent phone
+    public List<UserDTO> getChildrenByParentPhone(String parentPhone) {
+        List<User> children = userRepo.findByParentPhone(parentPhone);
+        return children.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -20,10 +21,9 @@ public class UserService {
         this.mapper = mapper;
     }
 
-    // CREATE with uniqueness checks
+    // CREATE
     public UserDTO createUser(UserDTO dto) {
         if (dto == null) return null;
-
         // uniqueness checks
         if (dto.getAdmissionNo() != null && repository.existsByAdmissionNo(dto.getAdmissionNo())) return null;
         if (dto.getEmail() != null && repository.existsByEmail(dto.getEmail())) return null;
@@ -31,70 +31,39 @@ public class UserService {
         if (dto.getStudentAadharNo() != null && repository.existsByStudentAadharNo(dto.getStudentAadharNo())) return null;
 
         User entity = mapper.toEntity(dto);
-        entity.setUserId(null); // ensure auto-generated
+        entity.setUserId(null);
         User saved = repository.save(entity);
         return mapper.toDto(saved);
     }
 
-    // GET ONE
+    // GET by id
     public UserDTO getUserById(Integer id) {
-        return repository.findById(id)
-                .map(mapper::toDto)
-                .orElse(null);
+        return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
-    // GET ALL
+    // GET all
     public List<UserDTO> getAllUsers() {
-        return repository.findAll()
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
-    // GET by unique fields
-    public UserDTO getByAdmissionNo(String admissionNo) {
-        return repository.findByAdmissionNo(admissionNo).map(mapper::toDto).orElse(null);
-    }
-
-    public UserDTO getByEmail(String email) {
-        return repository.findByEmail(email).map(mapper::toDto).orElse(null);
-    }
-
-    public UserDTO getByPhone(String phone) {
-        return repository.findByStudentPhone(phone).map(mapper::toDto).orElse(null);
-    }
-
-    public UserDTO getByAadhar(String aadhar) {
-        return repository.findByStudentAadharNo(aadhar).map(mapper::toDto).orElse(null);
-    }
-
-    // UPDATE with uniqueness checks
+    // UPDATE
     public UserDTO updateUser(Integer id, UserDTO dto) {
-        return repository.findById(id)
-                .map(existing -> {
-                    // if admissionNo changed and new one exists -> reject (return null)
-                    if (dto.getAdmissionNo() != null && !dto.getAdmissionNo().equals(existing.getAdmissionNo())
-                            && repository.existsByAdmissionNo(dto.getAdmissionNo())) {
-                        return null;
-                    }
-                    if (dto.getEmail() != null && !dto.getEmail().equals(existing.getEmail())
-                            && repository.existsByEmail(dto.getEmail())) {
-                        return null;
-                    }
-                    if (dto.getStudentPhone() != null && !dto.getStudentPhone().equals(existing.getStudentPhone())
-                            && repository.existsByStudentPhone(dto.getStudentPhone())) {
-                        return null;
-                    }
-                    if (dto.getStudentAadharNo() != null && !dto.getStudentAadharNo().equals(existing.getStudentAadharNo())
-                            && repository.existsByStudentAadharNo(dto.getStudentAadharNo())) {
-                        return null;
-                    }
+        Optional<User> opt = repository.findById(id);
+        if (opt.isEmpty()) return null;
+        User existing = opt.get();
 
-                    mapper.updateEntityFromDto(dto, existing);
-                    User updated = repository.save(existing);
-                    return mapper.toDto(updated);
-                })
-                .orElse(null);
+        if (dto.getAdmissionNo() != null && !dto.getAdmissionNo().equals(existing.getAdmissionNo())
+                && repository.existsByAdmissionNo(dto.getAdmissionNo())) return null;
+        if (dto.getEmail() != null && !dto.getEmail().equals(existing.getEmail())
+                && repository.existsByEmail(dto.getEmail())) return null;
+        if (dto.getStudentPhone() != null && !dto.getStudentPhone().equals(existing.getStudentPhone())
+                && repository.existsByStudentPhone(dto.getStudentPhone())) return null;
+        if (dto.getStudentAadharNo() != null && !dto.getStudentAadharNo().equals(existing.getStudentAadharNo())
+                && repository.existsByStudentAadharNo(dto.getStudentAadharNo())) return null;
+
+        mapper.updateEntityFromDto(dto, existing);
+        User updated = repository.save(existing);
+        return mapper.toDto(updated);
     }
 
     // DELETE
@@ -102,5 +71,13 @@ public class UserService {
         if (!repository.existsById(id)) return false;
         repository.deleteById(id);
         return true;
+    }
+
+    // AUTH: student login by studentPhone + password (plain)
+    public UserDTO authenticateStudent(String phone, String password) {
+        return repository.findByStudentPhone(phone)
+                .filter(u -> u.getPassword() != null && u.getPassword().equals(password))
+                .map(mapper::toDto)
+                .orElse(null);
     }
 }

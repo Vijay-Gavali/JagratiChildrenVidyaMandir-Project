@@ -38,7 +38,7 @@ public class UserMapper {
     public User toEntity(UserDTO dto) {
         if (dto == null) return null;
         User entity = new User();
-        entity.setUserId(dto.getUserId()); // usually null for create
+        entity.setUserId(dto.getUserId());
         entity.setName(dto.getName());
         entity.setAdmissionNo(dto.getAdmissionNo());
         entity.setAdmissionDate(dto.getAdmissionDate());
@@ -72,7 +72,6 @@ public class UserMapper {
 
     public void updateEntityFromDto(UserDTO dto, User entity) {
         if (dto == null || entity == null) return;
-        // do NOT overwrite id
         entity.setName(dto.getName());
         entity.setAdmissionNo(dto.getAdmissionNo());
         entity.setAdmissionDate(dto.getAdmissionDate());

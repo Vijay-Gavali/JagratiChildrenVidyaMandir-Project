@@ -39,8 +39,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO dto) {
         UserDTO updated = service.updateUser(id, dto);
-        if (updated == null) return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        return ResponseEntity.ok(updated);
+        return updated == null ? ResponseEntity.status(HttpStatus.CONFLICT).build() : ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
@@ -49,28 +48,19 @@ public class UserController {
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    // Additional endpoints to fetch by unique fields
-    @GetMapping("/byAdmissionNo/{admissionNo}")
-    public ResponseEntity<UserDTO> getByAdmissionNo(@PathVariable String admissionNo) {
-        UserDTO dto = service.getByAdmissionNo(admissionNo);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    // Student login endpoint: POST /api/users/login
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> login(@RequestBody LoginRequest req) {
+        UserDTO user = service.authenticateStudent(req.getPhone(), req.getPassword());
+        return user == null ? ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(user);
     }
 
-    @GetMapping("/byEmail/{email}")
-    public ResponseEntity<UserDTO> getByEmail(@PathVariable String email) {
-        UserDTO dto = service.getByEmail(email);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
-    }
-
-    @GetMapping("/byPhone/{phone}")
-    public ResponseEntity<UserDTO> getByPhone(@PathVariable String phone) {
-        UserDTO dto = service.getByPhone(phone);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
-    }
-
-    @GetMapping("/byAadhar/{aadhar}")
-    public ResponseEntity<UserDTO> getByAadhar(@PathVariable String aadhar) {
-        UserDTO dto = service.getByAadhar(aadhar);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    public static class LoginRequest {
+        private String phone;
+        private String password;
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
     }
 }
