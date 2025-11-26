@@ -18,19 +18,12 @@ public class UserController {
 		this.service = service;
 	}
 
-	@PostMapping
-	public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
-		UserDTO created = service.createUser(dto);
-		if (created == null)
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		return new ResponseEntity<>(created, HttpStatus.CREATED);
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<UserDTO> get(@PathVariable Integer id) {
-		UserDTO data = service.getUserById(id);
-		return data == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(data);
-	}
+    @PostMapping("/save")
+    public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
+        UserDTO created = service.createUser(dto);
+        if (created == null) return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
 
 	@GetMapping("/getAll")
 	public List<UserDTO> getAll() {
