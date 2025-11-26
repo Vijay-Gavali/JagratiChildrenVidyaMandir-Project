@@ -10,5 +10,4 @@ import com.jagratichildrenvidyamandir.entity.Attendance;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Integer> {
 	List<Attendance> findByUserUserId(Integer userId);
-
 }
