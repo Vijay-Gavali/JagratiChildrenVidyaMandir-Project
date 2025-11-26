@@ -1,10 +1,13 @@
 package com.jagratichildrenvidyamandir.controller;
 
+import com.jagratichildrenvidyamandir.dto.UploadSummaryDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
+import com.jagratichildrenvidyamandir.service.UserExcelService;
 import com.jagratichildrenvidyamandir.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService service;
+    private final UserExcelService excelService;
 
-    public UserController(UserService service) {
+    public UserController(UserService service, UserExcelService excelService) {
         this.service = service;
+        this.excelService = excelService;
     }
 
     @PostMapping("/save")
@@ -53,6 +58,19 @@ public class UserController {
     public ResponseEntity<UserDTO> login(@RequestBody LoginRequest req) {
         UserDTO user = service.authenticateStudent(req.getPhone(), req.getPassword());
         return user == null ? ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(user);
+    }
+
+    // Excel upload endpoint
+    // Use Postman: Body -> form-data -> key "file" (type File)
+    @PostMapping("/uploadExcel")
+    public ResponseEntity<UploadSummaryDTO> uploadExcel(@RequestParam("file") MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            UploadSummaryDTO empty = new UploadSummaryDTO();
+            empty.addError("No file uploaded");
+            return ResponseEntity.badRequest().body(empty);
+        }
+        UploadSummaryDTO result = excelService.importFromExcel(file);
+        return ResponseEntity.ok(result);
     }
 
     public static class LoginRequest {
