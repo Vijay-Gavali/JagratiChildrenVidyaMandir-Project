@@ -20,14 +20,14 @@ public class EnquiryController {
     }
 
     // Create
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<EnquiryDTO> createEnquiry(@Valid @RequestBody EnquiryDTO dto) {
         EnquiryDTO created = service.createEnquiry(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     // Get all
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<EnquiryDTO>> getAll() {
         return ResponseEntity.ok(service.getAllEnquiries());
     }
