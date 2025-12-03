@@ -21,8 +21,8 @@ public class DocumentController {
 
     @PostMapping("/upload/{userId}/{type}")
     public ResponseEntity<?> upload(
-            @PathVariable("userId") Integer userId,
-            @PathVariable("type") DocumentType type,
+            @PathVariable Integer userId,
+            @PathVariable DocumentType type,
             @RequestParam("file") MultipartFile file
     ) {
         try {
@@ -35,8 +35,7 @@ public class DocumentController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<DocumentDTO>> getDocuments(@PathVariable("userId") Integer userId) {
-        List<DocumentDTO> list = service.getUserDocuments(userId);
-        return ResponseEntity.ok(list);
+    public List<DocumentDTO> getDocuments(@PathVariable Integer userId) {
+        return service.getUserDocuments(userId);
     }
 }
