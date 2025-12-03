@@ -18,7 +18,7 @@ public class FeesController {
         this.service = service;
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<FeesDTO> create(@RequestBody FeesDTO dto) {
         return new ResponseEntity<>(service.createFees(dto), HttpStatus.CREATED);
     }
@@ -29,7 +29,7 @@ public class FeesController {
         return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<FeesDTO> getAll() {
         return service.getAllFees();
     }
@@ -46,4 +46,11 @@ public class FeesController {
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
+    
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<FeesDTO>> getFeesByUserId(@PathVariable Integer id) {
+        List<FeesDTO> dto = service.getFeesByUserId(id);
+        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    }
+    
 }

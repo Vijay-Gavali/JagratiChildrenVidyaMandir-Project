@@ -1,13 +1,15 @@
 package com.jagratichildrenvidyamandir.service;
 
-import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
-import com.jagratichildrenvidyamandir.mapper.AttendanceMapper;
-import com.jagratichildrenvidyamandir.entity.*;
-import com.jagratichildrenvidyamandir.repository.AttendanceRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
+import com.jagratichildrenvidyamandir.entity.Attendance;
+import com.jagratichildrenvidyamandir.mapper.AttendanceMapper;
+import com.jagratichildrenvidyamandir.repository.AttendanceRepository;
 
 @Service
 public class AttendanceService {
@@ -53,4 +55,14 @@ public class AttendanceService {
         repository.deleteById(id);
         return true;
     }
+    
+    // get user attendance using userId
+    @Transactional(readOnly = true)
+    public List<AttendanceDTO> getAttendanceByUserId(Integer userId) {
+        return repository.findByUserUserId(userId)
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }

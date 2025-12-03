@@ -1,6 +1,7 @@
 package com.jagratichildrenvidyamandir.mapper;
 
 import com.jagratichildrenvidyamandir.dto.UserDTO;
+import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,8 @@ public class UserMapper {
         dto.setGender(entity.getGender());
         dto.setStudentAadharNo(entity.getStudentAadharNo());
         dto.setParentAadharNo(entity.getParentAadharNo());
-        dto.setStudentClass(entity.getStudentClass());
+        // map relation as id only:
+        dto.setStudentClassId(entity.getStudentClass() != null ? entity.getStudentClass().getClassId() : null);
         dto.setRte(entity.getRte());
         dto.setTcNumber(entity.getTcNumber());
         dto.setSsmId(entity.getSsmId());
@@ -36,7 +38,7 @@ public class UserMapper {
     public User toEntity(UserDTO dto) {
         if (dto == null) return null;
         User entity = new User();
-        entity.setUserId(dto.getUserId()); // usually null for create
+        entity.setUserId(dto.getUserId());
         entity.setName(dto.getName());
         entity.setAdmissionNo(dto.getAdmissionNo());
         entity.setAdmissionDate(dto.getAdmissionDate());
@@ -51,7 +53,16 @@ public class UserMapper {
         entity.setGender(dto.getGender());
         entity.setStudentAadharNo(dto.getStudentAadharNo());
         entity.setParentAadharNo(dto.getParentAadharNo());
-        entity.setStudentClass(dto.getStudentClass());
+
+        // map class id -> ClassEntity (reference by id)
+        if (dto.getStudentClassId() != null) {
+            ClassEntity cls = new ClassEntity();
+            cls.setClassId(dto.getStudentClassId());
+            entity.setStudentClass(cls);
+        } else {
+            entity.setStudentClass(null);
+        }
+
         entity.setRte(dto.getRte());
         entity.setTcNumber(dto.getTcNumber());
         entity.setSsmId(dto.getSsmId());
@@ -61,7 +72,6 @@ public class UserMapper {
 
     public void updateEntityFromDto(UserDTO dto, User entity) {
         if (dto == null || entity == null) return;
-        // do NOT overwrite id
         entity.setName(dto.getName());
         entity.setAdmissionNo(dto.getAdmissionNo());
         entity.setAdmissionDate(dto.getAdmissionDate());
@@ -76,7 +86,16 @@ public class UserMapper {
         entity.setGender(dto.getGender());
         entity.setStudentAadharNo(dto.getStudentAadharNo());
         entity.setParentAadharNo(dto.getParentAadharNo());
-        entity.setStudentClass(dto.getStudentClass());
+
+        // CORRECT mapping: use studentClassId from DTO
+        if (dto.getStudentClassId() != null) {
+            ClassEntity cls = new ClassEntity();
+            cls.setClassId(dto.getStudentClassId());
+            entity.setStudentClass(cls);
+        } else {
+            entity.setStudentClass(null);
+        }
+
         entity.setRte(dto.getRte());
         entity.setTcNumber(dto.getTcNumber());
         entity.setSsmId(dto.getSsmId());
