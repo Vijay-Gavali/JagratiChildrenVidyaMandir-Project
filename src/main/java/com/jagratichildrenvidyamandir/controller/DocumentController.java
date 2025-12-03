@@ -38,4 +38,23 @@ public class DocumentController {
     public List<DocumentDTO> getDocuments(@PathVariable Integer userId) {
         return service.getUserDocuments(userId);
     }
+
+    /**
+     * New endpoint: create or replace document for user by type.
+     * URL: PUT /api/documents/update/{userId}/{type}
+     * Body: form-data with key "file" (File)
+     */
+    @PutMapping("/update/{userId}/{type}")
+    public ResponseEntity<?> updateDocumentByUserAndType(
+            @PathVariable Integer userId,
+            @PathVariable DocumentType type,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            DocumentDTO dto = service.updateOrReplaceByUserAndType(userId, type, file);
+            if (dto == null) return ResponseEntity.badRequest().body("Invalid user or file");
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }
