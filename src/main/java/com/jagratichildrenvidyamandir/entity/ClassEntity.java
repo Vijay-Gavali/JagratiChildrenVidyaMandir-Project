@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -29,6 +30,10 @@ public class ClassEntity  {
 	// One class has many users (students)
     @OneToMany(mappedBy = "studentClass", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
+    
+    @ManyToMany(mappedBy = "classes")
+    private List<Teacher> teachers = new ArrayList<>();
+
 
 	public ClassEntity() {
 	}

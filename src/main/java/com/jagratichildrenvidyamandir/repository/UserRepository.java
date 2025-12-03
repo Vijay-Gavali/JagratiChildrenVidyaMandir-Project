@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByEmail(String email);
     boolean existsByStudentPhone(String studentPhone);
     boolean existsByStudentAadharNo(String studentAadharNo);
+    
+    List<User> findByStudentClassClassId(Integer classId);
 
     // NEW: find students by parentPhone
     List<User> findByParentPhone(String parentPhone);
