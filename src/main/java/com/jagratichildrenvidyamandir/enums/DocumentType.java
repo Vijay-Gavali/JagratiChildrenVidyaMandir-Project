@@ -5,7 +5,9 @@ public enum DocumentType {
     STUDENT_AADHAR,
     PARENT_AADHAR,
     INCOME_CERTIFICATE,
+    BIRTH_CERTIFICATE,
     DOMICILE,
     BANK_PASSBOOK,
-    SSMID_CARD
+    SSMID_CARD,
+    TC
 }
