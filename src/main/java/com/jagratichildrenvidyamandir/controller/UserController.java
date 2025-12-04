@@ -23,6 +23,12 @@ public class UserController {
 		this.excelService = excelService;
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<UserDTO> get(@PathVariable Integer id) {
+		UserDTO dto = service.getUserById(id);
+		return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+	}
+
 	@PostMapping("/save")
 	public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
 		UserDTO created = service.createUser(dto);

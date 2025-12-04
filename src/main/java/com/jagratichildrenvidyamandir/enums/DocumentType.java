@@ -8,6 +8,6 @@ public enum DocumentType {
     BIRTH_CERTIFICATE,
     DOMICILE,
     BANK_PASSBOOK,
-    SSMID_CARD,
+    SSSMID_CARD,
     TC
 }
