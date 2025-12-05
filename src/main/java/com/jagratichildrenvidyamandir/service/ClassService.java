@@ -31,7 +31,7 @@ public class ClassService {
     // GET ONE
     public ClassDTO getClassById(Integer id) {
         return repository.findById(id)
-                .map(mapper::toDto)
+                .map(mapper::toFullDto)
                 .orElse(null);
     }
 

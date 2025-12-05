@@ -31,7 +31,25 @@ public class Fees {
 	@Column(name = "paid_amount", precision = 10, scale = 2)
 	private BigDecimal paidAmount;
 
+	// MANY FEES belong to ONE STUDENT (USER)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id") // Foreign key in fees table
+	private User user;
+
 	public Fees() {
+	}
+
+	public Fees(Integer feesId, BigDecimal amount, LocalDate dueDate, String paymentStatus, LocalDate paymentDate,
+			BigDecimal remainingAmount, BigDecimal paidAmount, User user) {
+		super();
+		this.feesId = feesId;
+		this.amount = amount;
+		this.dueDate = dueDate;
+		this.paymentStatus = paymentStatus;
+		this.paymentDate = paymentDate;
+		this.remainingAmount = remainingAmount;
+		this.paidAmount = paidAmount;
+		this.user = user;
 	}
 
 	// Getters & setters
@@ -89,5 +107,13 @@ public class Fees {
 
 	public void setPaidAmount(BigDecimal paidAmount) {
 		this.paidAmount = paidAmount;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
