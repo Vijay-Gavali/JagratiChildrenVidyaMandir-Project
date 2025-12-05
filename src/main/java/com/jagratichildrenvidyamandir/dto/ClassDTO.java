@@ -19,6 +19,10 @@ public class ClassDTO {
 		this.className = className;
 		this.fees = fees;
 	}
+	 public ClassDTO(Integer classId, String className) {
+	        this.classId = classId;
+	        this.className = className;
+	    }
 
 	public Integer getClassId() {
 		return classId;

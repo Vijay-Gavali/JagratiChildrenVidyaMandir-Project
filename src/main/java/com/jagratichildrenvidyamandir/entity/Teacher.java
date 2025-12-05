@@ -30,15 +30,14 @@ public class Teacher {
     private Integer classId;
     // ⭐ New field to store uploaded document/photo path
     private String documentPath;
-    private String aprNo;   
+    private String aprNo; 
 
-    @ManyToMany
-    @JoinTable(
-            name = "teacher_classes",
-            joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id")
-    )
-    private List<ClassEntity> classes = new ArrayList<>();
+    // Store multiple class IDs like "1,2,3"
+    @Column(name = "class_ids")
+    private String classIds;
+
+    
+    
 
     // ---------- Getters & Setters ----------
     public Integer getTeacherId() { return teacherId; }
@@ -71,19 +70,28 @@ public class Teacher {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public Integer getClassId() {
-        return classId;
-    }
+   public Integer getClassId() {
+       return classId;
+   }
 
     public void setClassId(Integer classId) {
-        this.classId = classId;
+       this.classId = classId;
     }
     public String getDocumentPath() { return documentPath; }
     public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
 
     public String getAprNo() { return aprNo; }            // ⭐ NEW GETTER
     public void setAprNo(String aprNo) { this.aprNo = aprNo; }  // ⭐ NEW SETTER
+    public String getClassIds() {
+        return classIds;
+    }
 
-    public List<ClassEntity> getClasses() { return classes; }
-    public void setClasses(List<ClassEntity> classes) { this.classes = classes; }
+    public void setClassIds(String classIds) {
+        this.classIds = classIds;
+    }
+  
+   
+	
+
+    
 }
