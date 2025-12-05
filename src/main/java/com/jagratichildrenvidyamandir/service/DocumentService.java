@@ -6,12 +6,16 @@ import com.jagratichildrenvidyamandir.entity.User;
 import com.jagratichildrenvidyamandir.enums.DocumentType;
 import com.jagratichildrenvidyamandir.repository.DocumentRepository;
 import com.jagratichildrenvidyamandir.repository.UserRepository;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -168,6 +172,68 @@ public class DocumentService {
         dto.setOriginalName(saved.getOriginalName());
         dto.setUploadedAt(saved.getUploadedAt());
         return dto;
+    }
+
+    public boolean deleteDocument(Integer userId, DocumentType type) {
+
+        List<Document> docs = docRepo.findByUserUserIdAndType(userId, type);
+
+        if (docs.isEmpty()) return false;
+
+        for (Document doc : docs) {
+
+            // Delete file from disk
+            try {
+                File file = new File(doc.getFilePath());
+                if (file.exists()) file.delete();
+            } catch (Exception ignored) {}
+
+            // Delete from DB
+            docRepo.delete(doc);
+        }
+
+        return true;
+    }
+
+    /**
+     * FileResult helper used by controller to stream file to client.
+     */
+    public static class FileResult {
+        public final Resource resource;
+        public final String filename;
+        public final String mimeType;
+
+        public FileResult(Resource resource, String filename, String mimeType) {
+            this.resource = resource;
+            this.filename = filename;
+            this.mimeType = mimeType;
+        }
+    }
+
+    /**
+     * Returns FileResult for the first document of given userId+type, or null if not found or unreadable.
+     */
+    public FileResult getDocumentResource(Integer userId, DocumentType type) throws Exception {
+        List<Document> docs = docRepo.findByUserUserIdAndType(userId, type);
+        if (docs == null || docs.isEmpty()) return null;
+        Document doc = docs.get(0);
+        if (doc.getFilePath() == null) return null;
+
+        Path path = Paths.get(doc.getFilePath()).toAbsolutePath().normalize();
+        if (!Files.exists(path) || !Files.isReadable(path)) return null;
+
+        Resource resource;
+        try {
+            resource = new UrlResource(path.toUri());
+            if (!resource.exists() || !resource.isReadable()) return null;
+        } catch (MalformedURLException e) {
+            return null;
+        }
+
+        String mime = Files.probeContentType(path);
+        if (mime == null) mime = "application/octet-stream";
+
+        return new FileResult(resource, doc.getOriginalName(), mime);
     }
 
 }
