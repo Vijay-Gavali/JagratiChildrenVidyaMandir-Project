@@ -48,9 +48,12 @@ public class User {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "class_id") // FK column in users table
 	private ClassEntity studentClass;
-	
-	@OneToMany(mappedBy = "user",cascade =  CascadeType.ALL, orphanRemoval = true)
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Fees> fees;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Transaction> transactions;
 
 	public User() {
 	}
@@ -242,12 +245,20 @@ public class User {
 	public void setPassoutClass(String passoutClass) {
 		this.passoutClass = passoutClass;
 	}
-	
+
 	public List<Fees> getFees() {
-	    return fees;
+		return fees;
 	}
 
 	public void setFees(List<Fees> fees) {
-	    this.fees = fees;
+		this.fees = fees;
+	}
+	
+	public List<Transaction> getTransactions() {
+	    return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+	    this.transactions = transactions;
 	}
 }
