@@ -10,7 +10,8 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.7</version>
     </parent>
-    
+
+
 
     <groupId>com.jagratichildrenvidyamandir</groupId>
     <artifactId>JagratiChildrenVidyaMandir-Project</artifactId>
@@ -119,5 +120,6 @@
             </plugin>
         </plugins>
     </build>
+    
 
 </project>
