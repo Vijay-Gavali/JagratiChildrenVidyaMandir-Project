@@ -11,6 +11,8 @@
         <version>3.5.7</version>
     </parent>
 
+
+
     <groupId>com.jagratichildrenvidyamandir</groupId>
     <artifactId>JagratiChildrenVidyaMandir-Project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -24,6 +26,10 @@
     </properties>
 
     <dependencies>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
 
         <!-- Spring Web -->
         <dependency>
@@ -57,6 +63,39 @@
             <scope>compile</scope>
         </dependency>
 
+
+        <!-- Tess4J for OCR -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>5.4.0</version>
+        </dependency>
+
+        <!-- JNA dependencies required by Tess4J -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>5.13.0</version>
+        </dependency>
+
+        <!-- Apache Tika (optional, for parsing docs if needed) -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers-standard-package</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <!-- Spring Boot Test -->
         <!-- Apache POI for Excel (.xlsx) parsing -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -81,5 +120,6 @@
             </plugin>
         </plugins>
     </build>
+    
 
 </project>
