@@ -47,7 +47,6 @@ public class AttendanceController {
                 : ResponseEntity.notFound().build();
     }
     
-    // get attendance using userID
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<AttendanceDTO>> getAttendanceByUserId(@PathVariable Integer userId) {
         List<AttendanceDTO> list = attendanceService.getAttendanceByUserId(userId);

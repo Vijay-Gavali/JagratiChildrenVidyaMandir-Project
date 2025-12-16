@@ -50,8 +50,6 @@ public class TeacherController {
         return ResponseEntity.ok("Teacher deleted successfully.");
     }
 
-   
-
     // Mark attendance
     @PostMapping("/mark")
     public ResponseEntity<String> markAttendance(@RequestBody AttendanceDTO dto) {
