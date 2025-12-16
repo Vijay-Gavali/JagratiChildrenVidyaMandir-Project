@@ -1,6 +1,7 @@
 package com.jagratichildrenvidyamandir.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class TeacherDTO {
     private Integer teacherId;
@@ -16,7 +17,9 @@ public class TeacherDTO {
     private String address;
     private String aprNo;   // ⭐ NEW FIELD
     private String documentPath;
+   
 
+    private List<Integer> classIds;
 
     // ---------- Getters & Setters ----------
     public Integer getTeacherId() { return teacherId; }
@@ -56,5 +59,9 @@ public class TeacherDTO {
     public void setAprNo(String aprNo) { this.aprNo = aprNo; }  // ⭐ NEW SETTER
     public String getDocumentPath() { return documentPath; }
     public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
+    public List<Integer> getClassIds() { return classIds; }
+    public void setClassIds(List<Integer> classIds) { this.classIds = classIds; }
+    
+    
 
 }

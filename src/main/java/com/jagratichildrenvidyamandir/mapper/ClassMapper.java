@@ -21,17 +21,6 @@ public class ClassMapper {
 		dto.setClassId(entity.getClassId());
 		dto.setClassName(entity.getClassName());
 		dto.setFees(entity.getFees());
-		return dto;
-	}
-
-	public ClassDTO toFullDto(ClassEntity entity) {
-		if (entity == null)
-			return null;
-
-		ClassDTO dto = new ClassDTO();
-		dto.setClassId(entity.getClassId());
-		dto.setClassName(entity.getClassName());
-		dto.setFees(entity.getFees());
 
 		// map users → students list
 		if (entity.getUsers() != null) {
@@ -60,7 +49,8 @@ public class ClassMapper {
 		entity.setFees(dto.getFees());
 	}
 
-// ---------------------- USER MAPPING ----------------------
+	// ---------------------- USER MAPPING ----------------------
+
 	private UserDTO userToDto(User user) {
 		if (user == null)
 			return null;
@@ -78,6 +68,7 @@ public class ClassMapper {
 		dto.setTcNumber(user.getTcNumber());
 
 		// optional: add class name if needed
+
 		return dto;
 	}
 }
