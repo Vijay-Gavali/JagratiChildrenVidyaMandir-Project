@@ -122,7 +122,6 @@ public class TeacherService {
         if (!existing.getPhone().equals(dto.getPhone()) && teacherRepository.existsByPhone(dto.getPhone()))
             throw new RuntimeException("Phone already exists!");
 
-       existing.setClassId(dto.getClassId());
         existing.setName(dto.getName());
         existing.setEmail(dto.getEmail());
         existing.setPhone(dto.getPhone());

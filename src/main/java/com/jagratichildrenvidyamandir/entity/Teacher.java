@@ -9,89 +9,135 @@ import java.util.List;
 @Table(name = "teachers")
 public class Teacher {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer teacherId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer teacherId;
 
-    private String name;
+	private String name;
 
-    @Column(unique = true)
-    private String email;
+	@Column(unique = true)
+	private String email;
 
-    @Column(unique = true)
-    private String phone;
+	@Column(unique = true)
+	private String phone;
 
-    private String password;
-    private String educationalDetails;
-    private Integer yearOfExperience;
-    private LocalDate dateOfBirth;
-    private String aadharNo;
-    private String address;
-    private Integer classId;
-    // ⭐ New field to store uploaded document/photo path
-    private String documentPath;
-    private String aprNo; 
+	private String password;
+	private String educationalDetails;
+	private Integer yearOfExperience;
+	private LocalDate dateOfBirth;
+	private String aadharNo;
+	private String address;
+	// ⭐ New field to store uploaded document/photo path
+	private String documentPath;
+	private String aprNo;
 
-    // Store multiple class IDs like "1,2,3"
-    @Column(name = "class_ids")
-    private String classIds;
+	// Store multiple class IDs like "1,2,3"
+	@Column(name = "class_ids")
+	private String classIds;
 
-    
-    
+	// ---------- Getters & Setters ----------
+	public Integer getTeacherId() {
+		return teacherId;
+	}
 
-    // ---------- Getters & Setters ----------
-    public Integer getTeacherId() { return teacherId; }
-    public void setTeacherId(Integer teacherId) { this.teacherId = teacherId; }
+	public void setTeacherId(Integer teacherId) {
+		this.teacherId = teacherId;
+	}
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+	public String getName() {
+		return name;
+	}
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getEducationalDetails() { return educationalDetails; }
-    public void setEducationalDetails(String educationalDetails) { this.educationalDetails = educationalDetails; }
+	public String getPhone() {
+		return phone;
+	}
 
-    public Integer getYearOfExperience() { return yearOfExperience; }
-    public void setYearOfExperience(Integer yearOfExperience) { this.yearOfExperience = yearOfExperience; }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public LocalDate getDateOfBirth() { return dateOfBirth; }
-    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getAadharNo() { return aadharNo; }
-    public void setAadharNo(String aadharNo) { this.aadharNo = aadharNo; }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+	public String getEducationalDetails() {
+		return educationalDetails;
+	}
 
-   public Integer getClassId() {
-       return classId;
-   }
+	public void setEducationalDetails(String educationalDetails) {
+		this.educationalDetails = educationalDetails;
+	}
 
-    public void setClassId(Integer classId) {
-       this.classId = classId;
-    }
-    public String getDocumentPath() { return documentPath; }
-    public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
+	public Integer getYearOfExperience() {
+		return yearOfExperience;
+	}
 
-    public String getAprNo() { return aprNo; }            // ⭐ NEW GETTER
-    public void setAprNo(String aprNo) { this.aprNo = aprNo; }  // ⭐ NEW SETTER
-    public String getClassIds() {
-        return classIds;
-    }
+	public void setYearOfExperience(Integer yearOfExperience) {
+		this.yearOfExperience = yearOfExperience;
+	}
 
-    public void setClassIds(String classIds) {
-        this.classIds = classIds;
-    }
-  
-   
-	
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
 
-    
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getAadharNo() {
+		return aadharNo;
+	}
+
+	public void setAadharNo(String aadharNo) {
+		this.aadharNo = aadharNo;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getDocumentPath() {
+		return documentPath;
+	}
+
+	public void setDocumentPath(String documentPath) {
+		this.documentPath = documentPath;
+	}
+
+	public String getAprNo() {
+		return aprNo;
+	} // ⭐ NEW GETTER
+
+	public void setAprNo(String aprNo) {
+		this.aprNo = aprNo;
+	} // ⭐ NEW SETTER
+
+	public String getClassIds() {
+		return classIds;
+	}
+
+	public void setClassIds(String classIds) {
+		this.classIds = classIds;
+	}
+
 }
