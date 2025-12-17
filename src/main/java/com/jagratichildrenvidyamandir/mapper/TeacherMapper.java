@@ -27,7 +27,6 @@ public class TeacherMapper {
         dto.setAadharNo(teacher.getAadharNo());
         dto.setAprNo(teacher.getAprNo());
         dto.setAddress(teacher.getAddress());
-        dto.setDocumentPath(teacher.getDocumentPath());
 
         // Convert comma-separated string to List<Integer>
         if (teacher.getClassIds() != null && !teacher.getClassIds().isEmpty()) {
@@ -56,7 +55,6 @@ public class TeacherMapper {
         teacher.setAadharNo(dto.getAadharNo());
         teacher.setAprNo(dto.getAprNo());
         teacher.setAddress(dto.getAddress());
-        teacher.setDocumentPath(dto.getDocumentPath());
 
         // Convert List<Integer> to comma-separated string
         if (dto.getClassIds() != null && !dto.getClassIds().isEmpty()) {

@@ -1,6 +1,7 @@
 package com.jagratichildrenvidyamandir.dto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherDTO {
@@ -18,7 +19,7 @@ public class TeacherDTO {
     private String aprNo;   // ⭐ NEW FIELD
     private String documentPath;
    
-
+    
     private List<Integer> classIds;
 
     // ---------- Getters & Setters ----------

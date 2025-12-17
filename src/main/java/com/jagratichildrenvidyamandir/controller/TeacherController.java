@@ -24,38 +24,41 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
 
     private final TeacherService teacherService;
     private final AttendanceService attendanceService;
-    @Autowired
-    private ClassService classService;
+    private final ClassService classService;
     private final UserService service;
-	private final UserExcelService excelService;
-	 private final MarksService marksService;
+    private final UserExcelService excelService;
+    private final MarksService marksService;
+    private final String BASE_DIR = "uploads/teachers/";
 
 
-    public TeacherController(TeacherService teacherService, AttendanceService attendanceService,ClassService classService,UserService service,UserExcelService excelService,MarksService marksService) {
+    @Autowired
+    public TeacherController(TeacherService teacherService, AttendanceService attendanceService,
+                             ClassService classService, UserService service,
+                             UserExcelService excelService, MarksService marksService) {
         this.teacherService = teacherService;
         this.attendanceService = attendanceService;
-        this. classService=classService;
-        this.service=service;
-        this.excelService= excelService;
-        this.marksService= marksService;
+        this.classService = classService;
+        this.service = service;
+        this.excelService = excelService;
+        this.marksService = marksService;
     }
-    
-   
 
-
+    // ---------------- Teacher CRUD ----------------
     @PostMapping("/register")
     public ResponseEntity<TeacherDTO> registerTeacher(@RequestBody TeacherDTO dto) {
         return new ResponseEntity<>(teacherService.registerTeacher(dto), HttpStatus.CREATED);
     }
+  
 
-    @GetMapping("/all")
+
+
+    @GetMapping("/all-teachers")
     public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
         return ResponseEntity.ok(teacherService.getAllTeachers());
     }
@@ -76,61 +79,95 @@ public class TeacherController {
         return ResponseEntity.ok("Teacher deleted successfully.");
     }
 
-   
-
-    // Mark attendance
-    @PostMapping("/mark")
+    // ---------------- Teacher Attendance ----------------
+    @PostMapping("/mark-attendance")
     public ResponseEntity<String> markAttendance(@RequestBody AttendanceDTO dto) {
         attendanceService.createAttendance(dto);
         return ResponseEntity.ok("Attendance marked successfully!");
     }
-    
-   
 
-    // ------------------- Assign classes later -------------------
-    @PostMapping("/{teacherId}/assign-classes")
-    public ResponseEntity<String> assignClasses(
-            @PathVariable Integer teacherId,
-            @RequestBody List<Integer> classIds) {
-
-        Teacher updated = teacherService.assignClassesToTeacher(teacherId, classIds);
-        return ResponseEntity.ok("Classes assigned successfully to teacher ID: " + updated.getTeacherId());
-    }
-
-    // ------------------- Get classes of a teacher -------------------
-    @GetMapping("/{teacherId}/classes")
-    public ResponseEntity<List<ClassDTO>> getClassesByTeacher(@PathVariable Integer teacherId) {
-        List<ClassDTO> classes = teacherService.getClassesByTeacher(teacherId);
-        return ResponseEntity.ok(classes);
-    }
-    //----getstudentlistt
-    @GetMapping("/{teacherId}/students")
-    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(@PathVariable Integer teacherId) {
-        return ResponseEntity.ok(teacherService.getStudentsByTeacher(teacherId));
-    }
-    @GetMapping("/{id}/oneattendave")
-    public ResponseEntity<AttendanceDTO> get(@PathVariable Integer id) {
+    @GetMapping("/attendance/{id}")
+    public ResponseEntity<AttendanceDTO> getAttendanceById(@PathVariable Integer id) {
         AttendanceDTO dto = attendanceService.getAttendanceById(id);
         return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/getallmarkedattendance")
-    public List<AttendanceDTO> getAll() {
-        return attendanceService.getAllAttendance();
+    @GetMapping("/all-marked-attendance")
+    public ResponseEntity<List<AttendanceDTO>> getAllAttendance() {
+        return ResponseEntity.ok(attendanceService.getAllAttendance());
     }
-    ////TeacherDocumentUpload
-    ///
-    @PostMapping("/uploadExcel")
-    public ResponseEntity<UploadSummaryDTO> uploadExcel(
-            @RequestParam("file") MultipartFile file) {
 
+    // ---------------- Classes & Students ----------------
+    @PostMapping("/{teacherId}/assign-classes")
+    public ResponseEntity<String> assignClasses(@PathVariable Integer teacherId, @RequestBody List<Integer> classIds) {
+        Teacher updated = teacherService.assignClassesToTeacher(teacherId, classIds);
+        return ResponseEntity.ok("Classes assigned successfully to teacher ID: " + updated.getTeacherId());
+    }
+
+    @GetMapping("/{teacherId}/classes")
+    public ResponseEntity<List<ClassDTO>> getClassesByTeacher(@PathVariable Integer teacherId) {
+        return ResponseEntity.ok(teacherService.getClassesByTeacher(teacherId));
+    }
+
+    @GetMapping("/{teacherId}/students")
+    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(@PathVariable Integer teacherId) {
+        return ResponseEntity.ok(teacherService.getStudentsByTeacher(teacherId));
+    }
+
+    // ---------------- Teacher Login ----------------
+    @PostMapping("/login")
+    public ResponseEntity<Teacher> login(@RequestBody LoginRequest req) {
+        Teacher teacher = teacherService.authenticateTeacher(req.getPhone(), req.getPassword());
+        if (teacher == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok().header("Message", "Teacher login successfully").body(teacher);
+    }
+
+    public static class LoginRequest {
+        private String phone;
+        private String password;
+
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+    }
+
+    // ---------------- Marks Management ----------------
+    @PostMapping("/marks/add")
+    public ResponseEntity<Marks> addMarks(@RequestBody Marks marks) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(marksService.saveMarks(marks));
+    }
+
+    @PutMapping("/marks/update/{id}")
+    public ResponseEntity<Marks> updateMarks(@PathVariable Integer id, @RequestBody Marks marks) {
+        return ResponseEntity.ok(marksService.updateMarks(id, marks));
+    }
+
+    @GetMapping("/marks/all")
+    public ResponseEntity<List<MarksDTO>> getAllMarks() {
+        return ResponseEntity.ok(marksService.getAllMarks());
+    }
+
+    @GetMapping("/marks/student/{studentId}")
+    public ResponseEntity<List<MarksDTO>> getMarksByStudent(@PathVariable Integer studentId) {
+        return ResponseEntity.ok(marksService.getMarksByStudent(studentId));
+    }
+
+    @GetMapping("/marks/class/{classId}")
+    public ResponseEntity<List<MarksDTO>> getMarksByClass(@PathVariable Integer classId) {
+        return ResponseEntity.ok(marksService.getMarksByClass(classId));
+    }
+
+    // ---------------- Upload Excel ----------------
+    @PostMapping("/upload-excel")
+    public ResponseEntity<UploadSummaryDTO> uploadExcel(@RequestParam("file") MultipartFile file) {
         UploadSummaryDTO dto = new UploadSummaryDTO();
-
         if (file == null || file.isEmpty()) {
             dto.addError("No file uploaded");
             return ResponseEntity.badRequest().body(dto);
         }
-
         try {
             return ResponseEntity.ok(excelService.importFromExcel(file));
         } catch (Exception e) {
@@ -138,74 +175,4 @@ public class TeacherController {
             return ResponseEntity.internalServerError().body(dto);
         }
     }
-
-
-///loginteacher
-///
-    ///@PostMapping("/login")
-    //public ResponseEntity<Teacher> login(@RequestBody LoginRequest req) {
-       // Teacher teacher = teacherService.authenticateTeacher(req.getPhone(), req.getPassword());
-      //  return teacher == null ? ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(teacher);
-    //}
-    @PostMapping("/login")
-    public ResponseEntity<Teacher> login(@RequestBody LoginRequest req) {
-        Teacher teacher = teacherService.authenticateTeacher(req.getPhone(), req.getPassword());
-
-        if (teacher == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        return ResponseEntity
-                .ok()
-                .header("Message", "Teacher login successfully")
-                .body(teacher);
-    }
-
-
-	public static class LoginRequest {
-		private String phone;
-		private String password;
-
-		public String getPhone() {
-			return phone;
-		}
-
-		public void setPhone(String phone) {
-			this.phone = phone;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
 }
-	///addstude nts markk yeary monthly and quatrlyy
-	///
-	@PostMapping("/add")
-    public Marks addMarks(@RequestBody Marks marks) {
-
-        // Calculate total marks and grade
-        marks.calculate();
-
-        // Auto-set today's date
-        marks.setCreatedDate(new Date());
-
-        // Save to DB
-        return marksService.saveMarks(marks);
-    }
-
-	    @PutMapping("/update/{id}")
-	    public Marks updateMarks(@PathVariable Integer id, @RequestBody Marks marks) {
-	        return marksService.updateMarks(id, marks);
-	    }
-
-	    @GetMapping("/allstudentsMark")
-	    public List<MarksDTO> getAllMarks() {
-	        return marksService.getAllMarks();
-	    }
-
-}
-

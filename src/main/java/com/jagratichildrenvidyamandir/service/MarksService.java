@@ -17,11 +17,13 @@ public class MarksService {
         this.marksRepository = marksRepository;
     }
 
+    // Save new marks
     public Marks saveMarks(Marks marks) {
-        marks.calculate();
+        marks.calculate(); // auto-calc total & grade
         return marksRepository.save(marks);
     }
 
+    // Update existing marks
     public Marks updateMarks(Integer id, Marks marks) {
         Marks existing = marksRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Marks Not Found"));
@@ -47,6 +49,15 @@ public class MarksService {
         return marksRepository.save(existing);
     }
 
+    // Fetch all marks
+    public List<MarksDTO> getAllMarks() {
+        return marksRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Fetch marks by student
     public List<MarksDTO> getMarksByStudent(Integer studentId) {
         return marksRepository.findByStudentId(studentId)
                 .stream()
@@ -54,9 +65,17 @@ public class MarksService {
                 .collect(Collectors.toList());
     }
 
+    // Fetch marks by class
+    public List<MarksDTO> getMarksByClass(Integer classId) {
+        return marksRepository.findByClassId(classId)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Convert entity to DTO
     private MarksDTO toDTO(Marks m) {
         MarksDTO dto = new MarksDTO();
-
         dto.setMarksId(m.getMarksId());
         dto.setTeacherId(m.getTeacherId());
         dto.setClassId(m.getClassId());
@@ -65,7 +84,6 @@ public class MarksService {
         dto.setMonth(m.getMonth());
         dto.setQuarter(m.getQuarter());
         dto.setYear(m.getYear());
-
         dto.setMarathi(m.getMarathi());
         dto.setHindi(m.getHindi());
         dto.setEnglish(m.getEnglish());
@@ -74,17 +92,8 @@ public class MarksService {
         dto.setScience(m.getScience());
         dto.setHistory(m.getHistory());
         dto.setGeography(m.getGeography());
-
         dto.setTotalMarks(m.getTotalMarks());
         dto.setGrade(m.getGrade());
-
         return dto;
     }
-    public List<MarksDTO> getAllMarks() {
-        return marksRepository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
-
 }

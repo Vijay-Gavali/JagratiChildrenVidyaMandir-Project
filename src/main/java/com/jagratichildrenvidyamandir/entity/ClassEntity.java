@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jagratichildrenvidyamandir.dto.TeacherDTO;
+
 @Entity
 @Table(name = "classes")
 public class ClassEntity  {
@@ -25,6 +27,8 @@ public class ClassEntity  {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+    // Teachers assigned to this class
+   
 
     // ---------- Constructors ----------
     public ClassEntity() {}

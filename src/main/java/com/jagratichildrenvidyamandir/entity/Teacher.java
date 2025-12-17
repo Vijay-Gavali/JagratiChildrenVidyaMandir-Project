@@ -27,9 +27,9 @@ public class Teacher {
     private LocalDate dateOfBirth;
     private String aadharNo;
     private String address;
-    private Integer classId;
+    
     // ⭐ New field to store uploaded document/photo path
-    private String documentPath;
+    
     private String aprNo; 
 
     // Store multiple class IDs like "1,2,3"
@@ -70,15 +70,8 @@ public class Teacher {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-   public Integer getClassId() {
-       return classId;
-   }
-
-    public void setClassId(Integer classId) {
-       this.classId = classId;
-    }
-    public String getDocumentPath() { return documentPath; }
-    public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
+  
+    
 
     public String getAprNo() { return aprNo; }            // ⭐ NEW GETTER
     public void setAprNo(String aprNo) { this.aprNo = aprNo; }  // ⭐ NEW SETTER

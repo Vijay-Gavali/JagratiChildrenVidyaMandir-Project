@@ -6,15 +6,22 @@ import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.Teacher;
 import com.jagratichildrenvidyamandir.entity.User;
+import com.jagratichildrenvidyamandir.enums.DocumentType;
 import com.jagratichildrenvidyamandir.mapper.TeacherMapper;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import java.util.Arrays;
@@ -31,12 +38,15 @@ public class TeacherService {
     @Autowired
     private TeacherMapper teacherMapper;
     @Autowired private ClassRepository classRepository;
+    private final TeacherDocumentService documentService;
+    private final String UPLOAD_DIR = "uploads/teachers/";
     
 
-    public TeacherService(TeacherRepository teacherRepository, ClassRepository classRepository, TeacherMapper teacherMapper) {
+    public TeacherService(TeacherRepository teacherRepository, ClassRepository classRepository, TeacherMapper teacherMapper, TeacherDocumentService documentService) {
         this.teacherRepository = teacherRepository;
         this.classRepository = classRepository;
         this.teacherMapper = teacherMapper;
+        this.documentService = documentService;
     }
 
  // Register teacher
@@ -122,7 +132,6 @@ public class TeacherService {
         if (!existing.getPhone().equals(dto.getPhone()) && teacherRepository.existsByPhone(dto.getPhone()))
             throw new RuntimeException("Phone already exists!");
 
-       existing.setClassId(dto.getClassId());
         existing.setName(dto.getName());
         existing.setEmail(dto.getEmail());
         existing.setPhone(dto.getPhone());
@@ -186,9 +195,44 @@ public class TeacherService {
                 .orElse(null);
     }
 
+    // ---------------- Teacher Registration with Documents ----------------
+    // Register teacher with documents
+    public TeacherDTO registerTeacherWithDocuments(TeacherDTO dto,
+            MultipartFile photo,
+            MultipartFile aadhar,
+            MultipartFile pan,
+            MultipartFile degree,
+            MultipartFile certificate) throws IOException {
+
+// 1️⃣ Save teacher entity
+Teacher teacher = teacherMapper.toEntity(dto);
+Teacher savedTeacher = teacherRepository.save(teacher);
+
+// 2️⃣ Folder structure
+String baseFolder = "uploads/teachers/" + savedTeacher.getTeacherId();
+Files.createDirectories(Paths.get(baseFolder + "/TEACHER_PHOTO"));
+Files.createDirectories(Paths.get(baseFolder + "/TEACHER_AADHAR"));
+Files.createDirectories(Paths.get(baseFolder + "/TEACHER_PAN"));
+Files.createDirectories(Paths.get(baseFolder + "/TEACHER_DEGREE"));
+Files.createDirectories(Paths.get(baseFolder + "/TEACHER_CERTIFICATE"));
+
+// 3️⃣ Save files
+if (photo != null) {
+photo.transferTo(Paths.get(baseFolder + "/TEACHER_PHOTO/" + photo.getOriginalFilename()));
+}
+if (aadhar != null) {
+aadhar.transferTo(Paths.get(baseFolder + "/TEACHER_AADHAR/" + aadhar.getOriginalFilename()));
+}
+if (pan != null) {
+pan.transferTo(Paths.get(baseFolder + "/TEACHER_PAN/" + pan.getOriginalFilename()));
+}
+if (degree != null) {
+degree.transferTo(Paths.get(baseFolder + "/TEACHER_DEGREE/" + degree.getOriginalFilename()));
+}
+if (certificate != null) {
+certificate.transferTo(Paths.get(baseFolder + "/TEACHER_CERTIFICATE/" + certificate.getOriginalFilename()));
 }
 
-
-    
-
-
+return teacherMapper.toDTO(savedTeacher);
+}
+}
