@@ -25,7 +25,8 @@ public class UserService {
 	public UserDTO createUser(UserDTO dto) {
 		if (dto == null)
 			return null;
-		// uniqueness checks
+		
+		// Uniqueness checks for existing fields
 		if (dto.getAdmissionNo() != null && repository.existsByAdmissionNo(dto.getAdmissionNo()))
 			return null;
 		if (dto.getEmail() != null && repository.existsByEmail(dto.getEmail()))
@@ -35,7 +36,11 @@ public class UserService {
 		if (dto.getStudentAadharNo() != null && repository.existsByStudentAadharNo(dto.getStudentAadharNo()))
 			return null;
 		
-		dto.getStudentClassId();
+		// NEW: Uniqueness checks for new fields
+		if (dto.getApaarId() != null && repository.existsByApaarId(dto.getApaarId()))
+			return null;
+		if (dto.getPanNo() != null && repository.existsByPanNo(dto.getPanNo()))
+			return null;
 		
 		User entity = mapper.toEntity(dto);
 		entity.setUserId(null);
@@ -60,6 +65,7 @@ public class UserService {
 			return null;
 		User existing = opt.get();
 
+		// Check uniqueness for existing fields (ignoring current record)
 		if (dto.getAdmissionNo() != null && !dto.getAdmissionNo().equals(existing.getAdmissionNo())
 				&& repository.existsByAdmissionNo(dto.getAdmissionNo()))
 			return null;
@@ -71,6 +77,14 @@ public class UserService {
 			return null;
 		if (dto.getStudentAadharNo() != null && !dto.getStudentAadharNo().equals(existing.getStudentAadharNo())
 				&& repository.existsByStudentAadharNo(dto.getStudentAadharNo()))
+			return null;
+
+		// NEW: Check uniqueness for new fields (ignoring current record)
+		if (dto.getApaarId() != null && !dto.getApaarId().equals(existing.getApaarId())
+				&& repository.existsByApaarId(dto.getApaarId()))
+			return null;
+		if (dto.getPanNo() != null && !dto.getPanNo().equals(existing.getPanNo())
+				&& repository.existsByPanNo(dto.getPanNo()))
 			return null;
 
 		mapper.updateEntityFromDto(dto, existing);
@@ -86,10 +100,11 @@ public class UserService {
 		return true;
 	}
 
-	// AUTH: student login by studentPhone + password (plain)
-	public UserDTO authenticateStudent(String phone, String password) {
-		return repository.findByStudentPhone(phone)
-				.filter(u -> u.getPassword() != null && u.getPassword().equals(password)).map(mapper::toDto)
+	// AUTH: Changed from phone to admissionNo
+	public UserDTO authenticateStudent(String admissionNo, String password) {
+		return repository.findByAdmissionNo(admissionNo)
+				.filter(u -> u.getPassword() != null && u.getPassword().equals(password))
+				.map(mapper::toDto)
 				.orElse(null);
 	}
 }
