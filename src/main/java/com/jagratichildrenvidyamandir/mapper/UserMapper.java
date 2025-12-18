@@ -26,12 +26,19 @@ public class UserMapper {
         dto.setGender(entity.getGender());
         dto.setStudentAadharNo(entity.getStudentAadharNo());
         dto.setParentAadharNo(entity.getParentAadharNo());
-        // map relation as id only:
         dto.setStudentClassId(entity.getStudentClass() != null ? entity.getStudentClass().getClassId() : null);
         dto.setRte(entity.getRte());
         dto.setTcNumber(entity.getTcNumber());
         dto.setSsmId(entity.getSsmId());
         dto.setPassoutClass(entity.getPassoutClass());
+        
+        // Mapping New Fields
+        dto.setCaste(entity.getCaste());
+        dto.setSubCaste(entity.getSubCaste());
+        dto.setReligion(entity.getReligion());
+        dto.setApaarId(entity.getApaarId());
+        dto.setPanNo(entity.getPanNo());
+        
         return dto;
     }
 
@@ -54,19 +61,24 @@ public class UserMapper {
         entity.setStudentAadharNo(dto.getStudentAadharNo());
         entity.setParentAadharNo(dto.getParentAadharNo());
 
-        // map class id -> ClassEntity (reference by id)
         if (dto.getStudentClassId() != null) {
             ClassEntity cls = new ClassEntity();
             cls.setClassId(dto.getStudentClassId());
             entity.setStudentClass(cls);
-        } else {
-            entity.setStudentClass(null);
         }
 
         entity.setRte(dto.getRte());
         entity.setTcNumber(dto.getTcNumber());
         entity.setSsmId(dto.getSsmId());
         entity.setPassoutClass(dto.getPassoutClass());
+        
+        // Mapping New Fields
+        entity.setCaste(dto.getCaste());
+        entity.setSubCaste(dto.getSubCaste());
+        entity.setReligion(dto.getReligion());
+        entity.setApaarId(dto.getApaarId());
+        entity.setPanNo(dto.getPanNo());
+        
         return entity;
     }
 
@@ -87,7 +99,6 @@ public class UserMapper {
         entity.setStudentAadharNo(dto.getStudentAadharNo());
         entity.setParentAadharNo(dto.getParentAadharNo());
 
-        // CORRECT mapping: use studentClassId from DTO
         if (dto.getStudentClassId() != null) {
             ClassEntity cls = new ClassEntity();
             cls.setClassId(dto.getStudentClassId());
@@ -100,5 +111,12 @@ public class UserMapper {
         entity.setTcNumber(dto.getTcNumber());
         entity.setSsmId(dto.getSsmId());
         entity.setPassoutClass(dto.getPassoutClass());
+        
+        // Mapping New Fields
+        entity.setCaste(dto.getCaste());
+        entity.setSubCaste(dto.getSubCaste());
+        entity.setReligion(dto.getReligion());
+        entity.setApaarId(dto.getApaarId());
+        entity.setPanNo(dto.getPanNo());
     }
 }
