@@ -17,8 +17,6 @@ public class TransactionMapper {
 		Transaction transaction = new Transaction();
 		transaction.setAmount(dto.getAmount());
 		transaction.setPaymentMode(dto.getPaymentMode());
-		transaction.setBankName(dto.getBankName());
-		transaction.setUpiId(dto.getUpiId());
 		transaction.setDescription(dto.getDescription());
 		transaction.setRemarks(dto.getRemarks());
 
@@ -33,12 +31,10 @@ public class TransactionMapper {
 
 		TransactionDTO dto = new TransactionDTO();
 		dto.setId(entity.getId());
-		dto.setTransactionId(entity.getTransactionId());
 		dto.setAmount(entity.getAmount());
 		dto.setPaymentDate(entity.getPaymentDate());
 		dto.setPaymentMode(entity.getPaymentMode());
-		dto.setBankName(entity.getBankName());
-		dto.setUpiId(entity.getUpiId());
+;
 		dto.setDescription(entity.getDescription());
 		dto.setStatus(entity.getStatus());
 		dto.setCreatedAt(entity.getCreatedAt());
@@ -74,12 +70,7 @@ public class TransactionMapper {
 		if (dto.getPaymentMode() != null) {
 			entity.setPaymentMode(dto.getPaymentMode());
 		}
-		if (dto.getBankName() != null) {
-			entity.setBankName(dto.getBankName());
-		}
-		if (dto.getUpiId() != null) {
-			entity.setUpiId(dto.getUpiId());
-		}
+
 		if (dto.getDescription() != null) {
 			entity.setDescription(dto.getDescription());
 		}

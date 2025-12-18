@@ -5,12 +5,9 @@ import java.time.LocalDateTime;
 public class TransactionDTO {
 
 	private Long id;
-	private String transactionId;
 	private Double amount;
 	private LocalDateTime paymentDate;
 	private String paymentMode;
-	private String bankName;
-	private String upiId;
 	private String description;
 	private String status;
 	private LocalDateTime createdAt;
@@ -27,14 +24,6 @@ public class TransactionDTO {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getTransactionId() {
-		return transactionId;
-	}
-
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
 	}
 
 	public Double getAmount() {
@@ -59,22 +48,6 @@ public class TransactionDTO {
 
 	public void setPaymentMode(String paymentMode) {
 		this.paymentMode = paymentMode;
-	}
-
-	public String getBankName() {
-		return bankName;
-	}
-
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
-	}
-
-	public String getUpiId() {
-		return upiId;
-	}
-
-	public void setUpiId(String upiId) {
-		this.upiId = upiId;
 	}
 
 	public String getDescription() {

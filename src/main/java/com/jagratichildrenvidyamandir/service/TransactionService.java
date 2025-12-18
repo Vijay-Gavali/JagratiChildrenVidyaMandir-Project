@@ -82,14 +82,6 @@ public class TransactionService {
 		return transactionMapper.toDto(transaction);
 	}
 
-	public TransactionDTO getTransactionByTransactionId(String transactionId) {
-		Transaction transaction = transactionRepository.findByTransactionId(transactionId);
-		if (transaction == null) {
-			throw new RuntimeException("Transaction not found with ID: " + transactionId);
-		}
-		return transactionMapper.toDto(transaction);
-	}
-
 	@Transactional
 	public TransactionDTO updateTransactionStatus(Long id, String status) {
 		Transaction transaction = transactionRepository.findById(id)

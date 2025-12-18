@@ -12,7 +12,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
 	List<Transaction> findByPaymentMode(String paymentMode);
 	List<Transaction> findByStatus(String status);
-	Transaction findByTransactionId(String transactionId);
 	Transaction findByReceiptNumber(String receiptNumber);
 	
     List<Transaction> findByUserUserId(Integer userId);

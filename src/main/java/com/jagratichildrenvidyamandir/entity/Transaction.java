@@ -11,9 +11,6 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "transaction_id", unique = true, nullable = false)
-	private String transactionId;
-
 	@Column(nullable = false)
 	private Double amount;
 
@@ -21,13 +18,7 @@ public class Transaction {
 	private LocalDateTime paymentDate;
 
 	@Column(name = "payment_mode", nullable = false)
-	private String paymentMode; // CASH, CARD, ONLINE, UPI, etc.
-
-	@Column(name = "bank_name")
-	private String bankName;
-
-	@Column(name = "upi_id")
-	private String upiId;
+	private String paymentMode;
 
 	@Column(nullable = false)
 	private String description;
@@ -60,11 +51,6 @@ public class Transaction {
 		createdAt = LocalDateTime.now();
 		updatedAt = LocalDateTime.now();
 
-		// Generate transaction ID if not provided
-		if (transactionId == null) {
-			transactionId = generateTransactionId();
-		}
-
 		// Generate receipt number if not provided
 		if (receiptNumber == null) {
 			receiptNumber = generateReceiptNumber();
@@ -74,13 +60,6 @@ public class Transaction {
 	@PreUpdate
 	protected void onUpdate() {
 		updatedAt = LocalDateTime.now();
-	}
-
-	private String generateTransactionId() {
-		String prefix = "TXN";
-		String timestamp = String.valueOf(System.currentTimeMillis());
-		String random = String.valueOf((int) (Math.random() * 1000));
-		return prefix + timestamp.substring(timestamp.length() - 6) + random;
 	}
 
 	private String generateReceiptNumber() {
@@ -97,14 +76,6 @@ public class Transaction {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getTransactionId() {
-		return transactionId;
-	}
-
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
 	}
 
 	public Double getAmount() {
@@ -129,22 +100,6 @@ public class Transaction {
 
 	public void setPaymentMode(String paymentMode) {
 		this.paymentMode = paymentMode;
-	}
-
-	public String getBankName() {
-		return bankName;
-	}
-
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
-	}
-
-	public String getUpiId() {
-		return upiId;
-	}
-
-	public void setUpiId(String upiId) {
-		this.upiId = upiId;
 	}
 
 	public String getDescription() {
