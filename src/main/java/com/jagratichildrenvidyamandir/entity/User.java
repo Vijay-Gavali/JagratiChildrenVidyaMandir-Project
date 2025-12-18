@@ -49,6 +49,7 @@ public class User {
 	@JoinColumn(name = "class_id") // FK column in users table
 	private ClassEntity studentClass;
 	
+	
 	@OneToMany(mappedBy = "user",cascade =  CascadeType.ALL, orphanRemoval = true)
 	private List<Fees> fees;
 

@@ -14,16 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
+import com.jagratichildrenvidyamandir.dto.ClassWithTeachersDTO;
+import com.jagratichildrenvidyamandir.dto.TeacherDTO;
 import com.jagratichildrenvidyamandir.service.ClassService;
+import com.jagratichildrenvidyamandir.service.TeacherService;
 
 @RestController
 @RequestMapping("/api/classes")
 public class ClassController {
 
     private final ClassService classService;
+    private final TeacherService teacherService;
 
-    public ClassController(ClassService classService) {
+    public ClassController(ClassService classService,TeacherService teacherService) {
         this.classService = classService;
+        this.teacherService= teacherService;
     }
 
     @PostMapping("/save")
@@ -52,5 +57,12 @@ public class ClassController {
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         boolean deleted = classService.deleteClass(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+ // 🔥 CLASS → FULL TEACHER DATA
+    @GetMapping("/{classId}/teachers-full")
+    public ClassWithTeachersDTO getClassTeachersFull(
+            @PathVariable Integer classId) {
+
+        return classService.getClassWithTeachers(classId);
     }
 }

@@ -17,10 +17,41 @@ public class MarksService {
         this.marksRepository = marksRepository;
     }
 
-    // Save new marks
+    // Save new marks from entity
     public Marks saveMarks(Marks marks) {
         marks.calculate(); // auto-calc total & grade
         return marksRepository.save(marks);
+    }
+
+    // Save new marks from DTO
+    public MarksDTO saveMarks(MarksDTO dto) {
+        Marks marks = new Marks();
+        marks.setTeacherId(dto.getTeacherId());
+        marks.setClassId(dto.getClassId());
+        marks.setStudentId(dto.getStudentId());
+        marks.setExamType(dto.getExamType());
+        marks.setMonth(dto.getMonth());
+        marks.setQuarter(dto.getQuarter());
+        marks.setYear(dto.getYear());
+        marks.setMarathi(dto.getMarathi());
+        marks.setHindi(dto.getHindi());
+        marks.setEnglish(dto.getEnglish());
+        marks.setSanskrit(dto.getSanskrit());
+        marks.setMaths(dto.getMaths());
+        marks.setScience(dto.getScience());
+        marks.setHistory(dto.getHistory());
+        marks.setGeography(dto.getGeography());
+
+        marks.calculate();
+
+        Marks saved = marksRepository.save(marks);
+
+        // Update DTO with generated ID, total & grade
+        dto.setMarksId(saved.getMarksId());
+        dto.setTotalMarks(saved.getTotalMarks());
+        dto.setGrade(saved.getGrade());
+
+        return dto;
     }
 
     // Update existing marks

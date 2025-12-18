@@ -13,31 +13,31 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer teacherId;
 
+    @Column(length = 100)
     private String name;
 
     @Column(unique = true)
     private String email;
 
-    @Column(unique = true)
     private String phone;
-
     private String password;
     private String educationalDetails;
     private Integer yearOfExperience;
     private LocalDate dateOfBirth;
     private String aadharNo;
     private String address;
-    
-    // ⭐ New field to store uploaded document/photo path
-    
-    private String aprNo; 
 
-    // Store multiple class IDs like "1,2,3"
-    @Column(name = "class_ids")
-    private String classIds;
+    // Many-to-Many relationship with ClassEntity
+    @ManyToMany
+    @JoinTable(
+        name = "teacher_classes",
+        joinColumns = @JoinColumn(name = "teacher_id"),
+        inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<ClassEntity> classes = new ArrayList<>();
 
-    
-    
+    // ---------- Constructors ----------
+    public Teacher() {}
 
     // ---------- Getters & Setters ----------
     public Integer getTeacherId() { return teacherId; }
@@ -70,21 +70,6 @@ public class Teacher {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-  
-    
-
-    public String getAprNo() { return aprNo; }            // ⭐ NEW GETTER
-    public void setAprNo(String aprNo) { this.aprNo = aprNo; }  // ⭐ NEW SETTER
-    public String getClassIds() {
-        return classIds;
-    }
-
-    public void setClassIds(String classIds) {
-        this.classIds = classIds;
-    }
-  
-   
-	
-
-    
+    public List<ClassEntity> getClasses() { return classes; }
+    public void setClasses(List<ClassEntity> classes) { this.classes = classes; }
 }

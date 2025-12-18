@@ -6,28 +6,17 @@ import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.Teacher;
 import com.jagratichildrenvidyamandir.entity.User;
-import com.jagratichildrenvidyamandir.enums.DocumentType;
 import com.jagratichildrenvidyamandir.mapper.TeacherMapper;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.repository.TeacherRepository;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Service
 public class TeacherService {
@@ -36,102 +25,52 @@ public class TeacherService {
     private TeacherRepository teacherRepository;
 
     @Autowired
+    private ClassRepository classRepository;
+
+    @Autowired
     private TeacherMapper teacherMapper;
-    @Autowired private ClassRepository classRepository;
-    private final TeacherDocumentService documentService;
-    private final String UPLOAD_DIR = "uploads/teachers/";
-    
 
-    public TeacherService(TeacherRepository teacherRepository, ClassRepository classRepository, TeacherMapper teacherMapper, TeacherDocumentService documentService) {
-        this.teacherRepository = teacherRepository;
-        this.classRepository = classRepository;
-        this.teacherMapper = teacherMapper;
-        this.documentService = documentService;
-    }
 
- // Register teacher
+    // ================= REGISTER TEACHER =================
     public TeacherDTO registerTeacher(TeacherDTO dto) {
-        if (teacherRepository.existsByEmail(dto.getEmail()))
-            throw new RuntimeException("Email already exists!");
-        if (teacherRepository.existsByPhone(dto.getPhone()))
-            throw new RuntimeException("Phone number already exists!");
 
-        // Validate classes exist
-        if (dto.getClassIds() != null && !dto.getClassIds().isEmpty()) {
-            List<Integer> existingIds = classRepository.findAllById(dto.getClassIds())
-                    .stream().map(ClassEntity::getClassId).toList();
-            if (existingIds.size() != dto.getClassIds().size()) {
-                throw new RuntimeException("One or more class IDs are invalid!");
-            }
+        // Validate unique email & phone
+        if (teacherRepository.existsByEmail(dto.getEmail())) {
+            throw new RuntimeException("Email already exists!");
+        }
+        if (teacherRepository.existsByPhone(dto.getPhone())) {
+            throw new RuntimeException("Phone already exists!");
         }
 
-        Teacher teacher = teacherMapper.toEntity(dto);
+        // Fetch class entities for provided class IDs
+        List<ClassEntity> classes = classRepository.findAllById(dto.getClassIds());
+        if (classes.size() != dto.getClassIds().size()) {
+            throw new RuntimeException("One or more class IDs are invalid!");
+        }
+
+        // Map DTO to Entity
+        Teacher teacher = teacherMapper.toEntity(dto, classes);
+
+        // Save and return DTO
         Teacher saved = teacherRepository.save(teacher);
         return teacherMapper.toDTO(saved);
     }
 
-    // Assign classes later if needed
-    public Teacher assignClassesToTeacher(Integer teacherId, List<Integer> classIds) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
-
-        // Validate classes exist
-        List<Integer> existingIds = classRepository.findAllById(classIds)
-                .stream().map(ClassEntity::getClassId).toList();
-        if (existingIds.size() != classIds.size()) {
-            throw new RuntimeException("One or more class IDs are invalid!");
-        }
-
-        String classIdsCsv = classIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-        teacher.setClassIds(classIdsCsv);
-        return teacherRepository.save(teacher);
-    }
-
-    // Get assigned classes
-    public List<ClassDTO> getClassesByTeacher(Integer teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
-
-        if (teacher.getClassIds() == null || teacher.getClassIds().isEmpty()) {
-            return List.of(); // return empty list if no classes assigned
-        }
-
-        List<Integer> classIds = Arrays.stream(teacher.getClassIds().split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-
-        return classRepository.findAllById(classIds)
-                .stream()
-                .map(c -> new ClassDTO(c.getClassId(), c.getClassName()))
-                .collect(Collectors.toList());
-    }
-
-
-
-    // Get all teachers
-    public List<TeacherDTO> getAllTeachers() {
-        return teacherRepository.findAll().stream()
-                .map(teacherMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    // Get teacher by ID
-    public TeacherDTO getTeacherById(Integer id) {
-        Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Teacher not found with id " + id));
-        return teacherMapper.toDTO(teacher);
-    }
-
-    // Update teacher
+    // ================= UPDATE TEACHER =================
     public TeacherDTO updateTeacher(Integer id, TeacherDTO dto) {
+
         Teacher existing = teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Teacher not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        if (!existing.getEmail().equals(dto.getEmail()) && teacherRepository.existsByEmail(dto.getEmail()))
+        // Validate email & phone uniqueness
+        if (!existing.getEmail().equals(dto.getEmail()) && teacherRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email already exists!");
-        if (!existing.getPhone().equals(dto.getPhone()) && teacherRepository.existsByPhone(dto.getPhone()))
+        }
+        if (!existing.getPhone().equals(dto.getPhone()) && teacherRepository.existsByPhone(dto.getPhone())) {
             throw new RuntimeException("Phone already exists!");
+        }
 
+        // Update fields
         existing.setName(dto.getName());
         existing.setEmail(dto.getEmail());
         existing.setPhone(dto.getPhone());
@@ -141,98 +80,142 @@ public class TeacherService {
         existing.setDateOfBirth(dto.getDateOfBirth());
         existing.setAadharNo(dto.getAadharNo());
         existing.setAddress(dto.getAddress());
-        existing.setAprNo(dto.getAprNo());   // ⭐ ADDED
 
+        // Update classes if provided
+        if (dto.getClassIds() != null && !dto.getClassIds().isEmpty()) {
+            List<ClassEntity> classes = classRepository.findAllById(dto.getClassIds());
+            if (classes.size() != dto.getClassIds().size()) {
+                throw new RuntimeException("One or more class IDs are invalid!");
+            }
+            existing.setClasses(classes);
+        }
 
         Teacher updated = teacherRepository.save(existing);
         return teacherMapper.toDTO(updated);
     }
-  
-    // Delete teacher
+
+    
+ // ================= GET TEACHER BY ID =================
+    public TeacherDTO getTeacherById(Integer id) {
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Teacher not found with id " + id));
+        return teacherMapper.toDTO(teacher);
+    }
+    // ================= DELETE TEACHER =================
     public void deleteTeacher(Integer id) {
-        if (!teacherRepository.existsById(id))
+        if (!teacherRepository.existsById(id)) {
             throw new RuntimeException("Teacher not found with id " + id);
+        }
         teacherRepository.deleteById(id);
     }
-    //
+ // ================= GET ALL TEACHERS =================
+    public List<TeacherDTO> getAllTeachers() {
+        return teacherRepository.findAll()
+                .stream()
+                .map(teacherMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+ // ================= ASSIGN CLASSES TO TEACHER =================
+    public Teacher assignClassesToTeacher(Integer teacherId, List<Integer> classIds) {
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        // Fetch all valid classes
+        List<ClassEntity> classes = classRepository.findAllById(classIds);
+        if (classes.size() != classIds.size()) {
+            throw new RuntimeException("Invalid class id found!");
+        }
+
+        // Assign classes to teacher (Many-to-Many)
+        teacher.setClasses(classes);
+
+        // Optionally, add this teacher to each class (bidirectional)
+        for (ClassEntity cls : classes) {
+            List<Teacher> teachers = cls.getTeachers();
+            if (!teachers.contains(teacher)) {
+                teachers.add(teacher);
+                cls.setTeachers(teachers);
+            }
+        }
+
+        return teacherRepository.save(teacher);
+    }
+
+    // ================= GET CLASSES BY TEACHER =================
+    public List<ClassDTO> getClassesByTeacher(Integer teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        if (teacher.getClasses() == null || teacher.getClasses().isEmpty()) {
+            return List.of();
+        }
+
+        return teacher.getClasses()
+                .stream()
+                .map(c -> new ClassDTO(c.getClassId(), c.getClassName()))
+                .collect(Collectors.toList());
+    }
+
+    // ================= GET STUDENTS BY TEACHER =================
     public List<UserDTO> getStudentsByTeacher(Integer teacherId) {
-    	
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-    	    Teacher teacher = teacherRepository.findById(teacherId)
-    	            .orElseThrow(() -> new RuntimeException("Teacher not found"));
+        if (teacher.getClasses() == null || teacher.getClasses().isEmpty()) {
+            return new ArrayList<>();
+        }
 
-    	    String classIds = teacher.getClassIds();   // example: "1,3,5"
+        List<UserDTO> result = new ArrayList<>();
+        for (ClassEntity cls : teacher.getClasses()) {
+        	for (User student : cls.getStudents()) {
+        	    UserDTO dto = new UserDTO();
+        	    dto.setUserId(student.getUserId());
+        	    dto.setName(student.getName());
+        	    dto.setAdmissionNo(student.getAdmissionNo());
+        	    dto.setAdmissionDate(student.getAdmissionDate());
+        	    result.add(dto);
+        	}
 
-    	    if (classIds == null || classIds.isEmpty()) {
-    	        return new ArrayList<>();
-    	    }
+        }
 
-    	    List<Integer> ids = Arrays.stream(classIds.split(","))
-    	            .map(Integer::parseInt)
-    	            .toList();
+        return result;
+    }
 
-    	    List<ClassEntity> classList = classRepository.findAllById(ids);
-    	    List<UserDTO> result = new ArrayList<>();
-
-    	    for (ClassEntity cls : classList) {
-    	        for (User s : cls.getStudents()) {
-
-    	            UserDTO dto = new UserDTO();
-    	            dto.setUserId(s.getUserId());
-    	            dto.setName(s.getName());
-    	            dto.setAdmissionNo(s.getAdmissionNo());
-    	            dto.setAdmissionDate(s.getAdmissionDate());
-
-    	            result.add(dto);
-    	        }
-    	    }
-    	    return result;
-    	}
-//loginof the tecaher
+    // ================= TEACHER LOGIN =================
     public Teacher authenticateTeacher(String username, String password) {
         return teacherRepository.findByPhoneAndPassword(username, password)
                 .or(() -> teacherRepository.findByEmailAndPassword(username, password))
                 .orElse(null);
     }
+ // ================= GET TEACHERS BY CLASS ID =================
+ // Get all teachers assigned to a specific classId
 
-    // ---------------- Teacher Registration with Documents ----------------
-    // Register teacher with documents
-    public TeacherDTO registerTeacherWithDocuments(TeacherDTO dto,
-            MultipartFile photo,
-            MultipartFile aadhar,
-            MultipartFile pan,
-            MultipartFile degree,
-            MultipartFile certificate) throws IOException {
+    // Get all teachers assigned to a specific classId
+    public List<TeacherDTO> getTeachersByClassId(Integer classId) {
+        // Use the repository method you already have
+        List<Teacher> teachers = teacherRepository.findAllByClasses_ClassId(classId);
 
-// 1️⃣ Save teacher entity
-Teacher teacher = teacherMapper.toEntity(dto);
-Teacher savedTeacher = teacherRepository.save(teacher);
+        return teachers.stream().map(t -> {
+            TeacherDTO dto = new TeacherDTO();
+            dto.setTeacherId(t.getTeacherId());
+            dto.setName(t.getName());
+            dto.setEmail(t.getEmail());
+            dto.setPhone(t.getPhone());
+            dto.setPassword(t.getPassword());
+            dto.setEducationalDetails(t.getEducationalDetails());
+            dto.setYearOfExperience(t.getYearOfExperience());
+            dto.setDateOfBirth(t.getDateOfBirth());
+            dto.setAadharNo(t.getAadharNo());
+            dto.setAddress(t.getAddress());
 
-// 2️⃣ Folder structure
-String baseFolder = "uploads/teachers/" + savedTeacher.getTeacherId();
-Files.createDirectories(Paths.get(baseFolder + "/TEACHER_PHOTO"));
-Files.createDirectories(Paths.get(baseFolder + "/TEACHER_AADHAR"));
-Files.createDirectories(Paths.get(baseFolder + "/TEACHER_PAN"));
-Files.createDirectories(Paths.get(baseFolder + "/TEACHER_DEGREE"));
-Files.createDirectories(Paths.get(baseFolder + "/TEACHER_CERTIFICATE"));
+            // Map classes to classIds
+            dto.setClassIds(t.getClasses().stream()
+                    .map(c -> c.getClassId())
+                    .collect(Collectors.toList())
+            );
 
-// 3️⃣ Save files
-if (photo != null) {
-photo.transferTo(Paths.get(baseFolder + "/TEACHER_PHOTO/" + photo.getOriginalFilename()));
-}
-if (aadhar != null) {
-aadhar.transferTo(Paths.get(baseFolder + "/TEACHER_AADHAR/" + aadhar.getOriginalFilename()));
-}
-if (pan != null) {
-pan.transferTo(Paths.get(baseFolder + "/TEACHER_PAN/" + pan.getOriginalFilename()));
-}
-if (degree != null) {
-degree.transferTo(Paths.get(baseFolder + "/TEACHER_DEGREE/" + degree.getOriginalFilename()));
-}
-if (certificate != null) {
-certificate.transferTo(Paths.get(baseFolder + "/TEACHER_CERTIFICATE/" + certificate.getOriginalFilename()));
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }
 
-return teacherMapper.toDTO(savedTeacher);
-}
-}

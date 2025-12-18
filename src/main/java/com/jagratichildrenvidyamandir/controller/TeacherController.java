@@ -5,10 +5,13 @@ import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.dto.MarksDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
+
 import com.jagratichildrenvidyamandir.dto.UploadSummaryDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
+import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.Marks;
 import com.jagratichildrenvidyamandir.entity.Teacher;
+import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.service.AttendanceService;
 import com.jagratichildrenvidyamandir.service.ClassService;
 import com.jagratichildrenvidyamandir.service.MarksService;
@@ -23,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
@@ -35,48 +40,55 @@ public class TeacherController {
     private final UserExcelService excelService;
     private final MarksService marksService;
     private final String BASE_DIR = "uploads/teachers/";
+    private final ClassRepository classRepository;
 
 
     @Autowired
     public TeacherController(TeacherService teacherService, AttendanceService attendanceService,
                              ClassService classService, UserService service,
-                             UserExcelService excelService, MarksService marksService) {
+                             UserExcelService excelService, MarksService marksService,ClassRepository classRepository) {
         this.teacherService = teacherService;
         this.attendanceService = attendanceService;
         this.classService = classService;
         this.service = service;
+        this.classRepository= classRepository;
         this.excelService = excelService;
         this.marksService = marksService;
     }
 
-    // ---------------- Teacher CRUD ----------------
+
+    // ================= REGISTER =================
     @PostMapping("/register")
     public ResponseEntity<TeacherDTO> registerTeacher(@RequestBody TeacherDTO dto) {
-        return new ResponseEntity<>(teacherService.registerTeacher(dto), HttpStatus.CREATED);
+        TeacherDTO saved = teacherService.registerTeacher(dto);
+        return ResponseEntity.ok(saved);
     }
-  
-
-
-
-    @GetMapping("/all-teachers")
+    // ================= GET ALL =================
+    @GetMapping
     public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
         return ResponseEntity.ok(teacherService.getAllTeachers());
     }
 
+    // ================= GET BY ID =================
     @GetMapping("/{id}")
-    public ResponseEntity<TeacherDTO> getTeacher(@PathVariable Integer id) {
+    public ResponseEntity<TeacherDTO> getTeacherById(@PathVariable Integer id) {
         return ResponseEntity.ok(teacherService.getTeacherById(id));
     }
 
+    // ================= UPDATE =================
     @PutMapping("/{id}")
-    public ResponseEntity<TeacherDTO> updateTeacher(@PathVariable Integer id, @RequestBody TeacherDTO dto) {
+    public ResponseEntity<TeacherDTO> updateTeacher(
+            @PathVariable Integer id,
+            @RequestBody TeacherDTO dto) {
+
         return ResponseEntity.ok(teacherService.updateTeacher(id, dto));
     }
 
+    // ================= DELETE =================
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTeacher(@PathVariable Integer id) {
         teacherService.deleteTeacher(id);
-        return ResponseEntity.ok("Teacher deleted successfully.");
+        return ResponseEntity.ok("Teacher deleted successfully");
     }
 
     // ---------------- Teacher Attendance ----------------
@@ -98,10 +110,17 @@ public class TeacherController {
     }
 
     // ---------------- Classes & Students ----------------
-    @PostMapping("/{teacherId}/assign-classes")
-    public ResponseEntity<String> assignClasses(@PathVariable Integer teacherId, @RequestBody List<Integer> classIds) {
-        Teacher updated = teacherService.assignClassesToTeacher(teacherId, classIds);
-        return ResponseEntity.ok("Classes assigned successfully to teacher ID: " + updated.getTeacherId());
+   
+
+    // GET teacher info + classes by teacherId
+    // GET all teachers assigned to a classId
+    @GetMapping("/{classId}/teachers")
+    public ResponseEntity<List<TeacherDTO>> getTeachersByClass(@PathVariable Integer classId) {
+        List<TeacherDTO> teachers = teacherService.getTeachersByClassId(classId);
+        if (teachers.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(teachers);
     }
 
     @GetMapping("/{teacherId}/classes")

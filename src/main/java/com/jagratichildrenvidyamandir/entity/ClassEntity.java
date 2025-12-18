@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jagratichildrenvidyamandir.dto.TeacherDTO;
 
 @Entity
 @Table(name = "classes")
@@ -22,15 +21,16 @@ public class ClassEntity  {
     // One class has many students
     @OneToMany(mappedBy = "studentClass", fetch = FetchType.LAZY)
     private List<User> students = new ArrayList<>();
-
-    // Many classes assigned to one teacher
+ // Many classes assigned to one teacher
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-    // Teachers assigned to this class
-   
 
-    // ---------- Constructors ----------
+    // Many-to-Many with teachers
+    @ManyToMany(mappedBy = "classes")
+    private List<Teacher> teachers = new ArrayList<>();
+
+    // Constructors
     public ClassEntity() {}
 
     public ClassEntity(Integer classId, String className, Integer fees) {
@@ -39,7 +39,7 @@ public class ClassEntity  {
         this.fees = fees;
     }
 
-    // ---------- Getters & Setters ----------
+    // Getters & Setters
     public Integer getClassId() { return classId; }
     public void setClassId(Integer classId) { this.classId = classId; }
 
@@ -54,4 +54,7 @@ public class ClassEntity  {
 
     public Teacher getTeacher() { return teacher; }
     public void setTeacher(Teacher teacher) { this.teacher = teacher; }
+
+    public List<Teacher> getTeachers() { return teachers; }
+    public void setTeachers(List<Teacher> teachers) { this.teachers = teachers; }
 }
