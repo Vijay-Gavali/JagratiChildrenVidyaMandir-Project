@@ -18,17 +18,21 @@ public class FeesService {
 	private final FeesMapper mapper;
 	private final UserRepository userRepository;
 
-	public FeesService(FeesRepository repository, FeesMapper mapper, UserRepository userRepository) {
-		this.feesRepository = repository;
+	public FeesService(FeesRepository feesRepository, FeesMapper mapper, UserRepository userRepository) {
+		this.feesRepository = feesRepository;
 		this.mapper = mapper;
 		this.userRepository = userRepository;
 	}
 
 	public FeesDTO createFees(FeesDTO dto) {
+		if (!userRepository.existsById(dto.getUserId())) {
+			throw new IllegalArgumentException("User not found");
+		}
+
 		Fees entity = mapper.toEntity(dto);
-		entity.setFeesId(null); // auto increment
-		Fees saved = feesRepository.save(entity);
-		return mapper.toDto(saved);
+		entity.setFeesId(null);
+
+		return mapper.toDto(feesRepository.save(entity));
 	}
 
 	public FeesDTO getFeesById(Integer id) {
@@ -42,8 +46,7 @@ public class FeesService {
 	public FeesDTO updateFees(Integer id, FeesDTO dto) {
 		return feesRepository.findById(id).map(existing -> {
 			mapper.updateEntityFromDto(dto, existing);
-			Fees updated = feesRepository.save(existing);
-			return mapper.toDto(updated);
+			return mapper.toDto(feesRepository.save(existing));
 		}).orElse(null);
 	}
 
@@ -56,15 +59,9 @@ public class FeesService {
 
 	public List<FeesDTO> getFeesByUserId(Integer userId) {
 		if (!userRepository.existsById(userId)) {
-			throw new IllegalArgumentException("User not found with id: " + userId);
+			throw new IllegalArgumentException("User not found");
 		}
 
-		List<Fees> feesList = feesRepository.findByUserId(userId);
-
-		return feesList.stream()
-				.map(f -> new FeesDTO(f.getFeesId(), f.getAmount(), f.getDueDate(), f.getPaymentStatus(),
-						f.getPaymentDate(), f.getRemainingAmount(), f.getPaidAmount(),
-						f.getUser() != null ? f.getUser().getUserId() : null))
-				.collect(Collectors.toList());
+		return feesRepository.findByUserId(userId).stream().map(mapper::toDto).collect(Collectors.toList());
 	}
 }

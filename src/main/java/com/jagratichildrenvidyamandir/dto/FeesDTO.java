@@ -1,23 +1,13 @@
 package com.jagratichildrenvidyamandir.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.jagratichildrenvidyamandir.entity.User;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 public class FeesDTO {
 
 	private Integer feesId;
 	private BigDecimal amount;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private LocalDate dueDate;
-
 	private String paymentStatus;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private LocalDate paymentDate;
 
 	private BigDecimal remainingAmount;
 	private BigDecimal paidAmount;
@@ -27,14 +17,12 @@ public class FeesDTO {
 	public FeesDTO() {
 	}
 
-	public FeesDTO(Integer feesId, BigDecimal amount, LocalDate dueDate, String paymentStatus, LocalDate paymentDate,
+	public FeesDTO(Integer feesId, BigDecimal amount, String paymentStatus,
 			BigDecimal remainingAmount, BigDecimal paidAmount, Integer userId) {
 		super();
 		this.feesId = feesId;
 		this.amount = amount;
-		this.dueDate = dueDate;
 		this.paymentStatus = paymentStatus;
-		this.paymentDate = paymentDate;
 		this.remainingAmount = remainingAmount;
 		this.paidAmount = paidAmount;
 		this.userId = userId;
@@ -57,28 +45,12 @@ public class FeesDTO {
 		this.amount = amount;
 	}
 
-	public LocalDate getDueDate() {
-		return dueDate;
-	}
-
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = dueDate;
-	}
-
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
 
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
-	}
-
-	public LocalDate getPaymentDate() {
-		return paymentDate;
-	}
-
-	public void setPaymentDate(LocalDate paymentDate) {
-		this.paymentDate = paymentDate;
 	}
 
 	public BigDecimal getRemainingAmount() {

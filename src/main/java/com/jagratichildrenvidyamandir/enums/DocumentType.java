@@ -10,8 +10,11 @@ public enum DocumentType {
     BANK_PASSBOOK,
     SSSMID_CARD,
     TC,
-   
-    
+    PAN,
+    CASTE_CERTIFICATE,
+    // add other names you want for teacher docs, e.g.
+    HINDI_SYLLABUS,
+    MATH_SYLLABUS,
     TEACHER_PHOTO,
     TEACHER_AADHAR,
     TEACHER_PAN,

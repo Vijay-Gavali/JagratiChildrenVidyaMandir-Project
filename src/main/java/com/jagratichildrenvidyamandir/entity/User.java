@@ -1,7 +1,6 @@
 package com.jagratichildrenvidyamandir.entity;
 
 import java.util.List;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -18,9 +17,7 @@ public class User {
 	private String admissionNo;
 
 	private String admissionDate;
-
 	private String password;
-
 	private String fatherName;
 	private String motherName;
 	private String dob;
@@ -39,19 +36,32 @@ public class User {
 	private String studentAadharNo;
 
 	private String parentAadharNo;
-
 	private String rte;
 	private String tcNumber;
 	private String ssmId;
 	private String passoutClass;
 
+	// --- NEW FIELDS ---
+	private String caste;
+	private String subCaste;
+	private String religion;
+
+	@Column(unique = true)
+	private String apaarId;
+
+	@Column(unique = true)
+	private String panNo;
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "class_id") // FK column in users table
+	@JoinColumn(name = "class_id")
 	private ClassEntity studentClass;
 	
 	
 	@OneToMany(mappedBy = "user",cascade =  CascadeType.ALL, orphanRemoval = true)
 	private List<Fees> fees;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Transaction> transactions;
 
 	public User() {
 	}
@@ -59,7 +69,8 @@ public class User {
 	public User(Integer userId, String name, String admissionNo, String admissionDate, String password,
 			String fatherName, String motherName, String dob, String studentPhone, String email, String parentPhone,
 			String address, String gender, String studentAadharNo, String parentAadharNo, ClassEntity studentClass,
-			String rte, String tcNumber, String ssmId, String passoutClass) {
+			String rte, String tcNumber, String ssmId, String passoutClass, String caste, String subCaste,
+			String religion, String apaarId, String panNo) {
 		this.userId = userId;
 		this.name = name;
 		this.admissionNo = admissionNo;
@@ -80,10 +91,14 @@ public class User {
 		this.tcNumber = tcNumber;
 		this.ssmId = ssmId;
 		this.passoutClass = passoutClass;
+		this.caste = caste;
+		this.subCaste = subCaste;
+		this.religion = religion;
+		this.apaarId = apaarId;
+		this.panNo = panNo;
 	}
 
-	// ------------------- GETTERS & SETTERS -------------------
-
+	// GETTERS & SETTERS
 	public Integer getUserId() {
 		return userId;
 	}
@@ -243,12 +258,61 @@ public class User {
 	public void setPassoutClass(String passoutClass) {
 		this.passoutClass = passoutClass;
 	}
-	
+
+	// New Getters & Setters
+	public String getCaste() {
+		return caste;
+	}
+
+	public void setCaste(String caste) {
+		this.caste = caste;
+	}
+
+	public String getSubCaste() {
+		return subCaste;
+	}
+
+	public void setSubCaste(String subCaste) {
+		this.subCaste = subCaste;
+	}
+
+	public String getReligion() {
+		return religion;
+	}
+
+	public void setReligion(String religion) {
+		this.religion = religion;
+	}
+
+	public String getApaarId() {
+		return apaarId;
+	}
+
+	public void setApaarId(String apaarId) {
+		this.apaarId = apaarId;
+	}
+
+	public String getPanNo() {
+		return panNo;
+	}
+
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
+	}
+
 	public List<Fees> getFees() {
-	    return fees;
+		return fees;
 	}
 
 	public void setFees(List<Fees> fees) {
-	    this.fees = fees;
+		this.fees = fees;
+	}
+
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
 	}
 }

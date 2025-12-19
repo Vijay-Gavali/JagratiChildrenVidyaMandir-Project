@@ -16,14 +16,8 @@ public class Fees {
 	@Column(name = "amount", precision = 10, scale = 2)
 	private BigDecimal amount;
 
-	@Column(name = "due_date")
-	private LocalDate dueDate;
-
 	@Column(name = "payment_status")
 	private String paymentStatus; // values: Paid / Pending
-
-	@Column(name = "payment_date")
-	private LocalDate paymentDate;
 
 	@Column(name = "remaining_amount", precision = 10, scale = 2)
 	private BigDecimal remainingAmount;
@@ -44,9 +38,7 @@ public class Fees {
 		super();
 		this.feesId = feesId;
 		this.amount = amount;
-		this.dueDate = dueDate;
 		this.paymentStatus = paymentStatus;
-		this.paymentDate = paymentDate;
 		this.remainingAmount = remainingAmount;
 		this.paidAmount = paidAmount;
 		this.user = user;
@@ -69,28 +61,12 @@ public class Fees {
 		this.amount = amount;
 	}
 
-	public LocalDate getDueDate() {
-		return dueDate;
-	}
-
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = dueDate;
-	}
-
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
 
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
-	}
-
-	public LocalDate getPaymentDate() {
-		return paymentDate;
-	}
-
-	public void setPaymentDate(LocalDate paymentDate) {
-		this.paymentDate = paymentDate;
 	}
 
 	public BigDecimal getRemainingAmount() {

@@ -70,7 +70,6 @@ public class TeacherService {
             throw new RuntimeException("Phone already exists!");
         }
 
-        // Update fields
         existing.setName(dto.getName());
         existing.setEmail(dto.getEmail());
         existing.setPhone(dto.getPhone());

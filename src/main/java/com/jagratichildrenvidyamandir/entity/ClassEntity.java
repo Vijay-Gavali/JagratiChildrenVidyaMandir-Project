@@ -7,54 +7,74 @@ import java.util.List;
 
 @Entity
 @Table(name = "classes")
-public class ClassEntity  {
+public class ClassEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer classId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer classId;
 
-    @Column(length = 50)
-    private String className;
+	@Column(length = 50)
+	private String className;
 
-    private Integer fees;
+	private Integer fees;
 
-    // One class has many students
-    @OneToMany(mappedBy = "studentClass", fetch = FetchType.LAZY)
-    private List<User> students = new ArrayList<>();
- // Many classes assigned to one teacher
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+	// One class has many students
+	@OneToMany(mappedBy = "studentClass", fetch = FetchType.LAZY)
+	private List<User> students = new ArrayList<>();
 
-    // Many-to-Many with teachers
-    @ManyToMany(mappedBy = "classes")
-    private List<Teacher> teachers = new ArrayList<>();
+	// Many classes assigned to one teacher
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "teacher_id")
+	private Teacher teacher;
 
-    // Constructors
-    public ClassEntity() {}
+	// ---------- Constructors ----------
+	public ClassEntity() {
+	}
 
-    public ClassEntity(Integer classId, String className, Integer fees) {
-        this.classId = classId;
-        this.className = className;
-        this.fees = fees;
-    }
+	public ClassEntity(Integer classId, String className, Integer fees) {
+		this.classId = classId;
+		this.className = className;
+		this.fees = fees;
+	}
 
-    // Getters & Setters
-    public Integer getClassId() { return classId; }
-    public void setClassId(Integer classId) { this.classId = classId; }
+	// ---------- Getters & Setters ----------
+	public Integer getClassId() {
+		return classId;
+	}
 
-    public String getClassName() { return className; }
-    public void setClassName(String className) { this.className = className; }
+	public void setClassId(Integer classId) {
+		this.classId = classId;
+	}
 
-    public Integer getFees() { return fees; }
-    public void setFees(Integer fees) { this.fees = fees; }
+	public String getClassName() {
+		return className;
+	}
 
-    public List<User> getStudents() { return students; }
-    public void setStudents(List<User> students) { this.students = students; }
+	public void setClassName(String className) {
+		this.className = className;
+	}
 
-    public Teacher getTeacher() { return teacher; }
-    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
+	public Integer getFees() {
+		return fees;
+	}
 
-    public List<Teacher> getTeachers() { return teachers; }
-    public void setTeachers(List<Teacher> teachers) { this.teachers = teachers; }
+	public void setFees(Integer fees) {
+		this.fees = fees;
+	}
+
+	public List<User> getStudents() {
+		return students;
+	}
+
+	public void setStudents(List<User> students) {
+		this.students = students;
+	}
+
+	public Teacher getTeacher() {
+		return teacher;
+	}
+
+	public void setTeacher(Teacher teacher) {
+		this.teacher = teacher;
+	}
 }

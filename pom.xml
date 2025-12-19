@@ -8,10 +8,9 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>3.5.8</version>
+        <relativePath/>
     </parent>
-
-
 
     <groupId>com.jagratichildrenvidyamandir</groupId>
     <artifactId>JagratiChildrenVidyaMandir-Project</artifactId>
@@ -21,15 +20,9 @@
 
     <properties>
         <java.version>21</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
 
         <!-- Spring Web -->
         <dependency>
@@ -60,18 +53,17 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
-
-        <!-- Tess4J for OCR -->
+        <!-- Tess4J (OCR) -->
         <dependency>
             <groupId>net.sourceforge.tess4j</groupId>
             <artifactId>tess4j</artifactId>
             <version>5.4.0</version>
         </dependency>
 
-        <!-- JNA dependencies required by Tess4J -->
+        <!-- JNA (required for Tess4J) -->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
@@ -83,7 +75,7 @@
             <version>5.13.0</version>
         </dependency>
 
-        <!-- Apache Tika (optional, for parsing docs if needed) -->
+        <!-- Apache Tika -->
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
@@ -95,8 +87,7 @@
             <version>2.9.0</version>
         </dependency>
 
-        <!-- Spring Boot Test -->
-        <!-- Apache POI for Excel (.xlsx) parsing -->
+        <!-- Apache POI (Excel) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -120,6 +111,5 @@
             </plugin>
         </plugins>
     </build>
-    
 
 </project>

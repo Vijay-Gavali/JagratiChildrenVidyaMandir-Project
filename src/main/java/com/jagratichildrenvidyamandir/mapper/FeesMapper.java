@@ -1,63 +1,69 @@
 package com.jagratichildrenvidyamandir.mapper;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jagratichildrenvidyamandir.dto.FeesDTO;
 import com.jagratichildrenvidyamandir.entity.Fees;
-import com.jagratichildrenvidyamandir.entity.User;
 import com.jagratichildrenvidyamandir.repository.UserRepository;
-
 @Component
 public class FeesMapper {
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
-    public FeesDTO toDto(Fees entity) {
-        if (entity == null) return null;
+	public Fees toEntity(FeesDTO dto) {
+		Fees entity = new Fees();
 
-        FeesDTO dto = new FeesDTO();
-        dto.setFeesId(entity.getFeesId());
-        dto.setAmount(entity.getAmount());
-        dto.setDueDate(entity.getDueDate());
-        dto.setPaymentStatus(entity.getPaymentStatus());
-        dto.setPaymentDate(entity.getPaymentDate());
-        dto.setRemainingAmount(entity.getRemainingAmount());
-        dto.setPaidAmount(entity.getPaidAmount());
-        
-        if (entity.getUser() != null)
-            dto.setUserId(entity.getUser().getUserId());
+		entity.setFeesId(dto.getFeesId());
+		entity.setAmount(dto.getAmount());
+		entity.setPaidAmount(
+			dto.getPaidAmount() != null ? dto.getPaidAmount() : BigDecimal.ZERO
+		);
 
-        return dto;
-    }
+		BigDecimal remaining =
+			dto.getRemainingAmount() != null
+				? dto.getRemainingAmount()
+				: dto.getAmount();
 
-    public Fees toEntity(FeesDTO dto) {
-        if (dto == null) return null;
+		entity.setRemainingAmount(remaining);
 
-        Fees entity = new Fees();
-        entity.setFeesId(dto.getFeesId());
-        entity.setAmount(dto.getAmount());
-        entity.setDueDate(dto.getDueDate());
-        entity.setPaymentStatus(dto.getPaymentStatus());
-        entity.setPaymentDate(dto.getPaymentDate());
-        entity.setRemainingAmount(dto.getRemainingAmount());
-        entity.setPaidAmount(dto.getPaidAmount());
-        
-        if (dto.getUserId() != null) {
-            User user = userRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found: " + dto.getUserId()));
-            entity.setUser(user);
-        }
-        return entity;
-    }
+		entity.setPaymentStatus(
+			remaining.compareTo(BigDecimal.ZERO) == 0 ? "PAID" : "UNPAID"
+		);
 
-    public void updateEntityFromDto(FeesDTO dto, Fees entity) {
-        entity.setAmount(dto.getAmount());
-        entity.setDueDate(dto.getDueDate());
-        entity.setPaymentStatus(dto.getPaymentStatus());
-        entity.setPaymentDate(dto.getPaymentDate());
-        entity.setRemainingAmount(dto.getRemainingAmount());
-        entity.setPaidAmount(dto.getPaidAmount());
-    }
+		if (dto.getUserId() != null) {
+			entity.setUser(
+				userRepository.findById(dto.getUserId())
+					.orElseThrow(() -> new RuntimeException("User not found"))
+			);
+		}
+
+		return entity;
+	}
+
+	public FeesDTO toDto(Fees entity) {
+		return new FeesDTO(
+			entity.getFeesId(),
+			entity.getAmount(),
+			entity.getPaymentStatus(),
+			entity.getRemainingAmount(),
+			entity.getPaidAmount(),
+			entity.getUser() != null ? entity.getUser().getUserId() : null
+		);
+	}
+
+	public void updateEntityFromDto(FeesDTO dto, Fees entity) {
+		entity.setAmount(dto.getAmount());
+		entity.setPaidAmount(dto.getPaidAmount());
+		entity.setRemainingAmount(dto.getRemainingAmount());
+
+		entity.setPaymentStatus(
+			entity.getRemainingAmount().compareTo(BigDecimal.ZERO) == 0
+				? "PAID"
+				: "PARTIAL"
+		);
+	}
 }

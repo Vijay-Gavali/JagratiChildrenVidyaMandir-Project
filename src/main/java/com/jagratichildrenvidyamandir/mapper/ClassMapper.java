@@ -23,8 +23,25 @@ public class ClassMapper {
 		dto.setFees(entity.getFees());
 
 		// map users → students list
-		if (entity.getUsers() != null) {
-			List<UserDTO> students = entity.getUsers().stream().map(this::userToDto).collect(Collectors.toList());
+		if (entity.getStudents() != null) {
+			List<UserDTO> students = entity.getStudents().stream().map(this::userToDto).collect(Collectors.toList());
+			dto.setStudents(students);
+		}
+
+		return dto;
+	}
+	public ClassDTO toFullDto(ClassEntity entity) {
+		if (entity == null)
+			return null;
+
+		ClassDTO dto = new ClassDTO();
+		dto.setClassId(entity.getClassId());
+		dto.setClassName(entity.getClassName());
+		dto.setFees(entity.getFees());
+
+		// map users → students list
+		if (entity.getStudents() != null) {
+			List<UserDTO> students = entity.getStudents().stream().map(this::userToDto).collect(Collectors.toList());
 			dto.setStudents(students);
 		}
 

@@ -21,14 +21,19 @@ public class UserDTO {
 	private String tcNumber;
 	private String ssmId;
 	private String passoutClass;
-
-	// IMPORTANT: This must be ID only
 	private Integer studentClassId;
+
+	// --- NEW FIELDS ---
+	private String caste;
+	private String subCaste;
+	private String religion;
+	private String apaarId;
+	private String panNo;
 
 	public UserDTO() {
 	}
 
-	// Getters & Setters
+	// Getters & Setters (Existing + New)
 	public Integer getUserId() {
 		return userId;
 	}
@@ -189,4 +194,44 @@ public class UserDTO {
 		this.studentClassId = studentClassId;
 	}
 
+	// New Getters & Setters
+	public String getCaste() {
+		return caste;
+	}
+
+	public void setCaste(String caste) {
+		this.caste = caste;
+	}
+
+	public String getSubCaste() {
+		return subCaste;
+	}
+
+	public void setSubCaste(String subCaste) {
+		this.subCaste = subCaste;
+	}
+
+	public String getReligion() {
+		return religion;
+	}
+
+	public void setReligion(String religion) {
+		this.religion = religion;
+	}
+
+	public String getApaarId() {
+		return apaarId;
+	}
+
+	public void setApaarId(String apaarId) {
+		this.apaarId = apaarId;
+	}
+
+	public String getPanNo() {
+		return panNo;
+	}
+
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
+	}
 }
