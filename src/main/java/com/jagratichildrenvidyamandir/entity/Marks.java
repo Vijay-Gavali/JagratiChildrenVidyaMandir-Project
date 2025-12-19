@@ -15,10 +15,10 @@ public class Marks {
     private Integer classId;
     private Integer studentId;
 
-    private String examType;  // MONTHLY / QUARTERLY / YEARLY
-    private Integer month;    // For monthly exam
-    private Integer quarter;  // For quarterly exam
-    private Integer year;     // Example: 2024, 2025
+    private String examType; // MONTHLY / QUARTERLY / YEARLY
+    private Integer month; // For monthly exam
+    private Integer quarter; // For quarterly exam
+    private Integer year; // Example: 2024, 2025
 
     private Integer marathi;
     private Integer hindi;
@@ -62,60 +62,155 @@ public class Marks {
         return val == null ? 0 : val;
     }
 
-    public Integer getMarksId() { return marksId; }
-    public void setMarksId(Integer marksId) { this.marksId = marksId; }
+    public Integer getMarksId() {
+        return marksId;
+    }
 
-    public Integer getTeacherId() { return teacherId; }
-    public void setTeacherId(Integer teacherId) { this.teacherId = teacherId; }
+    public void setMarksId(Integer marksId) {
+        this.marksId = marksId;
+    }
 
-    public Integer getClassId() { return classId; }
-    public void setClassId(Integer classId) { this.classId = classId; }
+    public Integer getTeacherId() {
+        return teacherId;
+    }
 
-    public Integer getStudentId() { return studentId; }
-    public void setStudentId(Integer studentId) { this.studentId = studentId; }
+    public void setTeacherId(Integer teacherId) {
+        this.teacherId = teacherId;
+    }
 
-    public String getExamType() { return examType; }
-    public void setExamType(String examType) { this.examType = examType; }
+    public Integer getClassId() {
+        return classId;
+    }
 
-    public Integer getMonth() { return month; }
-    public void setMonth(Integer month) { this.month = month; }
+    public void setClassId(Integer classId) {
+        this.classId = classId;
+    }
 
-    public Integer getQuarter() { return quarter; }
-    public void setQuarter(Integer quarter) { this.quarter = quarter; }
+    public Integer getStudentId() {
+        return studentId;
+    }
 
-    public Integer getYear() { return year; }
-    public void setYear(Integer year) { this.year = year; }
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
+    }
 
-    public Integer getMarathi() { return marathi; }
-    public void setMarathi(Integer marathi) { this.marathi = marathi; }
+    public String getExamType() {
+        return examType;
+    }
 
-    public Integer getHindi() { return hindi; }
-    public void setHindi(Integer hindi) { this.hindi = hindi; }
+    public void setExamType(String examType) {
+        this.examType = examType;
+    }
 
-    public Integer getEnglish() { return english; }
-    public void setEnglish(Integer english) { this.english = english; }
+    public Integer getMonth() {
+        return month;
+    }
 
-    public Integer getSanskrit() { return sanskrit; }
-    public void setSanskrit(Integer sanskrit) { this.sanskrit = sanskrit; }
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
 
-    public Integer getMaths() { return maths; }
-    public void setMaths(Integer maths) { this.maths = maths; }
+    public Integer getQuarter() {
+        return quarter;
+    }
 
-    public Integer getScience() { return science; }
-    public void setScience(Integer science) { this.science = science; }
+    public void setQuarter(Integer quarter) {
+        this.quarter = quarter;
+    }
 
-    public Integer getHistory() { return history; }
-    public void setHistory(Integer history) { this.history = history; }
+    public Integer getYear() {
+        return year;
+    }
 
-    public Integer getGeography() { return geography; }
-    public void setGeography(Integer geography) { this.geography = geography; }
+    public void setYear(Integer year) {
+        this.year = year;
+    }
 
-    public Integer getTotalMarks() { return totalMarks; }
-    public void setTotalMarks(Integer totalMarks) { this.totalMarks = totalMarks; }
+    public Integer getMarathi() {
+        return marathi;
+    }
 
-    public String getGrade() { return grade; }
-    public void setGrade(String grade) { this.grade = grade; }
+    public void setMarathi(Integer marathi) {
+        this.marathi = marathi;
+    }
 
-    public Date getCreatedDate() { return createdDate; }
-    public void setCreatedDate(Date createdDate) { this.createdDate = createdDate; }
+    public Integer getHindi() {
+        return hindi;
+    }
+
+    public void setHindi(Integer hindi) {
+        this.hindi = hindi;
+    }
+
+    public Integer getEnglish() {
+        return english;
+    }
+
+    public void setEnglish(Integer english) {
+        this.english = english;
+    }
+
+    public Integer getSanskrit() {
+        return sanskrit;
+    }
+
+    public void setSanskrit(Integer sanskrit) {
+        this.sanskrit = sanskrit;
+    }
+
+    public Integer getMaths() {
+        return maths;
+    }
+
+    public void setMaths(Integer maths) {
+        this.maths = maths;
+    }
+
+    public Integer getScience() {
+        return science;
+    }
+
+    public void setScience(Integer science) {
+        this.science = science;
+    }
+
+    public Integer getHistory() {
+        return history;
+    }
+
+    public void setHistory(Integer history) {
+        this.history = history;
+    }
+
+    public Integer getGeography() {
+        return geography;
+    }
+
+    public void setGeography(Integer geography) {
+        this.geography = geography;
+    }
+
+    public Integer getTotalMarks() {
+        return totalMarks;
+    }
+
+    public void setTotalMarks(Integer totalMarks) {
+        this.totalMarks = totalMarks;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 }

@@ -52,5 +52,6 @@ public class AttendanceController {
         List<AttendanceDTO> list = attendanceService.getAttendanceByUserId(userId);
         return ResponseEntity.ok(list);
     }
+   
 
 }

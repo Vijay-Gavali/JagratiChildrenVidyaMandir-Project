@@ -1,18 +1,22 @@
 package com.jagratichildrenvidyamandir.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.dto.ClassWithTeachersDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
+
+import com.jagratichildrenvidyamandir.dto.UserDTO;
+import com.jagratichildrenvidyamandir.mapper.ClassMapper;
 import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.Teacher;
-import com.jagratichildrenvidyamandir.mapper.ClassMapper;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.repository.TeacherRepository;
+
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassService {
@@ -22,18 +26,17 @@ public class ClassService {
     private final ClassRepository classRepository;
     private final TeacherRepository teacherRepository;
 
-    
-
-    public ClassService(ClassRepository repository, ClassMapper mapper,ClassRepository classRepository,TeacherRepository teacherRepository) {
+    public ClassService(ClassRepository repository, ClassMapper mapper, ClassRepository classRepository,
+            TeacherRepository teacherRepository) {
         this.repository = repository;
         this.mapper = mapper;
-        this. classRepository= classRepository;
-        this.teacherRepository= teacherRepository;
+        this.classRepository = classRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     // CREATE
     public ClassDTO createClass(ClassDTO dto) {
-    	ClassEntity entity = mapper.toEntity(dto);
+        ClassEntity entity = mapper.toEntity(dto);
         entity.setClassId(null); // auto-increment
         ClassEntity saved = repository.save(entity);
         return mapper.toDto(saved);
@@ -67,11 +70,12 @@ public class ClassService {
 
     // DELETE
     public boolean deleteClass(Integer id) {
-        if (!repository.existsById(id)) return false;
+        if (!repository.existsById(id))
+            return false;
         repository.deleteById(id);
         return true;
     }
-   
+
     public ClassWithTeachersDTO getClassWithTeachers(Integer classId) {
 
         ClassEntity classEntity = classRepository.findById(classId)
@@ -81,18 +85,17 @@ public class ClassService {
         response.setClassId(classEntity.getClassId());
         response.setClassName(classEntity.getClassName());
 
-//        response.setTeachers(
-//                classEntity.getTeachers()
-//                        .stream()
-//                        .map(this::mapTeacher)
-//                        .collect(Collectors.toList())
-//        );
+        // response.setTeachers(
+        // classEntity.getTeachers()
+        // .stream()
+        // .map(this::mapTeacher)
+        // .collect(Collectors.toList())
+        // );
 
         return response;
     }
 
     private TeacherDTO mapTeacher(Teacher teacher) {
-
         TeacherDTO dto = new TeacherDTO();
         dto.setTeacherId(teacher.getTeacherId());
         dto.setName(teacher.getName());
@@ -105,12 +108,16 @@ public class ClassService {
         dto.setAadharNo(teacher.getAadharNo());
         dto.setAddress(teacher.getAddress());
 
-        dto.setClassIds(
-                teacher.getClasses()
-                        .stream()
-                        .map(c -> c.getClassId())
-                        .collect(Collectors.toList())
-        );
+        // Map class names instead of IDs
+        if (teacher.getClasses() != null && !teacher.getClasses().isEmpty()) {
+            dto.setClassNames(
+                    teacher.getClasses()
+                            .stream()
+                            .map(c -> c.getClassName())
+                            .collect(Collectors.toList()));
+        } else {
+            dto.setClassNames(new ArrayList<>());
+        }
 
         return dto;
     }

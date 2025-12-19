@@ -1,5 +1,6 @@
 package com.jagratichildrenvidyamandir.controller;
 
+import com.jagratichildrenvidyamandir.controller.UserController.LoginRequest;
 import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.dto.MarksDTO;
@@ -8,16 +9,14 @@ import com.jagratichildrenvidyamandir.dto.TeacherDTO;
 import com.jagratichildrenvidyamandir.dto.UploadSummaryDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.entity.ClassEntity;
-import com.jagratichildrenvidyamandir.entity.Marks;
 import com.jagratichildrenvidyamandir.entity.Teacher;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.service.AttendanceService;
-import com.jagratichildrenvidyamandir.service.ClassService;
-import com.jagratichildrenvidyamandir.service.MarksService;
 import com.jagratichildrenvidyamandir.service.TeacherService;
 import com.jagratichildrenvidyamandir.service.UserExcelService;
 import com.jagratichildrenvidyamandir.service.UserService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,34 +26,29 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
 
     private final TeacherService teacherService;
     private final AttendanceService attendanceService;
-    private final ClassService classService;
-    private final UserService userService;
+    private final UserService service;
     private final UserExcelService excelService;
-    private final MarksService marksService;
+    private final String BASE_DIR = "uploads/teachers/";
+    private final ClassRepository classRepository;
 
-    public TeacherController(
-            TeacherService teacherService,
-            AttendanceService attendanceService,
-            ClassService classService,
-            UserService userService,
-            UserExcelService excelService,
-            MarksService marksService) {
-
+    @Autowired
+    public TeacherController(TeacherService teacherService, AttendanceService attendanceService,
+            UserService service,
+            UserExcelService excelService, ClassRepository classRepository) {
         this.teacherService = teacherService;
         this.attendanceService = attendanceService;
-        this.classService = classService;
-        this.userService = userService;
+        this.service = service;
+        this.classRepository = classRepository;
         this.excelService = excelService;
-        this.marksService = marksService;
-    }
 
-    // ------------------- Teacher CRUD -------------------
+    }
 
     // ================= REGISTER =================
     @PostMapping("/register")
@@ -62,6 +56,7 @@ public class TeacherController {
         TeacherDTO saved = teacherService.registerTeacher(dto);
         return ResponseEntity.ok(saved);
     }
+
     // ================= GET ALL =================
     @GetMapping
     public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
@@ -79,6 +74,7 @@ public class TeacherController {
     public ResponseEntity<TeacherDTO> updateTeacher(
             @PathVariable Integer id,
             @RequestBody TeacherDTO dto) {
+
         return ResponseEntity.ok(teacherService.updateTeacher(id, dto));
     }
 
@@ -89,57 +85,22 @@ public class TeacherController {
         return ResponseEntity.ok("Teacher deleted successfully");
     }
 
-    // ------------------- Attendance -------------------
-
-    @PostMapping("/mark")
+    // ---------------- Teacher Attendance ----------------
+    @PostMapping("/mark-attendance")
     public ResponseEntity<String> markAttendance(@RequestBody AttendanceDTO dto) {
         attendanceService.createAttendance(dto);
         return ResponseEntity.ok("Attendance marked successfully!");
     }
 
-    @GetMapping("/{id}/attendance")
-    public ResponseEntity<AttendanceDTO> getAttendance(@PathVariable Integer id) {
+    @GetMapping("/attendance/{id}")
+    public ResponseEntity<AttendanceDTO> getAttendanceById(@PathVariable Integer id) {
         AttendanceDTO dto = attendanceService.getAttendanceById(id);
         return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/attendance/all")
-    public List<AttendanceDTO> getAllAttendance() {
-        return attendanceService.getAllAttendance();
-    }
-
-    // ------------------- Class Assignment -------------------
-
-    @PostMapping("/{teacherId}/assign-classes")
-    public ResponseEntity<String> assignClasses(
-            @PathVariable Integer teacherId,
-            @RequestBody List<Integer> classIds) {
-
-        Teacher updated = teacherService.assignClassesToTeacher(teacherId, classIds);
-        return ResponseEntity.ok(
-                "Classes assigned successfully to teacher ID: " + updated.getTeacherId());
-    }
-
-    @GetMapping("/{teacherId}/students")
-    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
-            @PathVariable Integer teacherId) {
-        return ResponseEntity.ok(
-                teacherService.getStudentsByTeacher(teacherId));
-    }
-
-    // ------------------- Excel Upload -------------------
-
-
-
-    // GET teacher info + classes by teacherId
-    // GET all teachers assigned to a classId
-    @GetMapping("/{classId}/teachers")
-    public ResponseEntity<List<TeacherDTO>> getTeachersByClass(@PathVariable Integer classId) {
-        List<TeacherDTO> teachers = teacherService.getTeachersByClassId(classId);
-        if (teachers.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(teachers);
+    @GetMapping("/all-marked-attendance")
+    public ResponseEntity<List<AttendanceDTO>> getAllAttendance() {
+        return ResponseEntity.ok(attendanceService.getAllAttendance());
     }
 
     @GetMapping("/{teacherId}/classes")
@@ -147,21 +108,19 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.getClassesByTeacher(teacherId));
     }
 
-    // ------------------- Teacher Login -------------------
+    @GetMapping("/{teacherId}/students")
+    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(@PathVariable Integer teacherId) {
+        return ResponseEntity.ok(teacherService.getStudentsByTeacher(teacherId));
+    }
 
+    // ---------------- Teacher Login ----------------
     @PostMapping("/login")
     public ResponseEntity<Teacher> login(@RequestBody LoginRequest req) {
-
-        Teacher teacher =
-                teacherService.authenticateTeacher(req.getPhone(), req.getPassword());
-
+        Teacher teacher = teacherService.authenticateTeacher(req.getPhone(), req.getPassword());
         if (teacher == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        return ResponseEntity.ok()
-                .header("Message", "Teacher login successfully")
-                .body(teacher);
+        return ResponseEntity.ok().header("Message", "Teacher login successfully").body(teacher);
     }
 
     public static class LoginRequest {
@@ -185,24 +144,21 @@ public class TeacherController {
         }
     }
 
-    // ------------------- Marks -------------------
+    // ---------------- Marks Management ----------------
 
-    @PostMapping("/marks/add")
-    public Marks addMarks(@RequestBody Marks marks) {
-        marks.calculate();
-        marks.setCreatedDate(new Date());
-        return marksService.saveMarks(marks);
-    }
-
-    @PutMapping("/marks/update/{id}")
-    public Marks updateMarks(
-            @PathVariable Integer id,
-            @RequestBody Marks marks) {
-        return marksService.updateMarks(id, marks);
-    }
-
-    @GetMapping("/marks/all")
-    public List<MarksDTO> getAllMarks() {
-        return marksService.getAllMarks();
+    // ---------------- Upload Excel ----------------
+    @PostMapping("/upload-excel")
+    public ResponseEntity<UploadSummaryDTO> uploadExcel(@RequestParam("file") MultipartFile file) {
+        UploadSummaryDTO dto = new UploadSummaryDTO();
+        if (file == null || file.isEmpty()) {
+            dto.addError("No file uploaded");
+            return ResponseEntity.badRequest().body(dto);
+        }
+        try {
+            return ResponseEntity.ok(excelService.importFromExcel(file));
+        } catch (Exception e) {
+            dto.addError(e.getMessage());
+            return ResponseEntity.internalServerError().body(dto);
+        }
     }
 }
