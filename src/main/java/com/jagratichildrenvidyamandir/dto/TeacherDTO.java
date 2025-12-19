@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class TeacherDTO {
+
     private Integer teacherId;
-    private Integer classId;
     private String name;
     private String email;
     private String phone;
@@ -15,18 +15,20 @@ public class TeacherDTO {
     private LocalDate dateOfBirth;
     private String aadharNo;
     private String address;
-    private String aprNo;   // ⭐ NEW FIELD
-    private String documentPath;
-   
+    public TeacherDTO() {}
+    // Add this constructor
+    public TeacherDTO(Integer teacherId, String name, String email) {
+        this.teacherId = teacherId;
+        this.name = name;
+        this.email = email;
+    }
 
+    // List of class IDs for Many-to-Many
     private List<Integer> classIds;
 
-    // ---------- Getters & Setters ----------
+    // Getters & Setters
     public Integer getTeacherId() { return teacherId; }
     public void setTeacherId(Integer teacherId) { this.teacherId = teacherId; }
-
-    public Integer getClassId() { return classId; }
-    public void setClassId(Integer classId) { this.classId = classId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -55,13 +57,6 @@ public class TeacherDTO {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public String getAprNo() { return aprNo; }                  // ⭐ NEW GETTER
-    public void setAprNo(String aprNo) { this.aprNo = aprNo; }  // ⭐ NEW SETTER
-    public String getDocumentPath() { return documentPath; }
-    public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
     public List<Integer> getClassIds() { return classIds; }
     public void setClassIds(List<Integer> classIds) { this.classIds = classIds; }
-    
-    
-
 }
