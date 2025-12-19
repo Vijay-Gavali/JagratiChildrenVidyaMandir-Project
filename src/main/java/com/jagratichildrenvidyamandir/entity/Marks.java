@@ -62,8 +62,6 @@ public class Marks {
         return val == null ? 0 : val;
     }
 
-    // ---------- GETTERS & SETTERS ----------
-
     public Integer getMarksId() { return marksId; }
     public void setMarksId(Integer marksId) { this.marksId = marksId; }
 
