@@ -31,9 +31,18 @@ public class Teacher {
 	private String documentPath;
 	private String aprNo;
 
-	// Store multiple class IDs like "1,2,3"
-	@Column(name = "class_ids")
-	private String classIds;
+	// In Teacher entity - ADD this bidirectional mapping
+	@OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<ClassEntity> classes = new ArrayList<>();
+
+	// Add getters/setters
+	public List<ClassEntity> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(List<ClassEntity> classes) {
+		this.classes = classes;
+	}
 
 	// ---------- Getters & Setters ----------
 	public Integer getTeacherId() {
@@ -132,12 +141,5 @@ public class Teacher {
 		this.aprNo = aprNo;
 	} // ⭐ NEW SETTER
 
-	public String getClassIds() {
-		return classIds;
-	}
-
-	public void setClassIds(String classIds) {
-		this.classIds = classIds;
-	}
 
 }

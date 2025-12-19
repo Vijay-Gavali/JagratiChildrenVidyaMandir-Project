@@ -120,13 +120,6 @@ public class TeacherController {
                 "Classes assigned successfully to teacher ID: " + updated.getTeacherId());
     }
 
-    @GetMapping("/{teacherId}/classes")
-    public ResponseEntity<List<ClassDTO>> getClassesByTeacher(
-            @PathVariable Integer teacherId) {
-        return ResponseEntity.ok(
-                teacherService.getClassesByTeacher(teacherId));
-    }
-
     @GetMapping("/{teacherId}/students")
     public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
             @PathVariable Integer teacherId) {
@@ -136,12 +129,7 @@ public class TeacherController {
 
     // ------------------- Excel Upload -------------------
 
-    @PostMapping("/uploadExcel")
-    public ResponseEntity<UploadSummaryDTO> uploadExcel(
-            @RequestParam("file") MultipartFile file) {
 
-    // ---------------- Classes & Students ----------------
-   
 
     // GET teacher info + classes by teacherId
     // GET all teachers assigned to a classId

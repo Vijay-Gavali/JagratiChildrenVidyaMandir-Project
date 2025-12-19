@@ -1,23 +1,18 @@
 package com.jagratichildrenvidyamandir.service;
 
-import com.jagratichildrenvidyamandir.dto.ClassDTO;
-import com.jagratichildrenvidyamandir.dto.ClassStudentCountDTO;
-import com.jagratichildrenvidyamandir.dto.ClassWithTeachersDTO;
-import com.jagratichildrenvidyamandir.dto.TeacherDTO;
-import com.jagratichildrenvidyamandir.dto.ClassStudentCountDTO;
-
-import com.jagratichildrenvidyamandir.dto.UserDTO;
-import com.jagratichildrenvidyamandir.mapper.ClassMapper;
-import com.jagratichildrenvidyamandir.entity.ClassEntity;
-import com.jagratichildrenvidyamandir.entity.Teacher;
-import com.jagratichildrenvidyamandir.repository.ClassRepository;
-import com.jagratichildrenvidyamandir.repository.TeacherRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.jagratichildrenvidyamandir.dto.ClassDTO;
+import com.jagratichildrenvidyamandir.dto.ClassWithTeachersDTO;
+import com.jagratichildrenvidyamandir.dto.TeacherDTO;
+import com.jagratichildrenvidyamandir.entity.ClassEntity;
+import com.jagratichildrenvidyamandir.entity.Teacher;
+import com.jagratichildrenvidyamandir.mapper.ClassMapper;
+import com.jagratichildrenvidyamandir.repository.ClassRepository;
+import com.jagratichildrenvidyamandir.repository.TeacherRepository;
 
 @Service
 public class ClassService {
@@ -86,12 +81,12 @@ public class ClassService {
         response.setClassId(classEntity.getClassId());
         response.setClassName(classEntity.getClassName());
 
-        response.setTeachers(
-                classEntity.getTeachers()
-                        .stream()
-                        .map(this::mapTeacher)
-                        .collect(Collectors.toList())
-        );
+//        response.setTeachers(
+//                classEntity.getTeachers()
+//                        .stream()
+//                        .map(this::mapTeacher)
+//                        .collect(Collectors.toList())
+//        );
 
         return response;
     }
