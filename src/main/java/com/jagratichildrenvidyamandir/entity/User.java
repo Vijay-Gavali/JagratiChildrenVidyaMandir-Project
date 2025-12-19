@@ -55,8 +55,9 @@ public class User {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "class_id")
 	private ClassEntity studentClass;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	
+	
+	@OneToMany(mappedBy = "user",cascade =  CascadeType.ALL, orphanRemoval = true)
 	private List<Fees> fees;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
