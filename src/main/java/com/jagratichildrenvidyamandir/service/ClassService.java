@@ -1,10 +1,8 @@
 package com.jagratichildrenvidyamandir.service;
 
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
-import com.jagratichildrenvidyamandir.dto.ClassStudentCountDTO;
 import com.jagratichildrenvidyamandir.dto.ClassWithTeachersDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
-import com.jagratichildrenvidyamandir.dto.ClassStudentCountDTO;
 
 import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.mapper.ClassMapper;
@@ -15,6 +13,7 @@ import com.jagratichildrenvidyamandir.repository.TeacherRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -97,7 +96,6 @@ public class ClassService {
     }
 
     private TeacherDTO mapTeacher(Teacher teacher) {
-
         TeacherDTO dto = new TeacherDTO();
         dto.setTeacherId(teacher.getTeacherId());
         dto.setName(teacher.getName());
@@ -110,13 +108,19 @@ public class ClassService {
         dto.setAadharNo(teacher.getAadharNo());
         dto.setAddress(teacher.getAddress());
 
-        dto.setClassIds(
-                teacher.getClasses()
-                        .stream()
-                        .map(c -> c.getClassId())
-                        .collect(Collectors.toList())
-        );
+        // Map class names instead of IDs
+        if (teacher.getClasses() != null && !teacher.getClasses().isEmpty()) {
+            dto.setClassNames(
+                    teacher.getClasses()
+                            .stream()
+                            .map(c -> c.getClassName())
+                            .collect(Collectors.toList())
+            );
+        } else {
+            dto.setClassNames(new ArrayList<>());
+        }
 
         return dto;
     }
 }
+
