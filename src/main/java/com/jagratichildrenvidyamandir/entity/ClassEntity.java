@@ -26,7 +26,10 @@ public class ClassEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "teacher_id")
 	private Teacher teacher;
+	@ManyToMany(mappedBy = "classes")
+	private List<Teacher> teachers = new ArrayList<>();
 
+	
 	// ---------- Constructors ----------
 	public ClassEntity() {
 	}
@@ -77,4 +80,12 @@ public class ClassEntity {
 	public void setTeacher(Teacher teacher) {
 		this.teacher = teacher;
 	}
+	public List<Teacher> getTeachers() {
+	    return teachers;
+	}
+
+	public void setTeachers(List<Teacher> teachers) {
+	    this.teachers = teachers;
+	}
+
 }

@@ -23,8 +23,8 @@ public class TeacherDTO {
         this.email = email;
     }
 
-    // List of class IDs for Many-to-Many
-    private List<Integer> classIds;
+    private List<String> classNames;  // <-- add this field
+
 
     // Getters & Setters
     public Integer getTeacherId() { return teacherId; }
@@ -57,6 +57,6 @@ public class TeacherDTO {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public List<Integer> getClassIds() { return classIds; }
-    public void setClassIds(List<Integer> classIds) { this.classIds = classIds; }
+    public List<String> getClassNames() { return classNames; }
+    public void setClassNames(List<String> classNames) { this.classNames = classNames; }
 }

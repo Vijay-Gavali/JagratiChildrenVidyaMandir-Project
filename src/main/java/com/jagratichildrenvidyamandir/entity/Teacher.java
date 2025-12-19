@@ -9,135 +9,69 @@ import java.util.List;
 @Table(name = "teachers")
 public class Teacher {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer teacherId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer teacherId;
 
-	private String name;
+    @Column(length = 100)
+    private String name;
 
-	@Column(unique = true)
-	private String email;
+    @Column(unique = true)
+    private String email;
 
-	@Column(unique = true)
-	private String phone;
+    private String phone;
+    private String password;
+    private String educationalDetails;
+    private Integer yearOfExperience;
+    private LocalDate dateOfBirth;
+    private String aadharNo;
+    private String address;
 
-	private String password;
-	private String educationalDetails;
-	private Integer yearOfExperience;
-	private LocalDate dateOfBirth;
-	private String aadharNo;
-	private String address;
-	// ⭐ New field to store uploaded document/photo path
-	private String documentPath;
-	private String aprNo;
+    // Many-to-Many relationship with ClassEntity
+    @ManyToMany
+    @JoinTable(
+        name = "teacher_classes",
+        joinColumns = @JoinColumn(name = "teacher_id"),
+        inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<ClassEntity> classes = new ArrayList<>();
+   
 
-	// Store multiple class IDs like "1,2,3"
-	@Column(name = "class_ids")
-	private String classIds;
+    // ---------- Constructors ----------
+    public Teacher() {}
 
-	// ---------- Getters & Setters ----------
-	public Integer getTeacherId() {
-		return teacherId;
-	}
+    // ---------- Getters & Setters ----------
+    public Integer getTeacherId() { return teacherId; }
+    public void setTeacherId(Integer teacherId) { this.teacherId = teacherId; }
 
-	public void setTeacherId(Integer teacherId) {
-		this.teacherId = teacherId;
-	}
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-	public String getName() {
-		return name;
-	}
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getEducationalDetails() { return educationalDetails; }
+    public void setEducationalDetails(String educationalDetails) { this.educationalDetails = educationalDetails; }
 
-	public String getPhone() {
-		return phone;
-	}
+    public Integer getYearOfExperience() { return yearOfExperience; }
+    public void setYearOfExperience(Integer yearOfExperience) { this.yearOfExperience = yearOfExperience; }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getAadharNo() { return aadharNo; }
+    public void setAadharNo(String aadharNo) { this.aadharNo = aadharNo; }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-	public String getEducationalDetails() {
-		return educationalDetails;
-	}
-
-	public void setEducationalDetails(String educationalDetails) {
-		this.educationalDetails = educationalDetails;
-	}
-
-	public Integer getYearOfExperience() {
-		return yearOfExperience;
-	}
-
-	public void setYearOfExperience(Integer yearOfExperience) {
-		this.yearOfExperience = yearOfExperience;
-	}
-
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public String getAadharNo() {
-		return aadharNo;
-	}
-
-	public void setAadharNo(String aadharNo) {
-		this.aadharNo = aadharNo;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getDocumentPath() {
-		return documentPath;
-	}
-
-	public void setDocumentPath(String documentPath) {
-		this.documentPath = documentPath;
-	}
-
-	public String getAprNo() {
-		return aprNo;
-	} // ⭐ NEW GETTER
-
-	public void setAprNo(String aprNo) {
-		this.aprNo = aprNo;
-	} // ⭐ NEW SETTER
-
-	public String getClassIds() {
-		return classIds;
-	}
-
-	public void setClassIds(String classIds) {
-		this.classIds = classIds;
-	}
-
+    public List<ClassEntity> getClasses() { return classes; }
+    public void setClasses(List<ClassEntity> classes) { this.classes = classes; }
+   
 }
