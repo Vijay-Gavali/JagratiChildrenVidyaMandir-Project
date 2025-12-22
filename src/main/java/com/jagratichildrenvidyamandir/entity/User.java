@@ -59,19 +59,16 @@ public class User {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "class_id")
 	private ClassEntity studentClass;
-	
-	
-	@OneToMany(mappedBy = "user",cascade =  CascadeType.ALL, orphanRemoval = true)
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Fees> fees;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Transaction> transactions;
-	   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	    @JsonIgnore
-	    private List<Marks> marks = new ArrayList<>();
-	   
-	  
-
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<Marks> marks = new ArrayList<>();
 
 	public User() {
 	}
@@ -325,9 +322,13 @@ public class User {
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
 	}
-	 
-	 public List<Marks> getMarks() { return marks; }
-	    public void setMarks(List<Marks> marks) { this.marks = marks; }
-	    
-	   
+
+	public List<Marks> getMarks() {
+		return marks;
+	}
+
+	public void setMarks(List<Marks> marks) {
+		this.marks = marks;
+	}
+
 }

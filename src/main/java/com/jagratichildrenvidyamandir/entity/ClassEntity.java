@@ -21,8 +21,11 @@ public class ClassEntity {
 	@OneToMany(mappedBy = "studentClass", fetch = FetchType.LAZY)
 	private List<User> students = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "classes")
-    private List<Teacher> teachers = new ArrayList<>();
+	@ManyToMany(mappedBy = "classes")
+	private List<Teacher> teachers = new ArrayList<>();
+
+	@OneToMany(mappedBy = "classes", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Marks> marks = new ArrayList<>();
 
 	// ---------- Constructors ----------
 	public ClassEntity() {
@@ -75,7 +78,11 @@ public class ClassEntity {
 		this.teachers = teachers;
 	}
 
-    public List<Marks> getMarks() { return marks; }
-    public void setMarks(List<Marks> marks) { this.marks = marks; }
+	public List<Marks> getMarks() {
+		return marks;
+	}
 
+	public void setMarks(List<Marks> marks) {
+		this.marks = marks;
+	}
 }

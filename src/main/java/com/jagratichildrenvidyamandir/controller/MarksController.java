@@ -77,4 +77,4 @@ public class MarksController {
     public ResponseEntity<List<MarksDTO>> getByStudent(@PathVariable Integer studentId) {
         return ResponseEntity.ok(service.getByStudent(studentId));
     }
-}
+}	
