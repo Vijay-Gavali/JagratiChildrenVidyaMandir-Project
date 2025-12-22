@@ -13,14 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class TeacherMapper {
 
-    private final ClassRepository classRepository;
-
-    // ✅ Constructor Injection (IMPORTANT)
-    public TeacherMapper(ClassRepository classRepository) {
-        this.classRepository = classRepository;
-    }
-
-    // ================= DTO → ENTITY =================
+    // DTO → Entity (NO classes here)
     public Teacher toEntity(TeacherDTO dto) {
 
         Teacher teacher = new Teacher();
@@ -48,7 +41,7 @@ public class TeacherMapper {
         return teacher;
     }
 
-    // ================= ENTITY → DTO =================
+    // Entity → DTO
     public TeacherDTO toDTO(Teacher teacher) {
 
         TeacherDTO dto = new TeacherDTO();
@@ -63,17 +56,12 @@ public class TeacherMapper {
         dto.setAadharNo(teacher.getAadharNo());
         dto.setAddress(teacher.getAddress());
 
-        // ✅ Send only class names in response
-        if (teacher.getClasses() != null && !teacher.getClasses().isEmpty()) {
-            dto.setClassNames(
-                    teacher.getClasses()
-                            .stream()
-                            .map(ClassEntity::getClassName)
-                            .collect(Collectors.toList())
-            );
-        } else {
-            dto.setClassNames(new ArrayList<>());
-        }
+        dto.setClassNames(
+            teacher.getClasses() == null ? new ArrayList<>() :
+            teacher.getClasses().stream()
+                .map(ClassEntity::getClassName)
+                .toList()
+        );
 
         return dto;
     }

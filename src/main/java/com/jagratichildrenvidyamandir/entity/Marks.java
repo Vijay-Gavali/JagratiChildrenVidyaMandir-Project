@@ -1,7 +1,7 @@
 package com.jagratichildrenvidyamandir.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "marks")
@@ -11,106 +11,89 @@ public class Marks {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer marksId;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private User user;
+    private Integer teacherId;
+    private Integer classId;
+    private Integer studentId;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
-
-    @ManyToOne
-    @JoinColumn(name = "class_id")
-    private ClassEntity classes;
-
-    private Integer hindi;
-    private Integer english;
-    private Integer maths;
-    private Integer science;
-    private Integer socialScience;
-    private Integer evs;
-    private Integer computer;
-    private Integer gk;
-    private Integer drawing;
-    private Integer sanskrit;
-
-    private Integer totalMarks;
-    private Double percentage;
-    private String grade;
-    private String status;
-    // ✅ Exam
-    private String examType;
-    // ✅ SESSION (NEW FK)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", nullable = false)
-    private SessionEntity session;
-
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private String examType; // MONTHLY / QUARTERLY / YEARLY
+    private Integer month; // For monthly exam
+    private Integer quarter; // For quarterly exam
+    private Integer year; // Example: 2024, 2025
 
     private Integer marathi;
+    private Integer hindi;
+    private Integer english;
+    private Integer sanskrit;
+    private Integer maths;
+    private Integer science;
+    private Integer history;
+    private Integer geography;
 
-    // Getters & setters
-    public Integer getMarksId() { return marksId; }
-    public void setMarksId(Integer marksId) { this.marksId = marksId; }
+    private Integer totalMarks;
+    private String grade;
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    // ✅ Auto-save today's date
+    @Temporal(TemporalType.DATE)
+    private Date createdDate = new Date();
 
-    public Teacher getTeacher() { return teacher; }
-    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
+    // ---------- CALCULATION ----------
+    public void calculate() {
+        int m1 = safe(marathi);
+        int m2 = safe(hindi);
+        int m3 = safe(english);
+        int m4 = safe(sanskrit);
+        int m5 = safe(maths);
+        int m6 = safe(science);
+        int m7 = safe(history);
+        int m8 = safe(geography);
 
-    public ClassEntity getClasses() { return classes; }
-    public void setClasses(ClassEntity classes) { this.classes = classes; }
-    public SessionEntity getSession() { return session; }
-    public void setSession(SessionEntity session) { this.session = session; }
+        this.totalMarks = m1 + m2 + m3 + m4 + m5 + m6 + m7 + m8;
 
-    public Integer getMarathi() { return marathi; }
-    public void setMarathi(Integer marathi) { this.marathi = marathi; }
+        double percentage = (totalMarks / 800.0) * 100;
 
-    public Integer getHindi() { return hindi; }
-    public void setHindi(Integer hindi) { this.hindi = hindi; }
+        if (totalMarks < 300) {
+            grade = "FAIL (" + String.format("%.2f", percentage) + "%)";
+        } else {
+            grade = "PASS (" + String.format("%.2f", percentage) + "%)";
+        }
+    }
 
-    public Integer getEnglish() { return english; }
-    public void setEnglish(Integer english) { this.english = english; }
+    private int safe(Integer val) {
+        return val == null ? 0 : val;
+    }
 
-    public Integer getSanskrit() { return sanskrit; }
-    public void setSanskrit(Integer sanskrit) { this.sanskrit = sanskrit; }
+    public Integer getMarksId() {
+        return marksId;
+    }
 
-    public Integer getMaths() { return maths; }
-    public void setMaths(Integer maths) { this.maths = maths; }
+    public void setMarksId(Integer marksId) {
+        this.marksId = marksId;
+    }
 
-    public Integer getEvs() { return evs; }
-    public void setEvs(Integer evs) { this.evs = evs; }
+    public Integer getTeacherId() {
+        return teacherId;
+    }
 
-    public Integer getScience() { return science; }
-    public void setScience(Integer science) { this.science = science; }
+    public void setTeacherId(Integer teacherId) {
+        this.teacherId = teacherId;
+    }
 
-    public Integer getSocialScience() { return socialScience; }
-    public void setSocialScience(Integer socialScience) { this.socialScience = socialScience; }
+    public Integer getClassId() {
+        return classId;
+    }
 
-    public Integer getComputer() { return computer; }
-    public void setComputer(Integer computer) { this.computer = computer; }
+    public void setClassId(Integer classId) {
+        this.classId = classId;
+    }
 
-    public Integer getGk() { return gk; }
-    public void setGk(Integer gk) { this.gk = gk; }
+    public Integer getStudentId() {
+        return studentId;
+    }
 
-    public Integer getDrawing() { return drawing; }
-    public void setDrawing(Integer drawing) { this.drawing = drawing; }
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
+    }
 
-    public Integer getTotalMarks() { return totalMarks; }
-    public void setTotalMarks(Integer totalMarks) { this.totalMarks = totalMarks; }
-
-    public Double getPercentage() { return percentage; }
-    public void setPercentage(Double percentage) { this.percentage = percentage; }
-
-    public String getGrade() { return grade; }
-    public void setGrade(String grade) { this.grade = grade; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public LocalDateTime getCreatedDate() { return createdDate; }
-    public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }
     public String getExamType() {
         return examType;
     }
@@ -119,6 +102,115 @@ public class Marks {
         this.examType = examType;
     }
 
-    
-    
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public Integer getQuarter() {
+        return quarter;
+    }
+
+    public void setQuarter(Integer quarter) {
+        this.quarter = quarter;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMarathi() {
+        return marathi;
+    }
+
+    public void setMarathi(Integer marathi) {
+        this.marathi = marathi;
+    }
+
+    public Integer getHindi() {
+        return hindi;
+    }
+
+    public void setHindi(Integer hindi) {
+        this.hindi = hindi;
+    }
+
+    public Integer getEnglish() {
+        return english;
+    }
+
+    public void setEnglish(Integer english) {
+        this.english = english;
+    }
+
+    public Integer getSanskrit() {
+        return sanskrit;
+    }
+
+    public void setSanskrit(Integer sanskrit) {
+        this.sanskrit = sanskrit;
+    }
+
+    public Integer getMaths() {
+        return maths;
+    }
+
+    public void setMaths(Integer maths) {
+        this.maths = maths;
+    }
+
+    public Integer getScience() {
+        return science;
+    }
+
+    public void setScience(Integer science) {
+        this.science = science;
+    }
+
+    public Integer getHistory() {
+        return history;
+    }
+
+    public void setHistory(Integer history) {
+        this.history = history;
+    }
+
+    public Integer getGeography() {
+        return geography;
+    }
+
+    public void setGeography(Integer geography) {
+        this.geography = geography;
+    }
+
+    public Integer getTotalMarks() {
+        return totalMarks;
+    }
+
+    public void setTotalMarks(Integer totalMarks) {
+        this.totalMarks = totalMarks;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 }

@@ -26,18 +26,17 @@ public class ClassService {
     private final ClassRepository classRepository;
     private final TeacherRepository teacherRepository;
 
-    
-
-    public ClassService(ClassRepository repository, ClassMapper mapper,ClassRepository classRepository,TeacherRepository teacherRepository) {
+    public ClassService(ClassRepository repository, ClassMapper mapper, ClassRepository classRepository,
+            TeacherRepository teacherRepository) {
         this.repository = repository;
         this.mapper = mapper;
-        this. classRepository= classRepository;
-        this.teacherRepository= teacherRepository;
+        this.classRepository = classRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     // CREATE
     public ClassDTO createClass(ClassDTO dto) {
-    	ClassEntity entity = mapper.toEntity(dto);
+        ClassEntity entity = mapper.toEntity(dto);
         entity.setClassId(null); // auto-increment
         ClassEntity saved = repository.save(entity);
         return mapper.toDto(saved);
@@ -71,11 +70,12 @@ public class ClassService {
 
     // DELETE
     public boolean deleteClass(Integer id) {
-        if (!repository.existsById(id)) return false;
+        if (!repository.existsById(id))
+            return false;
         repository.deleteById(id);
         return true;
     }
-   
+
     public ClassWithTeachersDTO getClassWithTeachers(Integer classId) {
 
         ClassEntity classEntity = classRepository.findById(classId)
@@ -85,12 +85,12 @@ public class ClassService {
         response.setClassId(classEntity.getClassId());
         response.setClassName(classEntity.getClassName());
 
-        response.setTeachers(
-                classEntity.getTeachers()
-                        .stream()
-                        .map(this::mapTeacher)
-                        .collect(Collectors.toList())
-        );
+        // response.setTeachers(
+        // classEntity.getTeachers()
+        // .stream()
+        // .map(this::mapTeacher)
+        // .collect(Collectors.toList())
+        // );
 
         return response;
     }
@@ -114,8 +114,7 @@ public class ClassService {
                     teacher.getClasses()
                             .stream()
                             .map(c -> c.getClassName())
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
         } else {
             dto.setClassNames(new ArrayList<>());
         }
@@ -123,4 +122,3 @@ public class ClassService {
         return dto;
     }
 }
-
