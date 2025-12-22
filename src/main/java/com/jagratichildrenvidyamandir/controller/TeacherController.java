@@ -100,10 +100,7 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.getClassesByTeacher(teacherId));
     }
 
-    @GetMapping("/{teacherId}/students")
-    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(@PathVariable Integer teacherId) {
-        return ResponseEntity.ok(teacherService.getStudentsByTeacher(teacherId));
-    }
+   
 
     // ---------------- Teacher Login ----------------
     @PostMapping("/login")

@@ -16,7 +16,10 @@ import com.jagratichildrenvidyamandir.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -164,5 +167,31 @@ public class TransactionService {
 		// 3. Convert to DTO
 		return transactions.stream().map(transactionMapper::toDto).toList();
 	}
+	//Akanksha get student by session id
+	public List<Map<String, Object>> getStudentsBySessionId(Integer sessionId) {
+	    // 1. Validate session exists
+	    SessionEntity session = sessionRepository.findById(sessionId)
+	            .orElseThrow(() -> new EntityNotFoundException("Session not found with id: " + sessionId));
+
+	    // 2. Fetch all transactions for this session
+	    List<Transaction> transactions = transactionRepository.findBySessionSessionId(sessionId);
+
+	    // 3. Extract unique users from transactions
+	    Set<User> users = transactions.stream()
+	            .map(Transaction::getUser)
+	            .collect(Collectors.toSet());
+
+	    // 4. Map users to only include userId, name, className
+	    List<Map<String, Object>> result = users.stream().map(user -> {
+	        Map<String, Object> map = new HashMap<>();
+	        map.put("userId", user.getUserId());
+	        map.put("name", user.getName());
+	        map.put("className", user.getStudentClass() != null ? user.getStudentClass().getClassName() : null);
+	        return map;
+	    }).collect(Collectors.toList());
+
+	    return result;
+	}
+
 
 }

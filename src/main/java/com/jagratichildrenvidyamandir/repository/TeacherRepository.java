@@ -22,4 +22,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 
     // Get all teachers assigned to a particular classId
     List<Teacher> findAllByClasses_ClassId(Integer classId);
+    
 }

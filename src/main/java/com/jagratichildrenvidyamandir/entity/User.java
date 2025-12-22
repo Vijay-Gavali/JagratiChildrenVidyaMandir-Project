@@ -1,6 +1,10 @@
 package com.jagratichildrenvidyamandir.entity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -62,6 +66,12 @@ public class User {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Transaction> transactions;
+	   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	    @JsonIgnore
+	    private List<Marks> marks = new ArrayList<>();
+	   
+	  
+
 
 	public User() {
 	}
@@ -315,4 +325,9 @@ public class User {
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
 	}
+	 
+	 public List<Marks> getMarks() { return marks; }
+	    public void setMarks(List<Marks> marks) { this.marks = marks; }
+	    
+	   
 }

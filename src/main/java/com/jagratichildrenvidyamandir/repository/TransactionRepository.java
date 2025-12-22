@@ -17,4 +17,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUserUserId(Integer userId);
 	List<Transaction> findBySessionSessionId(Integer sessionId);
 
+
 }

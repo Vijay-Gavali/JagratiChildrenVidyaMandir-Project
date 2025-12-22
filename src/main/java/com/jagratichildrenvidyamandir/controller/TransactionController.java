@@ -1,8 +1,11 @@
 package com.jagratichildrenvidyamandir.controller;
 
 import com.jagratichildrenvidyamandir.dto.TransactionDTO;
+import com.jagratichildrenvidyamandir.entity.User;
 import com.jagratichildrenvidyamandir.service.TransactionService;
 import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +17,8 @@ import java.util.Map;
 public class TransactionController {
 
 	private final TransactionService service;
+	@Autowired
+    private TransactionService transactionService;
 
 	public TransactionController(TransactionService service) {
 		this.service = service;
@@ -110,4 +115,11 @@ public class TransactionController {
 			return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
 		}
 	}
+	// getStudents by the sessionid
+    @GetMapping("/session/{sessionId}")
+    public ResponseEntity<List<Map<String, Object>>> getStudentsBySession(@PathVariable Integer sessionId) {
+        List<Map<String, Object>> students = transactionService.getStudentsBySessionId(sessionId);
+        return ResponseEntity.ok(students);
+    }
+
 }

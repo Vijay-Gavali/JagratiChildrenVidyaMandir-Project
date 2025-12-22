@@ -75,4 +75,7 @@ public class ClassEntity {
 		this.teachers = teachers;
 	}
 
+    public List<Marks> getMarks() { return marks; }
+    public void setMarks(List<Marks> marks) { this.marks = marks; }
+
 }
