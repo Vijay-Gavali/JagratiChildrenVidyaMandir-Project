@@ -1,14 +1,11 @@
 package com.jagratichildrenvidyamandir.controller;
 
-import com.jagratichildrenvidyamandir.controller.UserController.LoginRequest;
 import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
-import com.jagratichildrenvidyamandir.dto.MarksDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
 
 import com.jagratichildrenvidyamandir.dto.UploadSummaryDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
-import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.Teacher;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.service.AttendanceService;
@@ -16,16 +13,12 @@ import com.jagratichildrenvidyamandir.service.TeacherService;
 import com.jagratichildrenvidyamandir.service.UserExcelService;
 import com.jagratichildrenvidyamandir.service.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teachers")
@@ -38,7 +31,6 @@ public class TeacherController {
     private final String BASE_DIR = "uploads/teachers/";
     private final ClassRepository classRepository;
 
-    @Autowired
     public TeacherController(TeacherService teacherService, AttendanceService attendanceService,
             UserService service,
             UserExcelService excelService, ClassRepository classRepository) {
@@ -143,8 +135,6 @@ public class TeacherController {
             this.password = password;
         }
     }
-
-    // ---------------- Marks Management ----------------
 
     // ---------------- Upload Excel ----------------
     @PostMapping("/upload-excel")

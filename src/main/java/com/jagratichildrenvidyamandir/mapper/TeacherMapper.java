@@ -1,6 +1,7 @@
 package com.jagratichildrenvidyamandir.mapper;
 
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
+import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.Teacher;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 @Component
 public class TeacherMapper {
 
-    // Convert DTO → Entity
+    // DTO → Entity (NO classes here)
     public Teacher toEntity(TeacherDTO dto) {
         Teacher teacher = new Teacher();
         teacher.setTeacherId(dto.getTeacherId());
@@ -26,7 +27,7 @@ public class TeacherMapper {
         return teacher;
     }
 
-    // Convert Entity → DTO
+    // Entity → DTO
     public TeacherDTO toDTO(Teacher teacher) {
         TeacherDTO dto = new TeacherDTO();
         dto.setTeacherId(teacher.getTeacherId());
@@ -40,14 +41,12 @@ public class TeacherMapper {
         dto.setAadharNo(teacher.getAadharNo());
         dto.setAddress(teacher.getAddress());
 
-        // Map class names only
-        if (teacher.getClasses() != null && !teacher.getClasses().isEmpty()) {
-            dto.setClassNames(teacher.getClasses().stream()
-                    .map(c -> c.getClassName())
-                    .collect(Collectors.toList()));
-        } else {
-            dto.setClassNames(new ArrayList<>());
-        }
+        dto.setClassNames(
+            teacher.getClasses() == null ? new ArrayList<>() :
+            teacher.getClasses().stream()
+                .map(ClassEntity::getClassName)
+                .toList()
+        );
 
         return dto;
     }

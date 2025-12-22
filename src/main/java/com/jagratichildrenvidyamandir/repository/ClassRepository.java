@@ -1,5 +1,6 @@
 package com.jagratichildrenvidyamandir.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -14,4 +15,6 @@ public interface ClassRepository extends JpaRepository<ClassEntity, Integer> {
 	// add custom queries if needed
 	@EntityGraph(attributePaths = "students")
 	Optional<ClassEntity> findById(Integer id);
+
+	List<ClassEntity> findByClassNameIn(List<String> classNames);
 }

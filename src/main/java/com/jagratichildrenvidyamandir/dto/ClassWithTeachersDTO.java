@@ -5,6 +5,7 @@ import java.util.List;
 public class ClassWithTeachersDTO {
 
     private Integer classId;
+    
     private String className;
     private List<TeacherDTO> teachers;
 
