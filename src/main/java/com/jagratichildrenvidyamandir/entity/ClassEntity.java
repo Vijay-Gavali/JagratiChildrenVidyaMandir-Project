@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "classes")
@@ -28,7 +30,11 @@ public class ClassEntity {
 	private Teacher teacher;
 	@ManyToMany(mappedBy = "classes")
 	private List<Teacher> teachers = new ArrayList<>();
-
+	 // One class can have many marks
+	 // One class can have many marks
+	   @OneToMany(mappedBy = "classes", cascade = CascadeType.ALL)
+	    @JsonIgnore
+	    private List<Marks> marks = new ArrayList<>();
 	
 	// ---------- Constructors ----------
 	public ClassEntity() {
@@ -87,5 +93,8 @@ public class ClassEntity {
 	public void setTeachers(List<Teacher> teachers) {
 	    this.teachers = teachers;
 	}
+
+    public List<Marks> getMarks() { return marks; }
+    public void setMarks(List<Marks> marks) { this.marks = marks; }
 
 }

@@ -10,8 +10,12 @@ import com.jagratichildrenvidyamandir.mapper.TeacherMapper;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.repository.TeacherRepository;
 
+import jakarta.transaction.Transactional;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,32 +36,43 @@ public class TeacherService {
     // ================= REGISTER TEACHER =================
     public TeacherDTO registerTeacher(TeacherDTO dto) {
 
-        // Validate unique email & phone
+        // 🔐 Validate
         if (teacherRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already exists!");
+            throw new RuntimeException("Email already exists");
         }
         if (teacherRepository.existsByPhone(dto.getPhone())) {
-            throw new RuntimeException("Phone already exists!");
+            throw new RuntimeException("Phone already exists");
         }
 
-        // Map DTO to Entity
+        // 1️⃣ Map DTO → Entity
         Teacher teacher = teacherMapper.toEntity(dto);
 
-        // Save and return DTO
-        Teacher saved = teacherRepository.save(teacher);
+        // 2️⃣ Set ManyToMany (🔥 REQUIRED)
+        if (dto.getClassIds() != null && !dto.getClassIds().isEmpty()) {
+            List<ClassEntity> classes =
+                    classRepository.findAllById(dto.getClassIds());
+            teacher.setClasses(classes);
+        }
 
-        // Map class names for DTO
-        TeacherDTO response = teacherMapper.toDTO(saved);
+        // 3️⃣ Save
+        Teacher savedTeacher = teacherRepository.save(teacher);
+
+        // 4️⃣ Prepare response
+        TeacherDTO response = teacherMapper.toDTO(savedTeacher);
+
         response.setClassNames(
-                saved.getClasses() != null
-                        ? saved.getClasses().stream()
-                        .map(ClassEntity::getClassName)
-                        .collect(Collectors.toList())
+                savedTeacher.getClasses() != null
+                        ? savedTeacher.getClasses()
+                                .stream()
+                                .map(ClassEntity::getClassName)
+                                .collect(Collectors.toList())
                         : new ArrayList<>()
         );
 
         return response;
     }
+
+
 
     // ================= UPDATE TEACHER =================
     public TeacherDTO updateTeacher(Integer id, TeacherDTO dto) {
@@ -178,8 +193,10 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
-    // ================= GET STUDENTS BY TEACHER =================
+ // ================= GET STUDENTS BY TEACHER =================
+    
     public List<UserDTO> getStudentsByTeacher(Integer teacherId) {
+
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
@@ -187,20 +204,34 @@ public class TeacherService {
             return new ArrayList<>();
         }
 
+        Set<Integer> addedStudentIds = new HashSet<>();
         List<UserDTO> result = new ArrayList<>();
+
         for (ClassEntity cls : teacher.getClasses()) {
+
+            if (cls.getStudents() == null) continue;
+
             for (User student : cls.getStudents()) {
+
+                // avoid duplicate students
+                if (addedStudentIds.contains(student.getUserId())) {
+                    continue;
+                }
+
                 UserDTO dto = new UserDTO();
                 dto.setUserId(student.getUserId());
                 dto.setName(student.getName());
                 dto.setAdmissionNo(student.getAdmissionNo());
                 dto.setAdmissionDate(student.getAdmissionDate());
+
                 result.add(dto);
+                addedStudentIds.add(student.getUserId());
             }
         }
 
         return result;
     }
+
 
     // ================= TEACHER LOGIN =================
     public Teacher authenticateTeacher(String username, String password) {
@@ -225,4 +256,32 @@ public class TeacherService {
                 })
                 .collect(Collectors.toList());
     }
+ // ================= GET STUDENTS ALLOWED FOR TEACHER =================
+    public List<UserDTO> getStudentsAllowedForTeacher(Integer teacherId) {
+
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        if (teacher.getClasses() == null || teacher.getClasses().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<UserDTO> result = new ArrayList<>();
+
+        for (ClassEntity cls : teacher.getClasses()) {
+            for (User student : cls.getStudents()) {
+
+                UserDTO dto = new UserDTO();
+                dto.setUserId(student.getUserId());
+                dto.setName(student.getName());
+                dto.setAdmissionNo(student.getAdmissionNo());
+                dto.setAdmissionDate(student.getAdmissionDate());
+
+                result.add(dto);
+            }
+        }
+
+        return result;
+    }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
 import com.jagratichildrenvidyamandir.entity.Attendance;
+import com.jagratichildrenvidyamandir.entity.User;
 import com.jagratichildrenvidyamandir.mapper.AttendanceMapper;
 import com.jagratichildrenvidyamandir.repository.AttendanceRepository;
 
@@ -63,6 +64,28 @@ public class AttendanceService {
                 .stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+    }
+//Akanksha 
+ // ================= MARK ATTENDANCE (BULK) =================
+    @Transactional
+    public List<AttendanceDTO> markAttendanceBulk(List<AttendanceDTO> dtoList) {
+
+        return dtoList.stream().map(dto -> {
+
+            Attendance attendance = new Attendance();
+
+            attendance.setDate(dto.getDate());
+            attendance.setStatus(dto.getStatus());
+
+            // ✅ Only userId needed
+            User user = new User();
+            user.setUserId(dto.getUserId());
+            attendance.setUser(user);
+
+            Attendance saved = repository.save(attendance);
+            return mapper.toDto(saved);
+
+        }).collect(Collectors.toList());
     }
 
 }

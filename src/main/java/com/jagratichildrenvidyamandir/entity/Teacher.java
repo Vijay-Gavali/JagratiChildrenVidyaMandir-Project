@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "teachers")
 public class Teacher {
@@ -35,7 +37,9 @@ public class Teacher {
         inverseJoinColumns = @JoinColumn(name = "class_id")
     )
     private List<ClassEntity> classes = new ArrayList<>();
-   
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Marks> marks = new ArrayList<>();
 
     // ---------- Constructors ----------
     public Teacher() {}
@@ -73,5 +77,7 @@ public class Teacher {
 
     public List<ClassEntity> getClasses() { return classes; }
     public void setClasses(List<ClassEntity> classes) { this.classes = classes; }
+    public List<Marks> getMarks() { return marks; }
+    public void setMarks(List<Marks> marks) { this.marks = marks; }
    
 }

@@ -52,6 +52,17 @@ public class AttendanceController {
         List<AttendanceDTO> list = attendanceService.getAttendanceByUserId(userId);
         return ResponseEntity.ok(list);
     }
+    //Akanksha
+ // ================= MARK ATTENDANCE (BULK) =================
+    @PostMapping("/mark")
+    public ResponseEntity<List<AttendanceDTO>> markAttendance(
+            @RequestBody List<AttendanceDTO> dtoList) {
+
+        return ResponseEntity.ok(
+                attendanceService.markAttendanceBulk(dtoList)
+        );
+    }
+
    
 
 }

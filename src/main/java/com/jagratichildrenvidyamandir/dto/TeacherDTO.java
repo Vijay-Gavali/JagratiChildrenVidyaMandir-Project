@@ -25,7 +25,7 @@ public class TeacherDTO {
 
     private List<String> classNames;  // <-- add this field
 
-
+    private List<Integer> classIds;
     // Getters & Setters
     public Integer getTeacherId() { return teacherId; }
     public void setTeacherId(Integer teacherId) { this.teacherId = teacherId; }
@@ -59,4 +59,11 @@ public class TeacherDTO {
 
     public List<String> getClassNames() { return classNames; }
     public void setClassNames(List<String> classNames) { this.classNames = classNames; }
+    public List<Integer> getClassIds() {
+        return classIds;
+    }
+
+    public void setClassIds(List<Integer> classIds) {
+        this.classIds = classIds;
+    }
 }

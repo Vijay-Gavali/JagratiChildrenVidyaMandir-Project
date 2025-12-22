@@ -109,10 +109,7 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.getClassesByTeacher(teacherId));
     }
 
-    @GetMapping("/{teacherId}/students")
-    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(@PathVariable Integer teacherId) {
-        return ResponseEntity.ok(teacherService.getStudentsByTeacher(teacherId));
-    }
+   
 
     // ---------------- Teacher Login ----------------
     @PostMapping("/login")
@@ -134,9 +131,15 @@ public class TeacherController {
         public void setPassword(String password) { this.password = password; }
     }
 
-    // ---------------- Marks Management ----------------
+    // ✅ Get students assigned to teacher
+    @GetMapping("/{teacherId}/students")
+    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
+            @PathVariable Integer teacherId) {
 
-   
+        return ResponseEntity.ok(
+                teacherService.getStudentsByTeacher(teacherId)
+        );
+    }
 
     // ---------------- Upload Excel ----------------
     @PostMapping("/upload-excel")
