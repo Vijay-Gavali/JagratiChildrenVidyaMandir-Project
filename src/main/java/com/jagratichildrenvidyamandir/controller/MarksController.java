@@ -60,9 +60,7 @@ public class MarksController {
     // ✅ DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
-
         service.deleteMarks(id);
-
         return ResponseEntity.ok(Map.of("message", "Marks deleted successfully"));
     }
 
