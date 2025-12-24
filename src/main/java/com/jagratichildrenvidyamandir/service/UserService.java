@@ -2,8 +2,10 @@ package com.jagratichildrenvidyamandir.service;
 
 import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.entity.User;
+import com.jagratichildrenvidyamandir.entity.SessionEntity;
 import com.jagratichildrenvidyamandir.mapper.UserMapper;
 import com.jagratichildrenvidyamandir.repository.UserRepository;
+import com.jagratichildrenvidyamandir.repository.SessionRepository; // Ensure this import exists
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,15 +16,17 @@ import java.util.Optional;
 public class UserService {
 
 	private final UserRepository repository;
+	private final SessionRepository sessionRepository; // Added SessionRepository
 	private final UserMapper mapper;
 
-	public UserService(UserRepository repository, UserMapper mapper) {
+	public UserService(UserRepository repository, SessionRepository sessionRepository, UserMapper mapper) {
 		this.repository = repository;
+		this.sessionRepository = sessionRepository;
 		this.mapper = mapper;
 	}
 
-	// CREATE
-	public UserDTO createUser(UserDTO dto) {
+	// CREATE - Updated to handle sessionId
+	public UserDTO createUser(Integer sessionId, UserDTO dto) {
 		if (dto == null)
 			return null;
 		
@@ -44,6 +48,10 @@ public class UserService {
 		
 		User entity = mapper.toEntity(dto);
 		entity.setUserId(null);
+
+		// Link the session to the user
+		sessionRepository.findById(sessionId).ifPresent(entity::setSession);
+
 		User saved = repository.save(entity);
 		return mapper.toDto(saved);
 	}
@@ -53,13 +61,16 @@ public class UserService {
 		return repository.findById(id).map(mapper::toDto).orElse(null);
 	}
 
-	// GET all
-	public List<UserDTO> getAllUsers() {
-		return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
+	// GET all (Filtered by Session)
+	public List<UserDTO> getAllUsers(Integer sessionId) {
+		return repository.findAll().stream()
+				.filter(u -> u.getSession() != null && u.getSession().getSessionId().equals(sessionId))
+				.map(mapper::toDto)
+				.collect(Collectors.toList());
 	}
 
-	// UPDATE
-	public UserDTO updateUser(Integer id, UserDTO dto) {
+	// UPDATE - Updated to handle sessionId
+	public UserDTO updateUser(Integer id, UserDTO dto, Integer sessionId) {
 		Optional<User> opt = repository.findById(id);
 		if (opt.isEmpty())
 			return null;
@@ -88,6 +99,10 @@ public class UserService {
 			return null;
 
 		mapper.updateEntityFromDto(dto, existing);
+
+		// Update session if it changed or needs refreshing
+		sessionRepository.findById(sessionId).ifPresent(existing::setSession);
+
 		User updated = repository.save(existing);
 		return mapper.toDto(updated);
 	}
@@ -100,7 +115,7 @@ public class UserService {
 		return true;
 	}
 
-	// AUTH: Changed from phone to admissionNo
+	// AUTH: Changed from phone to admissionNo (Kept as is, no sessionId required for login)
 	public UserDTO authenticateStudent(String admissionNo, String password) {
 		return repository.findByAdmissionNo(admissionNo)
 				.filter(u -> u.getPassword() != null && u.getPassword().equals(password))

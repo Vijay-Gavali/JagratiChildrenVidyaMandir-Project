@@ -45,7 +45,6 @@ public class User {
 	private String ssmId;
 	private String passoutClass;
 
-	// --- NEW FIELDS ---
 	private String caste;
 	private String subCaste;
 	private String religion;
@@ -60,12 +59,16 @@ public class User {
 	@JoinColumn(name = "class_id")
 	private ClassEntity studentClass;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "session_id", nullable = true)
+	private SessionEntity session;
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Fees> fees;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Transaction> transactions;
-	
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	private List<Marks> marks = new ArrayList<>();
@@ -76,8 +79,8 @@ public class User {
 	public User(Integer userId, String name, String admissionNo, String admissionDate, String password,
 			String fatherName, String motherName, String dob, String studentPhone, String email, String parentPhone,
 			String address, String gender, String studentAadharNo, String parentAadharNo, ClassEntity studentClass,
-			String rte, String tcNumber, String ssmId, String passoutClass, String caste, String subCaste,
-			String religion, String apaarId, String panNo) {
+			SessionEntity session, String rte, String tcNumber, String ssmId, String passoutClass, String caste, 
+			String subCaste, String religion, String apaarId, String panNo) {
 		this.userId = userId;
 		this.name = name;
 		this.admissionNo = admissionNo;
@@ -94,6 +97,7 @@ public class User {
 		this.studentAadharNo = studentAadharNo;
 		this.parentAadharNo = parentAadharNo;
 		this.studentClass = studentClass;
+		this.session = session; 
 		this.rte = rte;
 		this.tcNumber = tcNumber;
 		this.ssmId = ssmId;
@@ -234,6 +238,14 @@ public class User {
 		this.studentClass = studentClass;
 	}
 
+	public SessionEntity getSession() {
+		return session;
+	}
+
+	public void setSession(SessionEntity session) {
+		this.session = session;
+	}
+
 	public String getRte() {
 		return rte;
 	}
@@ -266,7 +278,6 @@ public class User {
 		this.passoutClass = passoutClass;
 	}
 
-	// New Getters & Setters
 	public String getCaste() {
 		return caste;
 	}
@@ -330,5 +341,4 @@ public class User {
 	public void setMarks(List<Marks> marks) {
 		this.marks = marks;
 	}
-
 }
