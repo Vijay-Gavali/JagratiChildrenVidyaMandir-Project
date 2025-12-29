@@ -21,7 +21,9 @@ public class UserDTO {
 	private String tcNumber;
 	private String ssmId;
 	private String passoutClass;
+	
 	private Integer studentClassId;
+	private Integer sessionId;
 
 	// --- NEW FIELDS ---
 	private String caste;
@@ -234,4 +236,13 @@ public class UserDTO {
 	public void setPanNo(String panNo) {
 		this.panNo = panNo;
 	}
+
+	public Integer getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(Integer sessionId) {
+		this.sessionId = sessionId;
+	}
+
 }

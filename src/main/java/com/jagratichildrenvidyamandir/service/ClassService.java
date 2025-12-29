@@ -1,22 +1,25 @@
 package com.jagratichildrenvidyamandir.service;
 
-import com.jagratichildrenvidyamandir.dto.ClassDTO;
-import com.jagratichildrenvidyamandir.dto.ClassWithTeachersDTO;
-import com.jagratichildrenvidyamandir.dto.TeacherDTO;
-
-import com.jagratichildrenvidyamandir.dto.UserDTO;
-import com.jagratichildrenvidyamandir.mapper.ClassMapper;
-import com.jagratichildrenvidyamandir.entity.ClassEntity;
-import com.jagratichildrenvidyamandir.entity.Teacher;
-import com.jagratichildrenvidyamandir.repository.ClassRepository;
-import com.jagratichildrenvidyamandir.repository.TeacherRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.jagratichildrenvidyamandir.dto.ClassDTO;
+import com.jagratichildrenvidyamandir.dto.ClassWithTeachersDTO;
+import com.jagratichildrenvidyamandir.dto.TeacherDTO;
+import com.jagratichildrenvidyamandir.entity.ClassEntity;
+import com.jagratichildrenvidyamandir.entity.Teacher;
+import com.jagratichildrenvidyamandir.mapper.ClassMapper;
+
+import jakarta.persistence.EntityNotFoundException;
+
+import com.jagratichildrenvidyamandir.repository.ClassRepository;
+import com.jagratichildrenvidyamandir.repository.SessionRepository;
+import com.jagratichildrenvidyamandir.repository.TeacherRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ClassService {
@@ -25,13 +28,15 @@ public class ClassService {
     private final ClassMapper mapper;
     private final ClassRepository classRepository;
     private final TeacherRepository teacherRepository;
+    private final SessionRepository sessionRepository;
 
     public ClassService(ClassRepository repository, ClassMapper mapper, ClassRepository classRepository,
-            TeacherRepository teacherRepository) {
+            TeacherRepository teacherRepository,SessionRepository sessionRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.classRepository = classRepository;
         this.teacherRepository = teacherRepository;
+		this.sessionRepository = sessionRepository;
     }
 
     // CREATE
@@ -120,5 +125,17 @@ public class ClassService {
         }
 
         return dto;
+    }
+
+    public List<ClassDTO> getClassesBySessionId(Integer sessionId) {
+
+        if (!sessionRepository.existsById(sessionId)) {
+            throw new EntityNotFoundException("Session not found with id: " + sessionId);
+        }
+
+        return classRepository.findBySession_SessionId(sessionId)
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 }

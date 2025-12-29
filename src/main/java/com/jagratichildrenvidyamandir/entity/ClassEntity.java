@@ -27,6 +27,10 @@ public class ClassEntity {
 	@OneToMany(mappedBy = "classes", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Marks> marks = new ArrayList<>();
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "session_id", nullable = false)
+	private SessionEntity session;
+
 	// ---------- Constructors ----------
 	public ClassEntity() {
 	}
@@ -85,4 +89,13 @@ public class ClassEntity {
 	public void setMarks(List<Marks> marks) {
 		this.marks = marks;
 	}
+
+	public SessionEntity getSession() {
+		return session;
+	}
+
+	public void setSession(SessionEntity session) {
+		this.session = session;
+	}
+	
 }

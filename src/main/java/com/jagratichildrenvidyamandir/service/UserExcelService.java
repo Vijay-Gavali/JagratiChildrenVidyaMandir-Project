@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -24,10 +23,10 @@ public class UserExcelService {
     }
 
     /**
-     * Import users from a .xlsx file. Skip duplicates (by the rules in userService.createUser).
-     * Returns summary of import results.
+     * Import users from a .xlsx file. Skip duplicates.
+     * Updated to accept sessionId.
      */
-    public UploadSummaryDTO importFromExcel(MultipartFile file) {
+    public UploadSummaryDTO importFromExcel(MultipartFile file, Integer sessionId) {
         UploadSummaryDTO summary = new UploadSummaryDTO();
         if (file == null || file.isEmpty()) {
             summary.addError("No file uploaded or file is empty");
@@ -58,7 +57,6 @@ public class UserExcelService {
                 Row row = it.next();
                 excelRowNum++;
 
-                // skip completely empty rows
                 if (isRowEmpty(row)) continue;
 
                 summary.setTotalRows(summary.getTotalRows() + 1);
@@ -66,7 +64,6 @@ public class UserExcelService {
                 try {
                     UserDTO dto = rowToDto(row, headerMap, excelRowNum);
 
-                    // minimal validation: name and (studentPhone or admissionNo)
                     if (isBlank(dto.getName()) ||
                         (isBlank(dto.getStudentPhone()) && isBlank(dto.getAdmissionNo()))) {
                         summary.setSkipped(summary.getSkipped() + 1);
@@ -74,7 +71,9 @@ public class UserExcelService {
                         continue;
                     }
 
-                    UserDTO created = userService.createUser(dto);
+                    // FIX: Passing sessionId and dto to match UserService signature
+                    UserDTO created = userService.createUser(sessionId, dto);
+                    
                     if (created == null) {
                         summary.setSkipped(summary.getSkipped() + 1);
                         summary.addError("Row " + excelRowNum + ": duplicate/exists (admissionNo/email/phone/aadhar)");
@@ -98,7 +97,6 @@ public class UserExcelService {
         return summary;
     }
 
-    // build header map: lower-case trimmed header -> column index
     private Map<String, Integer> buildHeaderMap(Row header) {
         Map<String, Integer> map = new LinkedHashMap<>();
         for (Cell c : header) {
@@ -127,7 +125,6 @@ public class UserExcelService {
             } else if (c.getCellType() == CellType.BOOLEAN) {
                 return String.valueOf(c.getBooleanCellValue());
             } else if (c.getCellType() == CellType.FORMULA) {
-                // evaluate formula result
                 FormulaEvaluator evaluator = c.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
                 CellValue cv = evaluator.evaluate(c);
                 if (cv == null) return null;
@@ -161,7 +158,6 @@ public class UserExcelService {
 
     private UserDTO rowToDto(Row row, Map<String, Integer> headerMap, int rowNum) {
         UserDTO dto = new UserDTO();
-
         java.util.function.Function<String, String> read = (headerName) -> {
             Integer idx = headerMap.get(headerName.toLowerCase());
             if (idx == null) return null;

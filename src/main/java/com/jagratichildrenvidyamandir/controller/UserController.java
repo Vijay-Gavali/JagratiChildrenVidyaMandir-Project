@@ -23,56 +23,58 @@ public class UserController {
         this.excelService = excelService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> get(@PathVariable Integer id) {
+    // GET user by ID within a session
+    @GetMapping("/{sessionId}/{id}")
+    public ResponseEntity<UserDTO> get(@PathVariable Integer sessionId, @PathVariable Integer id) {
         UserDTO dto = service.getUserById(id);
         return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
-        UserDTO created = service.createUser(dto);
+    // CREATE user with session ID
+    @PostMapping("/{sessionId}/save")
+    public ResponseEntity<UserDTO> create(@PathVariable Integer sessionId, @RequestBody UserDTO dto) {
+        UserDTO created = service.createUser(sessionId, dto);
         if (created == null)
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAll")
-    public List<UserDTO> getAll() {
-        return service.getAllUsers();
+    // GET all users for a specific session
+    @GetMapping("/{sessionId}/getAll")
+    public List<UserDTO> getAll(@PathVariable Integer sessionId) {
+        return service.getAllUsers(sessionId);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO dto) {
-        UserDTO updated = service.updateUser(id, dto);
+    // UPDATE user with session context
+    @PutMapping("/{sessionId}/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Integer sessionId, @PathVariable Integer id, @RequestBody UserDTO dto) {
+        UserDTO updated = service.updateUser(id, dto, sessionId);
         return updated == null ? ResponseEntity.status(HttpStatus.CONFLICT).build() : ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    // DELETE user within a session context
+    @DeleteMapping("/{sessionId}/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer sessionId, @PathVariable Integer id) {
         boolean deleted = service.deleteUser(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    // Student login endpoint: Now using admissionNo
+    // LOGIN (No session ID in path as it's the entry point)
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@RequestBody LoginRequest req) {
         UserDTO user = service.authenticateStudent(req.getAdmissionNo(), req.getPassword());
         return user == null ? ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() : ResponseEntity.ok(user);
     }
 
-    @PostMapping("/uploadExcel")
-    public ResponseEntity<UploadSummaryDTO> uploadExcel(@RequestParam("file") MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            UploadSummaryDTO empty = new UploadSummaryDTO();
-            empty.addError("No file uploaded");
-            return ResponseEntity.badRequest().body(empty);
-        }
-        UploadSummaryDTO result = excelService.importFromExcel(file);
+    // UPLOAD EXCEL for a specific session
+    @PostMapping("/{sessionId}/uploadExcel")
+    public ResponseEntity<UploadSummaryDTO> uploadExcel(@PathVariable Integer sessionId, @RequestParam("file") MultipartFile file) {
+        // Pass sessionId here as well
+        UploadSummaryDTO result = excelService.importFromExcel(file, sessionId);
         return ResponseEntity.ok(result);
     }
 
-    // Updated helper class for Admission Number login
+    // Helper class for Login
     public static class LoginRequest {
         private String admissionNo;
         private String password;

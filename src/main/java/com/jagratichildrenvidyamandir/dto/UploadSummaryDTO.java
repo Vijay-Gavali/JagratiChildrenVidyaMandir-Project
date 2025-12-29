@@ -7,6 +7,7 @@ public class UploadSummaryDTO {
     private int totalRows;
     private int inserted;
     private int skipped;
+    
     private List<String> errors = new ArrayList<>();
 
     public UploadSummaryDTO() {}
