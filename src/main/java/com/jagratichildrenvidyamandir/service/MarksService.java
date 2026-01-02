@@ -76,15 +76,38 @@ public class MarksService {
 
         return dtoList.stream().map(dto -> {
 
+            if (dto.getStudentId() == null ||
+                dto.getTeacherId() == null ||
+                dto.getClassId() == null ||
+                dto.getSessionId() == null) {
+                throw new IllegalArgumentException(
+                    "studentId, teacherId, classId, sessionId must not be null"
+                );
+            }
+
             Marks marks = new Marks();
 
-            marks.setUser(userRepo.findById(dto.getStudentId()).orElseThrow());
-            marks.setTeacher(teacherRepo.findById(dto.getTeacherId()).orElseThrow());
-            marks.setClasses(classRepo.findById(dto.getClassId()).orElseThrow());
-            marks.setSession(sessionRepo.findById(dto.getSessionId()).orElseThrow());
+            marks.setUser(
+                userRepo.findById(dto.getStudentId())
+                    .orElseThrow(() -> new RuntimeException("User not found: " + dto.getStudentId()))
+            );
+
+            marks.setTeacher(
+                teacherRepo.findById(dto.getTeacherId())
+                    .orElseThrow(() -> new RuntimeException("Teacher not found: " + dto.getTeacherId()))
+            );
+
+            marks.setClasses(
+                classRepo.findById(dto.getClassId())
+                    .orElseThrow(() -> new RuntimeException("Class not found: " + dto.getClassId()))
+            );
+
+            marks.setSession(
+                sessionRepo.findById(dto.getSessionId())
+                    .orElseThrow(() -> new RuntimeException("Session not found: " + dto.getSessionId()))
+            );
 
             marks.setExamType(dto.getExamType());
-
             marks.setMarathi(dto.getMarathi());
             marks.setHindi(dto.getHindi());
             marks.setEnglish(dto.getEnglish());
@@ -103,6 +126,7 @@ public class MarksService {
 
         }).toList();
     }
+
  // ================= DELETE MARK =================
     public void deleteMarks(Integer marksId) {
 

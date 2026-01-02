@@ -1,5 +1,6 @@
 package com.jagratichildrenvidyamandir.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,12 +36,23 @@ public class AttendanceService {
     }
 
     public List<AttendanceDTO> getAllAttendance() {
+
         return repository.findAll()
                 .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
-    }
+                .map(attendance -> {
 
+                    AttendanceDTO dto = mapper.toDto(attendance);
+
+                    // ✅ add student name
+                    if (attendance.getUser() != null) {
+                        dto.setStudentName(attendance.getUser().getName());
+                    }
+
+                    return dto;
+
+                })
+                .collect(Collectors.toList());
+    } 
     public AttendanceDTO updateAttendance(Integer id, AttendanceDTO dto) {
         return repository.findById(id)
                 .map(existing -> {
@@ -65,27 +77,72 @@ public class AttendanceService {
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
-//Akanksha 
- // ================= MARK ATTENDANCE (BULK) =================
     @Transactional
     public List<AttendanceDTO> markAttendanceBulk(List<AttendanceDTO> dtoList) {
 
-        return dtoList.stream().map(dto -> {
+        LocalDate today = LocalDate.now();
+
+        // ✅ Check if ANY attendance already marked today
+        boolean alreadyMarked = dtoList.stream()
+                .anyMatch(dto ->
+                        repository.existsByUser_UserIdAndDate(dto.getUserId(), today)
+                );
+
+        // 🔁 If already marked → just fetch today attendance
+        if (alreadyMarked) {
+            return repository.findByDate(today)
+                    .stream()
+                    .map(mapper::toDto)
+                    .collect(Collectors.toList());
+        }
+
+        // ✅ Else → mark attendance
+        List<Attendance> attendanceList = dtoList.stream().map(dto -> {
 
             Attendance attendance = new Attendance();
-
-            attendance.setDate(dto.getDate());
+            attendance.setDate(today);
             attendance.setStatus(dto.getStatus());
 
-            // ✅ Only userId needed
             User user = new User();
             user.setUserId(dto.getUserId());
             attendance.setUser(user);
 
-            Attendance saved = repository.save(attendance);
-            return mapper.toDto(saved);
+            return attendance;
 
         }).collect(Collectors.toList());
+
+        repository.saveAll(attendanceList);
+
+        // ✅ Return today's attendance after save
+        return repository.findByDate(today)
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public List<AttendanceDTO> getTodayAttendance() {
+
+        LocalDate today = LocalDate.now();
+
+        return repository.findByDate(today)
+                .stream()
+                .map(attendance -> {
+
+                    AttendanceDTO dto = mapper.toDto(attendance);
+
+                    // student name via JPA relation
+                    dto.setStudentName(
+                            attendance.getUser() != null
+                                    ? attendance.getUser().getName()
+                                    : null
+                    );
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
+
 }
+
