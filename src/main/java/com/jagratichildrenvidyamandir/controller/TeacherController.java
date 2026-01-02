@@ -13,6 +13,7 @@ import com.jagratichildrenvidyamandir.entity.Teacher;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.service.AttendanceService;
 import com.jagratichildrenvidyamandir.service.TeacherService;
+import com.jagratichildrenvidyamandir.service.TransactionService;
 import com.jagratichildrenvidyamandir.service.UserExcelService;
 import com.jagratichildrenvidyamandir.service.UserService;
 
@@ -36,7 +37,8 @@ public class TeacherController {
     private final UserExcelService excelService;
     private final String BASE_DIR = "uploads/teachers/";
     private final ClassRepository classRepository;
-
+    @Autowired
+    private TransactionService transactionService;
 
     @Autowired
     public TeacherController(TeacherService teacherService, AttendanceService attendanceService,
@@ -85,23 +87,8 @@ public class TeacherController {
         return ResponseEntity.ok("Teacher deleted successfully");
     }
 
-    // ---------------- Teacher Attendance ----------------
-    @PostMapping("/mark-attendance")
-    public ResponseEntity<String> markAttendance(@RequestBody AttendanceDTO dto) {
-        attendanceService.createAttendance(dto);
-        return ResponseEntity.ok("Attendance marked successfully!");
-    }
-
-    @GetMapping("/attendance/{id}")
-    public ResponseEntity<AttendanceDTO> getAttendanceById(@PathVariable Integer id) {
-        AttendanceDTO dto = attendanceService.getAttendanceById(id);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
-    }
-
-    @GetMapping("/all-marked-attendance")
-    public ResponseEntity<List<AttendanceDTO>> getAllAttendance() {
-        return ResponseEntity.ok(attendanceService.getAllAttendance());
-    }
+  
+    
 
   
     @GetMapping("/{teacherId}/classes")
@@ -140,20 +127,7 @@ public class TeacherController {
                 teacherService.getStudentsByTeacher(teacherId)
         );
     }
+   
 
-    // ---------------- Upload Excel ----------------
-    @PostMapping("/upload-excel")
-    public ResponseEntity<UploadSummaryDTO> uploadExcel(@RequestParam("file") MultipartFile file) {
-        UploadSummaryDTO dto = new UploadSummaryDTO();
-        if (file == null || file.isEmpty()) {
-            dto.addError("No file uploaded");
-            return ResponseEntity.badRequest().body(dto);
-        }
-        try {
-            return ResponseEntity.ok(excelService.importFromExcel(file));
-        } catch (Exception e) {
-            dto.addError(e.getMessage());
-            return ResponseEntity.internalServerError().body(dto);
-        }
-    }
+
 }

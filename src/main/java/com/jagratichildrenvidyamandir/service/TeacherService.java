@@ -4,17 +4,28 @@ import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.entity.ClassEntity;
+import com.jagratichildrenvidyamandir.entity.SessionEntity;
 import com.jagratichildrenvidyamandir.entity.Teacher;
+import com.jagratichildrenvidyamandir.entity.Transaction;
 import com.jagratichildrenvidyamandir.entity.User;
 import com.jagratichildrenvidyamandir.mapper.TeacherMapper;
+import com.jagratichildrenvidyamandir.mapper.TransactionMapper;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
+import com.jagratichildrenvidyamandir.repository.SessionRepository;
 import com.jagratichildrenvidyamandir.repository.TeacherRepository;
+import com.jagratichildrenvidyamandir.repository.TransactionRepository;
+import com.jagratichildrenvidyamandir.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +43,16 @@ public class TeacherService {
 
     @Autowired
     private TeacherMapper teacherMapper;
+    @Autowired
+	private TransactionMapper transactionMapper;
+    @Autowired
+	private TransactionRepository transactionRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private SessionRepository sessionRepository;
 
     // ================= REGISTER TEACHER =================
     public TeacherDTO registerTeacher(TeacherDTO dto) {
@@ -276,6 +297,13 @@ public class TeacherService {
                 dto.setName(student.getName());
                 dto.setAdmissionNo(student.getAdmissionNo());
                 dto.setAdmissionDate(student.getAdmissionDate());
+               
+                dto.setGender(student.getGender());
+                dto.setStudentPhone(student.getStudentPhone());
+
+                // ---------- CLASS INFO ----------
+                dto.setStudentClassId(cls.getClassId());
+                dto.setStudentClassName(cls.getClassName());
 
                 result.add(dto);
             }
@@ -283,5 +311,5 @@ public class TeacherService {
 
         return result;
     }
-
+   
 }

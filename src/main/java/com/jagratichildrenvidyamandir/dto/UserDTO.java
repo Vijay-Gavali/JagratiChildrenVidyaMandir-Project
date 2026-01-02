@@ -22,6 +22,7 @@ public class UserDTO {
 	private String ssmId;
 	private String passoutClass;
 	private Integer studentClassId;
+	private String studentClassName; // for class name
 
 	// --- NEW FIELDS ---
 	private String caste;
@@ -29,7 +30,8 @@ public class UserDTO {
 	private String religion;
 	private String apaarId;
 	private String panNo;
-
+	private Integer sessionId;
+    private String sessionName;
 	public UserDTO() {
 	}
 
@@ -234,4 +236,24 @@ public class UserDTO {
 	public void setPanNo(String panNo) {
 		this.panNo = panNo;
 	}
+	 public Integer getSessionId() {
+	        return sessionId;
+	    }
+	    public void setSessionId(Integer sessionId) {
+	        this.sessionId = sessionId;
+	    }
+
+	    public String getSessionName() {
+	        return sessionName;
+	    }
+	    public void setSessionName(String sessionName) {
+	        this.sessionName = sessionName;
+	    }
+	    public String getStudentClassName() {
+	        return studentClassName;
+	    }
+
+	    public void setStudentClassName(String studentClassName) {
+	        this.studentClassName = studentClassName;
+	    }
 }

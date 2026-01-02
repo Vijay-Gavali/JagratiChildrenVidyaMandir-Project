@@ -11,6 +11,7 @@ public class AttendanceDTO {
 	private LocalDate date;
 
 	private String status;
+    private String studentName;
 
 	private Integer userId;
 
@@ -48,4 +49,11 @@ public class AttendanceDTO {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
+	 public String getStudentName() {
+	        return studentName;
+	    }
+
+	    public void setStudentName(String studentName) {
+	        this.studentName = studentName;
+	    }
 }

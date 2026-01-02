@@ -63,6 +63,12 @@ public class AttendanceController {
         );
     }
 
-   
+    @GetMapping("/today")
+    public ResponseEntity<List<AttendanceDTO>> getTodayAttendance() {
+
+        return ResponseEntity.ok(
+                attendanceService.getTodayAttendance()
+        );
+    }
 
 }

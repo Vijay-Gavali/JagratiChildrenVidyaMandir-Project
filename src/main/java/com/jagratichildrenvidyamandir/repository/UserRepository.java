@@ -1,11 +1,13 @@
 package com.jagratichildrenvidyamandir.repository;
 
+import com.jagratichildrenvidyamandir.entity.Transaction;
 import com.jagratichildrenvidyamandir.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -30,6 +32,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     List<User> findByStudentClassClassId(Integer classId);
 
+
     // find students by parentPhone
     List<User> findByParentPhone(String parentPhone);
+    List<User> findByStudentClassClassIdIn(Set<Integer> classIds);
+    
+    
 }
