@@ -191,8 +191,9 @@ public class TeacherService {
 				UserDTO dto = new UserDTO();
 				dto.setUserId(student.getUserId());
 				dto.setName(student.getName());
-				dto.setAdmissionNo(student.getAdmissionNo());
-				dto.setAdmissionDate(student.getAdmissionDate());
+				dto.setStudentClassId(student.getStudentClass().getClassId());
+				dto.setGender(student.getGender());
+				dto.setStudentPhone(student.getStudentPhone());
 				result.add(dto);
 			}
 		}
