@@ -1,14 +1,11 @@
 package com.jagratichildrenvidyamandir.controller;
 
-import com.jagratichildrenvidyamandir.controller.UserController.LoginRequest;
 import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
-import com.jagratichildrenvidyamandir.dto.MarksDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
 
 import com.jagratichildrenvidyamandir.dto.UploadSummaryDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
-import com.jagratichildrenvidyamandir.entity.ClassEntity;
 import com.jagratichildrenvidyamandir.entity.Teacher;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.service.AttendanceService;
@@ -17,16 +14,13 @@ import com.jagratichildrenvidyamandir.service.TransactionService;
 import com.jagratichildrenvidyamandir.service.UserExcelService;
 import com.jagratichildrenvidyamandir.service.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
@@ -37,21 +31,24 @@ public class TeacherController {
     private final UserExcelService excelService;
     private final String BASE_DIR = "uploads/teachers/";
     private final ClassRepository classRepository;
+<<<<<<< HEAD
     @Autowired
     private TransactionService transactionService;
 
     @Autowired
+=======
+
+>>>>>>> e478fab79d1f2747cee6047395f038ed95abbe54
     public TeacherController(TeacherService teacherService, AttendanceService attendanceService,
-                              UserService service,
-                             UserExcelService excelService, ClassRepository classRepository) {
+            UserService service,
+            UserExcelService excelService, ClassRepository classRepository) {
         this.teacherService = teacherService;
         this.attendanceService = attendanceService;
         this.service = service;
-        this.classRepository= classRepository;
+        this.classRepository = classRepository;
         this.excelService = excelService;
-        
-    }
 
+    }
 
     // ================= REGISTER =================
     @PostMapping("/register")
@@ -59,6 +56,7 @@ public class TeacherController {
         TeacherDTO saved = teacherService.registerTeacher(dto);
         return ResponseEntity.ok(saved);
     }
+
     // ================= GET ALL =================
     @GetMapping
     public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
@@ -90,7 +88,6 @@ public class TeacherController {
   
     
 
-  
     @GetMapping("/{teacherId}/classes")
     public ResponseEntity<List<ClassDTO>> getClassesByTeacher(@PathVariable Integer teacherId) {
         return ResponseEntity.ok(teacherService.getClassesByTeacher(teacherId));
@@ -112,20 +109,21 @@ public class TeacherController {
         private String phone;
         private String password;
 
-        public String getPhone() { return phone; }
-        public void setPhone(String phone) { this.phone = phone; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-    }
+        public String getPhone() {
+            return phone;
+        }
 
-    // ✅ Get students assigned to teacher
-    @GetMapping("/{teacherId}/students")
-    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
-            @PathVariable Integer teacherId) {
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
 
-        return ResponseEntity.ok(
-                teacherService.getStudentsByTeacher(teacherId)
-        );
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
     }
    
 

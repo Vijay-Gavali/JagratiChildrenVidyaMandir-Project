@@ -1,5 +1,12 @@
 package com.jagratichildrenvidyamandir.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
@@ -11,7 +18,11 @@ import com.jagratichildrenvidyamandir.entity.User;
 import com.jagratichildrenvidyamandir.mapper.TeacherMapper;
 import com.jagratichildrenvidyamandir.mapper.TransactionMapper;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
+<<<<<<< HEAD
 import com.jagratichildrenvidyamandir.repository.SessionRepository;
+=======
+import com.jagratichildrenvidyamandir.repository.TeacherDocumentRepository;
+>>>>>>> e478fab79d1f2747cee6047395f038ed95abbe54
 import com.jagratichildrenvidyamandir.repository.TeacherRepository;
 import com.jagratichildrenvidyamandir.repository.TransactionRepository;
 import com.jagratichildrenvidyamandir.repository.UserRepository;
@@ -19,6 +30,7 @@ import com.jagratichildrenvidyamandir.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,15 +44,18 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+=======
+>>>>>>> e478fab79d1f2747cee6047395f038ed95abbe54
 @Service
 public class TeacherService {
 
-    @Autowired
-    private TeacherRepository teacherRepository;
+	@Autowired
+	private TeacherRepository teacherRepository;
 
-    @Autowired
-    private ClassRepository classRepository;
+	@Autowired
+	private ClassRepository classRepository;
 
+<<<<<<< HEAD
     @Autowired
     private TeacherMapper teacherMapper;
     @Autowired
@@ -53,185 +68,186 @@ public class TeacherService {
 
 	@Autowired
 	private SessionRepository sessionRepository;
+=======
+	@Autowired
+	private TeacherMapper teacherMapper;
+	
+	@Autowired
+	private TeacherDocumentRepository documentRepository;
+>>>>>>> e478fab79d1f2747cee6047395f038ed95abbe54
 
-    // ================= REGISTER TEACHER =================
-    public TeacherDTO registerTeacher(TeacherDTO dto) {
+	@Transactional
+	public TeacherDTO registerTeacher(TeacherDTO dto) {
 
-        // 🔐 Validate
-        if (teacherRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-        if (teacherRepository.existsByPhone(dto.getPhone())) {
-            throw new RuntimeException("Phone already exists");
-        }
+		if (teacherRepository.existsByEmail(dto.getEmail())) {
+			throw new RuntimeException("Email already exists!");
+		}
+		if (teacherRepository.existsByPhone(dto.getPhone())) {
+			throw new RuntimeException("Phone already exists!");
+		}
 
-        // 1️⃣ Map DTO → Entity
-        Teacher teacher = teacherMapper.toEntity(dto);
+		if (dto.getClassNames() == null || dto.getClassNames().isEmpty()) {
+			throw new RuntimeException("At least one class is required");
+		}
 
-        // 2️⃣ Set ManyToMany (🔥 REQUIRED)
-        if (dto.getClassIds() != null && !dto.getClassIds().isEmpty()) {
-            List<ClassEntity> classes =
-                    classRepository.findAllById(dto.getClassIds());
-            teacher.setClasses(classes);
-        }
+		if (dto.getPassword() == null || dto.getPassword().isEmpty()) {
+			throw new RuntimeException("enter the password");
+		}
 
-        // 3️⃣ Save
-        Teacher savedTeacher = teacherRepository.save(teacher);
+		Teacher teacher = teacherMapper.toEntity(dto);
 
-        // 4️⃣ Prepare response
-        TeacherDTO response = teacherMapper.toDTO(savedTeacher);
+		List<ClassEntity> classes = classRepository.findByClassNameIn(dto.getClassNames());
 
-        response.setClassNames(
-                savedTeacher.getClasses() != null
-                        ? savedTeacher.getClasses()
-                                .stream()
-                                .map(ClassEntity::getClassName)
-                                .collect(Collectors.toList())
-                        : new ArrayList<>()
-        );
+		if (classes.size() != dto.getClassNames().size()) {
+			throw new RuntimeException("Invalid class name found");
+		}
 
-        return response;
-    }
+		teacher.setClasses(classes);
 
+		Teacher saved = teacherRepository.save(teacher);
 
+		return teacherMapper.toDTO(saved);
+	}
 
-    // ================= UPDATE TEACHER =================
-    public TeacherDTO updateTeacher(Integer id, TeacherDTO dto) {
+	// ================= UPDATE TEACHER =================
+	public TeacherDTO updateTeacher(Integer id, TeacherDTO dto) {
 
-        Teacher existing = teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+		Teacher existing = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        // Validate email & phone uniqueness
-        if (!existing.getEmail().equals(dto.getEmail()) && teacherRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already exists!");
-        }
-        if (!existing.getPhone().equals(dto.getPhone()) && teacherRepository.existsByPhone(dto.getPhone())) {
-            throw new RuntimeException("Phone already exists!");
-        }
+		// Validate email & phone uniqueness
+		if (!existing.getEmail().equals(dto.getEmail()) && teacherRepository.existsByEmail(dto.getEmail())) {
+			throw new RuntimeException("Email already exists!");
+		}
+		if (!existing.getPhone().equals(dto.getPhone()) && teacherRepository.existsByPhone(dto.getPhone())) {
+			throw new RuntimeException("Phone already exists!");
+		}
 
-        // Update fields
-        existing.setName(dto.getName());
-        existing.setEmail(dto.getEmail());
-        existing.setPhone(dto.getPhone());
-        existing.setPassword(dto.getPassword());
-        existing.setEducationalDetails(dto.getEducationalDetails());
-        existing.setYearOfExperience(dto.getYearOfExperience());
-        existing.setDateOfBirth(dto.getDateOfBirth());
-        existing.setAadharNo(dto.getAadharNo());
-        existing.setAddress(dto.getAddress());
+		// Update fields
+		existing.setName(dto.getName());
+		existing.setEmail(dto.getEmail());
+		existing.setPhone(dto.getPhone());
+		existing.setPassword(dto.getPassword());
+		existing.setEducationalDetails(dto.getEducationalDetails());
+		existing.setYearOfExperience(dto.getYearOfExperience());
+		existing.setDateOfBirth(dto.getDateOfBirth());
+		existing.setAadharNo(dto.getAadharNo());
+		existing.setAddress(dto.getAddress());
 
-        Teacher updated = teacherRepository.save(existing);
+		Teacher updated = teacherRepository.save(existing);
 
-        TeacherDTO response = teacherMapper.toDTO(updated);
-        response.setClassNames(
-                updated.getClasses() != null
-                        ? updated.getClasses().stream()
-                        .map(ClassEntity::getClassName)
-                        .collect(Collectors.toList())
-                        : new ArrayList<>()
-        );
+		TeacherDTO response = teacherMapper.toDTO(updated);
+		response.setClassNames(updated.getClasses() != null
+				? updated.getClasses().stream().map(ClassEntity::getClassName).collect(Collectors.toList())
+				: new ArrayList<>());
 
-        return response;
-    }
+		return response;
+	}
 
-    // ================= GET TEACHER BY ID =================
-    public TeacherDTO getTeacherById(Integer id) {
-        Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+	// ================= GET TEACHER BY ID =================
+	public TeacherDTO getTeacherById(Integer id) {
+		Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        TeacherDTO dto = teacherMapper.toDTO(teacher);
-        dto.setClassNames(
-                teacher.getClasses() != null
-                        ? teacher.getClasses().stream()
-                        .map(ClassEntity::getClassName)
-                        .collect(Collectors.toList())
-                        : new ArrayList<>()
-        );
+		TeacherDTO dto = teacherMapper.toDTO(teacher);
+		dto.setClassNames(teacher.getClasses() != null
+				? teacher.getClasses().stream().map(ClassEntity::getClassName).collect(Collectors.toList())
+				: new ArrayList<>());
 
-        return dto;
-    }
+		return dto;
+	}
 
-    // ================= DELETE TEACHER =================
-    public void deleteTeacher(Integer id) {
-        if (!teacherRepository.existsById(id)) {
-            throw new RuntimeException("Teacher not found with id " + id);
-        }
-        teacherRepository.deleteById(id);
-    }
+	@Transactional
+	public void deleteTeacher(Integer id) {
+		Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-    // ================= GET ALL TEACHERS =================
-    public List<TeacherDTO> getAllTeachers() {
-        return teacherRepository.findAll()
-                .stream()
-                .map(t -> {
-                    TeacherDTO dto = teacherMapper.toDTO(t);
-                    dto.setClassNames(
-                            t.getClasses() != null
-                                    ? t.getClasses().stream().map(ClassEntity::getClassName).collect(Collectors.toList())
-                                    : new ArrayList<>()
-                    );
-                    return dto;
-                })
-                .collect(Collectors.toList());
-    }
+		// remove relationships
+		for (ClassEntity cls : teacher.getClasses()) {
+			cls.getTeachers().remove(teacher);
+		}
+		teacher.getClasses().clear();
+        documentRepository.deleteByTeacherId(id);
+		teacherRepository.delete(teacher);
+	}
 
-    // ================= ASSIGN CLASSES TO TEACHER =================
-    public Teacher assignClassesToTeacher(Integer teacherId, List<Integer> classIds) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+	// ================= GET ALL TEACHERS =================
+	public List<TeacherDTO> getAllTeachers() {
+		return teacherRepository.findAll().stream().map(t -> {
+			TeacherDTO dto = teacherMapper.toDTO(t);
+			dto.setClassNames(t.getClasses() != null
+					? t.getClasses().stream().map(ClassEntity::getClassName).collect(Collectors.toList())
+					: new ArrayList<>());
+			return dto;
+		}).collect(Collectors.toList());
+	}
 
-        List<ClassEntity> classes = classRepository.findAllById(classIds);
+	// ================= ASSIGN CLASSES TO TEACHER =================
+	public Teacher assignClassesToTeacher(Integer teacherId, List<Integer> classIds) {
+		Teacher teacher = teacherRepository.findById(teacherId)
+				.orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        if (classes.size() != classIds.size()) {
-            throw new RuntimeException("Invalid class ID found!");
-        }
+		List<ClassEntity> classes = classRepository.findAllById(classIds);
 
-        teacher.setClasses(classes);
+		if (classes.size() != classIds.size()) {
+			throw new RuntimeException("Invalid class ID found!");
+		}
 
-        // Update bidirectional mapping
-        for (ClassEntity cls : classes) {
-            List<Teacher> teachers = cls.getTeachers();
-            if (!teachers.contains(teacher)) {
-                teachers.add(teacher);
-                cls.setTeachers(teachers);
-            }
-        }
+		teacher.setClasses(classes);
 
-        return teacherRepository.save(teacher);
-    }
+		// Update bidirectional mapping
+		for (ClassEntity cls : classes) {
+			List<Teacher> teachers = cls.getTeachers();
+			if (!teachers.contains(teacher)) {
+				teachers.add(teacher);
+				cls.setTeachers(teachers);
+			}
+		}
 
-    // ================= GET CLASSES BY TEACHER =================
-    public List<ClassDTO> getClassesByTeacher(Integer teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+		return teacherRepository.save(teacher);
+	}
 
-        if (teacher.getClasses() == null || teacher.getClasses().isEmpty()) {
-            return new ArrayList<>();
-        }
+	// ================= GET CLASSES BY TEACHER =================
+	public List<ClassDTO> getClassesByTeacher(Integer teacherId) {
+		Teacher teacher = teacherRepository.findById(teacherId)
+				.orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        return teacher.getClasses().stream()
-                .map(c -> new ClassDTO(c.getClassId(), c.getClassName()))
-                .collect(Collectors.toList());
-    }
+		if (teacher.getClasses() == null || teacher.getClasses().isEmpty()) {
+			return new ArrayList<>();
+		}
 
- // ================= GET STUDENTS BY TEACHER =================
-    
-    public List<UserDTO> getStudentsByTeacher(Integer teacherId) {
+		return teacher.getClasses().stream().map(c -> new ClassDTO(c.getClassId(), c.getClassName()))
+				.collect(Collectors.toList());
+	}
 
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+	// ================= GET STUDENTS BY TEACHER =================
+	public List<UserDTO> getStudentsByTeacher(Integer teacherId) {
+		Teacher teacher = teacherRepository.findById(teacherId)
+				.orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-        if (teacher.getClasses() == null || teacher.getClasses().isEmpty()) {
-            return new ArrayList<>();
-        }
+		if (teacher.getClasses() == null || teacher.getClasses().isEmpty()) {
+			return new ArrayList<>();
+		}
 
-        Set<Integer> addedStudentIds = new HashSet<>();
-        List<UserDTO> result = new ArrayList<>();
+		List<UserDTO> result = new ArrayList<>();
+		for (ClassEntity cls : teacher.getClasses()) {
+			for (User student : cls.getStudents()) {
+				UserDTO dto = new UserDTO();
+				dto.setUserId(student.getUserId());
+				dto.setName(student.getName());
+				dto.setAdmissionNo(student.getAdmissionNo());
+				dto.setAdmissionDate(student.getAdmissionDate());
+				result.add(dto);
+			}
+		}
 
-        for (ClassEntity cls : teacher.getClasses()) {
+		return result;
+	}
 
-            if (cls.getStudents() == null) continue;
+	// ================= TEACHER LOGIN =================
+	public Teacher authenticateTeacher(String username, String password) {
+		return teacherRepository.findByPhoneAndPassword(username, password)
+				.or(() -> teacherRepository.findByEmailAndPassword(username, password)).orElse(null);
+	}
 
+<<<<<<< HEAD
             for (User student : cls.getStudents()) {
 
                 // avoid duplicate students
@@ -313,3 +329,18 @@ public class TeacherService {
     }
    
 }
+=======
+	// ================= GET TEACHERS BY CLASS ID =================
+	public List<TeacherDTO> getTeachersByClassId(Integer classId) {
+		List<Teacher> teachers = teacherRepository.findAllByClasses_ClassId(classId);
+
+		return teachers.stream().map(t -> {
+			TeacherDTO dto = teacherMapper.toDTO(t);
+			dto.setClassNames(t.getClasses() != null
+					? t.getClasses().stream().map(ClassEntity::getClassName).collect(Collectors.toList())
+					: new ArrayList<>());
+			return dto;
+		}).collect(Collectors.toList());
+	}
+}
+>>>>>>> e478fab79d1f2747cee6047395f038ed95abbe54
