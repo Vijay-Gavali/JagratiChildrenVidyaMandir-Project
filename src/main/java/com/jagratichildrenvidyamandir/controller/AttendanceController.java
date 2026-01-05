@@ -62,6 +62,14 @@ public class AttendanceController {
                 attendanceService.markAttendanceBulk(dtoList)
         );
     }
+    
+    @GetMapping("/today")
+    public ResponseEntity<List<AttendanceDTO>> getTodayAttendance() {
+
+        return ResponseEntity.ok(
+                attendanceService.getTodayAttendance()
+        );
+    }
 
    
 
