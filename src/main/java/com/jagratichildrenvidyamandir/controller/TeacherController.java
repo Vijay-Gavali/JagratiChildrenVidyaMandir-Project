@@ -84,7 +84,7 @@ public class TeacherController {
         return ResponseEntity.ok("Attendance marked successfully!");
     }
 
-    @GetMapping("/attendance/{id}")
+    @GetMapping("/{id}/attendance")
     public ResponseEntity<AttendanceDTO> getAttendanceById(@PathVariable Integer id) {
         AttendanceDTO dto = attendanceService.getAttendanceById(id);
         return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
@@ -147,5 +147,14 @@ public class TeacherController {
             dto.addError(e.getMessage());
             return ResponseEntity.internalServerError().body(dto);
         }
+    }
+ // ✅ Get students assigned to teacher
+    @GetMapping("/{teacherId}/students")
+    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
+            @PathVariable Integer teacherId) {
+
+        return ResponseEntity.ok(
+                teacherService.getStudentsByTeacher(teacherId)
+        );
     }
 }
