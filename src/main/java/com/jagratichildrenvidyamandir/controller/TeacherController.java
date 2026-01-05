@@ -133,21 +133,6 @@ public class TeacherController {
         }
     }
 
-    // ---------------- Upload Excel ----------------
-    @PostMapping("/upload-excel")
-    public ResponseEntity<UploadSummaryDTO> uploadExcel(@RequestParam("file") MultipartFile file) {
-        UploadSummaryDTO dto = new UploadSummaryDTO();
-        if (file == null || file.isEmpty()) {
-            dto.addError("No file uploaded");
-            return ResponseEntity.badRequest().body(dto);
-        }
-        try {
-            return ResponseEntity.ok(excelService.importFromExcel(file));
-        } catch (Exception e) {
-            dto.addError(e.getMessage());
-            return ResponseEntity.internalServerError().body(dto);
-        }
-    }
  // ✅ Get students assigned to teacher
     @GetMapping("/{teacherId}/students")
     public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
