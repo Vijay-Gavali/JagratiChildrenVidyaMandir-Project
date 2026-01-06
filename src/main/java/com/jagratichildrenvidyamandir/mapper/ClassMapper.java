@@ -3,6 +3,7 @@ package com.jagratichildrenvidyamandir.mapper;
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.dto.UserDTO;
 import com.jagratichildrenvidyamandir.entity.ClassEntity;
+import com.jagratichildrenvidyamandir.entity.SessionEntity;
 import com.jagratichildrenvidyamandir.entity.User;
 
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ public class ClassMapper {
 		dto.setClassId(entity.getClassId());
 		dto.setClassName(entity.getClassName());
 		dto.setFees(entity.getFees());
+		dto.setSessionId(entity.getSession().getSessionId());
 
 		// map users → students list
 		if (entity.getStudents() != null) {
@@ -30,6 +32,7 @@ public class ClassMapper {
 
 		return dto;
 	}
+
 	public ClassDTO toFullDto(ClassEntity entity) {
 		if (entity == null)
 			return null;
@@ -56,6 +59,13 @@ public class ClassMapper {
 		entity.setClassId(dto.getClassId());
 		entity.setClassName(dto.getClassName());
 		entity.setFees(dto.getFees());
+
+		if (dto.getSessionId() != null) {
+			SessionEntity session = new SessionEntity();
+			session.setSessionId(dto.getSessionId()); // only ID
+			entity.setSession(session);
+		}
+
 		return entity;
 	}
 

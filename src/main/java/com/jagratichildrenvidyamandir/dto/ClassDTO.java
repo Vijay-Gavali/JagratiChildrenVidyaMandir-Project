@@ -7,6 +7,7 @@ public class ClassDTO {
 	private Integer classId;
 	private String className;
 	private Integer fees;
+    private Integer sessionId;
 
 	// students list included when fetching by id
 	private List<UserDTO> students;
@@ -55,4 +56,15 @@ public class ClassDTO {
 	public void setStudents(List<UserDTO> students) {
 		this.students = students;
 	}
+
+	public Integer getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(Integer sessionId) {
+		this.sessionId = sessionId;
+	}
+	
+	
+	
 }

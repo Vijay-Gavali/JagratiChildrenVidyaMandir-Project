@@ -73,13 +73,16 @@ public class User {
 	@JsonIgnore
 	private List<Marks> marks = new ArrayList<>();
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Document> documents = new ArrayList<>();
+
 	public User() {
 	}
 
 	public User(Integer userId, String name, String admissionNo, String admissionDate, String password,
 			String fatherName, String motherName, String dob, String studentPhone, String email, String parentPhone,
 			String address, String gender, String studentAadharNo, String parentAadharNo, ClassEntity studentClass,
-			SessionEntity session, String rte, String tcNumber, String ssmId, String passoutClass, String caste, 
+			SessionEntity session, String rte, String tcNumber, String ssmId, String passoutClass, String caste,
 			String subCaste, String religion, String apaarId, String panNo) {
 		this.userId = userId;
 		this.name = name;
@@ -97,7 +100,7 @@ public class User {
 		this.studentAadharNo = studentAadharNo;
 		this.parentAadharNo = parentAadharNo;
 		this.studentClass = studentClass;
-		this.session = session; 
+		this.session = session;
 		this.rte = rte;
 		this.tcNumber = tcNumber;
 		this.ssmId = ssmId;

@@ -2,17 +2,27 @@ package com.jagratichildrenvidyamandir.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FeesDTO {
 
-	private Integer feesId;
-	private BigDecimal amount;
-
-	private String paymentStatus;
-
-	private BigDecimal remainingAmount;
-	private BigDecimal paidAmount;
-
-	private Integer userId; // optional reference
+	 @JsonProperty("feesId")
+	    private Integer feesId;
+	    
+	    @JsonProperty("amount")
+	    private BigDecimal amount;
+	    
+	    @JsonProperty("paymentStatus")
+	    private String paymentStatus;
+	    
+	    @JsonProperty("remainingAmount")
+	    private BigDecimal remainingAmount;
+	    
+	    @JsonProperty("paidAmount")
+	    private BigDecimal paidAmount;
+	    
+	    @JsonProperty("userId")
+	    private Integer userId;
 
 	public FeesDTO() {
 	}

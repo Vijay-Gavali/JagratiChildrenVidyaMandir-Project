@@ -26,11 +26,11 @@ public class MarksService {
     }*/
 
     // ================= ADD BULK =================
-    public List<MarksDTO> addBulkMarks(List<MarksDTO> dtoList) {
+   /* public List<MarksDTO> addBulkMarks(List<MarksDTO> dtoList) {
         return dtoList.stream()
                 .map(dto -> mapper.toDTO(marksRepo.save(buildMarks(dto))))
                 .toList();
-    }
+    }*/
 
     // ================= UPDATE =================
     public MarksDTO updateMarks(Integer id, MarksDTO dto) {
@@ -44,7 +44,65 @@ public class MarksService {
         return mapper.toDTO(marksRepo.save(marks));
     }
 
-    // ================= DELETE =================
+
+    // ================= BULK ADD =================
+    public List<MarksDTO> addBulkMarks(List<MarksDTO> dtoList) {
+
+        return dtoList.stream().map(dto -> {
+
+            if (dto.getStudentId() == null ||
+                dto.getTeacherId() == null ||
+                dto.getClassId() == null ||
+                dto.getSessionId() == null) {
+                throw new IllegalArgumentException(
+                    "studentId, teacherId, classId, sessionId must not be null"
+                );
+            }
+
+            Marks marks = new Marks();
+
+            marks.setUser(
+                userRepo.findById(dto.getStudentId())
+                    .orElseThrow(() -> new RuntimeException("User not found: " + dto.getStudentId()))
+            );
+
+            marks.setTeacher(
+                teacherRepo.findById(dto.getTeacherId())
+                    .orElseThrow(() -> new RuntimeException("Teacher not found: " + dto.getTeacherId()))
+            );
+
+            marks.setClasses(
+                classRepo.findById(dto.getClassId())
+                    .orElseThrow(() -> new RuntimeException("Class not found: " + dto.getClassId()))
+            );
+
+            marks.setSession(
+                sessionRepo.findById(dto.getSessionId())
+                    .orElseThrow(() -> new RuntimeException("Session not found: " + dto.getSessionId()))
+            );
+
+            marks.setExamType(dto.getExamType());
+            marks.setMarathi(dto.getMarathi());
+            marks.setHindi(dto.getHindi());
+            marks.setEnglish(dto.getEnglish());
+            marks.setMaths(dto.getMaths());
+            marks.setScience(dto.getScience());
+            marks.setSocialScience(dto.getSocialScience());
+            marks.setEvs(dto.getEvs());
+            marks.setComputer(dto.getComputer());
+            marks.setGk(dto.getGk());
+            marks.setDrawing(dto.getDrawing());
+            marks.setSanskrit(dto.getSanskrit());
+
+            calculateResult(marks);
+
+            return mapper.toDTO(marksRepo.save(marks));
+
+        }).toList();
+    }
+
+ // ================= DELETE MARK =================
+
     public void deleteMarks(Integer marksId) {
         if (!marksRepo.existsById(marksId)) {
             throw new RuntimeException("Marks not found with id " + marksId);

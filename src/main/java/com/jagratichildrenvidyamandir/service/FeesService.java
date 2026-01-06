@@ -11,6 +11,8 @@ import com.jagratichildrenvidyamandir.mapper.FeesMapper;
 import com.jagratichildrenvidyamandir.repository.FeesRepository;
 import com.jagratichildrenvidyamandir.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class FeesService {
 
@@ -43,6 +45,7 @@ public class FeesService {
 		return feesRepository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
 	}
 
+	@Transactional
 	public FeesDTO updateFees(Integer id, FeesDTO dto) {
 		return feesRepository.findById(id).map(existing -> {
 			mapper.updateEntityFromDto(dto, existing);
