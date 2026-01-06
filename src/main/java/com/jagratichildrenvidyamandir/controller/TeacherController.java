@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teachers")
@@ -132,20 +133,37 @@ public class TeacherController {
             this.password = password;
         }
     }
-
-    // ---------------- Upload Excel ----------------
-    @PostMapping("/upload-excel")
-    public ResponseEntity<UploadSummaryDTO> uploadExcel(@RequestParam("file") MultipartFile file) {
-        UploadSummaryDTO dto = new UploadSummaryDTO();
-        if (file == null || file.isEmpty()) {
-            dto.addError("No file uploaded");
-            return ResponseEntity.badRequest().body(dto);
-        }
-        try {
-            return ResponseEntity.ok(excelService.importFromExcel(file));
-        } catch (Exception e) {
-            dto.addError(e.getMessage());
-            return ResponseEntity.internalServerError().body(dto);
-        }
+    
+ // Get all students in a class
+    @GetMapping("/class/{classId}/students")
+    public ResponseEntity<List<Map<String, Object>>> getStudentsByClass(@PathVariable Integer classId) {
+        List<Map<String, Object>> students = teacherService.getStudentsByClassId(classId);
+        if (students.isEmpty()) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(students);
     }
+
+    @GetMapping("/{teacherId}/class/{classId}/students")
+    public ResponseEntity<List<Map<String, Object>>> getStudentsByTeacherClass(
+            @PathVariable Integer teacherId,
+            @PathVariable Integer classId) {
+
+        List<Map<String, Object>> students =
+                teacherService.getStudentsByTeacherAndClass(teacherId, classId);
+
+        if (students.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(students);
+    }
+    
+    
+    @GetMapping("/{teacherId}/students")
+    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
+            @PathVariable Integer teacherId) {
+
+        return ResponseEntity.ok(
+                teacherService.getStudentsByTeacher(teacherId)
+        );
+    }
+
 }

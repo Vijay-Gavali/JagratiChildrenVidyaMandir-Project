@@ -1,7 +1,9 @@
 package com.jagratichildrenvidyamandir.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +19,15 @@ import com.jagratichildrenvidyamandir.mapper.TeacherMapper;
 import com.jagratichildrenvidyamandir.repository.ClassRepository;
 import com.jagratichildrenvidyamandir.repository.TeacherDocumentRepository;
 import com.jagratichildrenvidyamandir.repository.TeacherRepository;
+import com.jagratichildrenvidyamandir.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class TeacherService {
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@Autowired
 	private TeacherRepository teacherRepository;
@@ -218,4 +224,71 @@ public class TeacherService {
 			return dto;
 		}).collect(Collectors.toList());
 	}
-}
+
+		 // Get students by classId and map to simplified structure
+	    public List<Map<String, Object>> getStudentsByClassId(Integer classId) {
+	        List<User> students = userRepository.findByStudentClass_ClassId(classId);
+
+	        return students.stream().map(u -> {
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("userId", u.getUserId());
+	            map.put("name", u.getName());
+
+	            if (u.getStudentClass() != null) {
+	                map.put("classId", u.getStudentClass().getClassId());
+	                map.put("className", u.getStudentClass().getClassName());
+	                // List of teacherIds for that class
+	                List<Integer> teacherIds = u.getStudentClass().getTeachers().stream()
+	                        .map(t -> t.getTeacherId())
+	                        .collect(Collectors.toList());
+	                map.put("teacherIds", teacherIds);
+	            }
+
+	            if (u.getSession() != null) {
+	                map.put("sessionId", u.getSession().getSessionId());
+	                map.put("sessionName", u.getSession().getName());
+	            }
+
+	            return map;
+	        }).collect(Collectors.toList());
+	    }
+
+	    // Optional: Filter by teacherId as well
+	    public List<Map<String, Object>> getStudentsByTeacherAndClass(Integer teacherId, Integer classId) {
+
+	        List<User> students = userRepository.findByStudentClass_ClassId(classId);
+
+	        return students.stream()
+	                .filter(u -> u.getStudentClass() != null &&
+	                        u.getStudentClass().getTeachers().stream()
+	                                .anyMatch(t -> t.getTeacherId().equals(teacherId)))
+	                .map(u -> {
+	                    Map<String, Object> map = new HashMap<>();
+
+	                    // Student basic info
+	                    map.put("userId", u.getUserId());
+	                    map.put("name", u.getName());
+	                    map.put("gender", u.getGender());           // ✅ added
+	                    map.put("studentPhone", u.getStudentPhone()); // ✅ added
+
+	                    // Class info
+	                    map.put("classId", u.getStudentClass().getClassId());
+	                    map.put("className", u.getStudentClass().getClassName());
+
+	                    // Session info
+	                    if (u.getSession() != null) {
+	                        map.put("sessionId", u.getSession().getSessionId());
+	                        map.put("sessionName", u.getSession().getName());
+	                    }
+
+	                    return map;
+	                })
+	                .collect(Collectors.toList());
+	    }
+	    
+	    
+	    
+	    
+	}
+	
+
