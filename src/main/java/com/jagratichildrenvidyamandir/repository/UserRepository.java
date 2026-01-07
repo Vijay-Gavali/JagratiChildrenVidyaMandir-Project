@@ -32,4 +32,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // find students by parentPhone
     List<User> findByParentPhone(String parentPhone);
+    
+    List<User> findByStudentClass_ClassId(Integer classId);
 }
