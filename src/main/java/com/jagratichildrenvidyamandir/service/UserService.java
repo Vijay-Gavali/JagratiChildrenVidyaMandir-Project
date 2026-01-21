@@ -25,31 +25,26 @@ public class UserService {
 		this.mapper = mapper;
 	}
 
-	// CREATE - Updated to handle sessionId
 	public UserDTO createUser(Integer sessionId, UserDTO dto) {
 		if (dto == null)
 			return null;
-		
-		// Uniqueness checks for existing fields
+
+		// Specific checks with specific return values
 		if (dto.getAdmissionNo() != null && repository.existsByAdmissionNo(dto.getAdmissionNo()))
-			return null;
+			throw new IllegalArgumentException("Admission number already exists");
 		if (dto.getEmail() != null && repository.existsByEmail(dto.getEmail()))
-			return null;
+			throw new IllegalArgumentException("Email already exists");
 		if (dto.getStudentPhone() != null && repository.existsByStudentPhone(dto.getStudentPhone()))
-			return null;
+			throw new IllegalArgumentException("Student phone already exists");
 		if (dto.getStudentAadharNo() != null && repository.existsByStudentAadharNo(dto.getStudentAadharNo()))
-			return null;
-		
-		// NEW: Uniqueness checks for new fields
+			throw new IllegalArgumentException("Student Aadhar already exists");
 		if (dto.getApaarId() != null && repository.existsByApaarId(dto.getApaarId()))
-			return null;
+			throw new IllegalArgumentException("APAAR ID already exists");
 		if (dto.getPanNo() != null && repository.existsByPanNo(dto.getPanNo()))
-			return null;
-		
+			throw new IllegalArgumentException("PAN number already exists");
+
 		User entity = mapper.toEntity(dto);
 		entity.setUserId(null);
-
-		// Link the session to the user
 		sessionRepository.findById(sessionId).ifPresent(entity::setSession);
 
 		User saved = repository.save(entity);
@@ -65,8 +60,7 @@ public class UserService {
 	public List<UserDTO> getAllUsers(Integer sessionId) {
 		return repository.findAll().stream()
 				.filter(u -> u.getSession() != null && u.getSession().getSessionId().equals(sessionId))
-				.map(mapper::toDto)
-				.collect(Collectors.toList());
+				.map(mapper::toDto).collect(Collectors.toList());
 	}
 
 	// UPDATE - Updated to handle sessionId
@@ -115,11 +109,11 @@ public class UserService {
 		return true;
 	}
 
-	// AUTH: Changed from phone to admissionNo (Kept as is, no sessionId required for login)
+	// AUTH: Changed from phone to admissionNo (Kept as is, no sessionId required
+	// for login)
 	public UserDTO authenticateStudent(String admissionNo, String password) {
 		return repository.findByAdmissionNo(admissionNo)
-				.filter(u -> u.getPassword() != null && u.getPassword().equals(password))
-				.map(mapper::toDto)
+				.filter(u -> u.getPassword() != null && u.getPassword().equals(password)).map(mapper::toDto)
 				.orElse(null);
 	}
 }
