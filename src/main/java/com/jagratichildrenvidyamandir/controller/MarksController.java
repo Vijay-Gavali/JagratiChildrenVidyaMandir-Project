@@ -71,4 +71,12 @@ public class MarksController {
 
         return ResponseEntity.ok(service.getByStudent(studentId));
     }
+    
+ // ✅ GET BY ID (FOR EDIT MARKS)
+    @GetMapping("/{id}")
+    public ResponseEntity<MarksDTO> getMarksById(@PathVariable Integer id) {
+        return ResponseEntity.ok(service.getMarksById(id));
+    }
+
+
 }

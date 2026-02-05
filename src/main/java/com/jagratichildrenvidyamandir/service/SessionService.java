@@ -57,4 +57,6 @@ public class SessionService {
         if (!repo.existsById(id)) throw new EntityNotFoundException("Session not found: " + id);
         repo.deleteById(id);
     }
+   
+
 }

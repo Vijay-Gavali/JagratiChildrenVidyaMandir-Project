@@ -33,6 +33,7 @@ public class MarksService {
     }*/
 
     // ================= UPDATE =================
+    
     public MarksDTO updateMarks(Integer id, MarksDTO dto) {
 
         Marks marks = marksRepo.findById(id)
@@ -120,6 +121,14 @@ public class MarksService {
         return marksRepo.findByUser_UserId(studentId)
                 .stream().map(mapper::toDTO).toList();
     }
+    
+ // ✅ GET MARKS BY ID (FOR EDIT MARKS)
+    public MarksDTO getMarksById(Integer id) {
+        return marksRepo.findById(id)
+                .map(mapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Marks not found"));
+    }
+
 
     // ================= COMMON BUILDER =================
     private Marks buildMarks(MarksDTO dto) {
@@ -192,4 +201,5 @@ public class MarksService {
     private int count(Integer v) {
         return v == null ? 0 : 1;
     }
+    
 }

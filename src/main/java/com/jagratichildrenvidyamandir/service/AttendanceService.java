@@ -10,93 +10,94 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jagratichildrenvidyamandir.dto.AttendanceDTO;
 import com.jagratichildrenvidyamandir.entity.Attendance;
 import com.jagratichildrenvidyamandir.entity.User;
-import com.jagratichildrenvidyamandir.mapper.AttendanceMapper;
 import com.jagratichildrenvidyamandir.repository.AttendanceRepository;
 
 @Service
 public class AttendanceService {
 
     private final AttendanceRepository repository;
-    private final AttendanceMapper mapper;
 
-    public AttendanceService(AttendanceRepository repository, AttendanceMapper mapper) {
+    public AttendanceService(AttendanceRepository repository) {
         this.repository = repository;
-        this.mapper = mapper;
     }
 
+    /* ================= CREATE ================= */
     public AttendanceDTO createAttendance(AttendanceDTO dto) {
-        Attendance entity = mapper.toEntity(dto);
-        entity.setAttendanceId(null);
-        Attendance saved = repository.save(entity);
-        return mapper.toDto(saved);
+
+        Attendance attendance = new Attendance();
+        attendance.setDate(dto.getDate());
+        attendance.setStatus(dto.getStatus());
+
+        User user = new User();
+        user.setUserId(dto.getUserId());
+        attendance.setUser(user);
+
+        Attendance saved = repository.save(attendance);
+        return mapToDTO(saved);
     }
 
+    /* ================= GET BY ID ================= */
     public AttendanceDTO getAttendanceById(Integer id) {
-        return repository.findById(id).map(mapper::toDto).orElse(null);
+        return repository.findById(id)
+                .map(this::mapToDTO)
+                .orElse(null);
     }
 
+    /* ================= GET ALL ================= */
     public List<AttendanceDTO> getAllAttendance() {
-
         return repository.findAll()
                 .stream()
-                .map(attendance -> {
-
-                    AttendanceDTO dto = mapper.toDto(attendance);
-
-                    // ✅ add student name
-                    if (attendance.getUser() != null) {
-                        dto.setStudentName(attendance.getUser().getName());
-                    }
-
-                    return dto;
-
-                })
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
-    } 
+    }
+
+    /* ================= UPDATE ================= */
     public AttendanceDTO updateAttendance(Integer id, AttendanceDTO dto) {
         return repository.findById(id)
                 .map(existing -> {
-                    mapper.updateEntityFromDto(dto, existing);
+                    existing.setStatus(dto.getStatus());
                     Attendance updated = repository.save(existing);
-                    return mapper.toDto(updated);
+                    return mapToDTO(updated);
                 })
                 .orElse(null);
     }
 
+    /* ================= DELETE ================= */
     public boolean deleteAttendance(Integer id) {
         if (!repository.existsById(id)) return false;
         repository.deleteById(id);
         return true;
     }
-    
-    // get user attendance using userId
+
+    /* ================= USER ATTENDANCE ================= */
     @Transactional(readOnly = true)
     public List<AttendanceDTO> getAttendanceByUserId(Integer userId) {
         return repository.findByUserUserId(userId)
                 .stream()
-                .map(mapper::toDto)
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
+
+    /* ================= MARK ATTENDANCE (BULK) ================= */
     @Transactional
     public List<AttendanceDTO> markAttendanceBulk(List<AttendanceDTO> dtoList) {
 
         LocalDate today = LocalDate.now();
 
-        // ✅ Check if ANY attendance already marked today
         boolean alreadyMarked = dtoList.stream()
                 .anyMatch(dto ->
                         repository.existsByUser_UserIdAndDate(dto.getUserId(), today)
                 );
 
-        // 🔁 If already marked → just fetch today attendance
+        // 🔁 If already marked → return today's attendance
         if (alreadyMarked) {
             return repository.findByDate(today)
                     .stream()
-                    .map(mapper::toDto)
+                    .map(this::mapToDTO)
                     .collect(Collectors.toList());
         }
 
-        // ✅ Else → mark attendance
+        // ✅ Save attendance
         List<Attendance> attendanceList = dtoList.stream().map(dto -> {
 
             Attendance attendance = new Attendance();
@@ -113,13 +114,13 @@ public class AttendanceService {
 
         repository.saveAll(attendanceList);
 
-        // ✅ Return today's attendance after save
         return repository.findByDate(today)
                 .stream()
-                .map(mapper::toDto)
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
-    
+
+    /* ================= TODAY ATTENDANCE ================= */
     @Transactional(readOnly = true)
     public List<AttendanceDTO> getTodayAttendance() {
 
@@ -127,22 +128,33 @@ public class AttendanceService {
 
         return repository.findByDate(today)
                 .stream()
-                .map(attendance -> {
-
-                    AttendanceDTO dto = mapper.toDto(attendance);
-
-                    // student name via JPA relation
-                    dto.setStudentName(
-                            attendance.getUser() != null
-                                    ? attendance.getUser().getName()
-                                    : null
-                    );
-
-                    return dto;
-                })
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
+    /* ================= DTO MAPPER (🔥 FINAL FIX) ================= */
+    private AttendanceDTO mapToDTO(Attendance attendance) {
 
+        AttendanceDTO dto = new AttendanceDTO();
+        dto.setAttendanceId(attendance.getAttendanceId());
+        dto.setDate(attendance.getDate());
+        dto.setStatus(attendance.getStatus());
+
+        if (attendance.getUser() != null) {
+
+            dto.setUserId(attendance.getUser().getUserId());
+            dto.setStudentName(attendance.getUser().getName());
+
+            // ✅ CLASS NAME FIX (ROOT CAUSE SOLVED)
+            if (attendance.getUser().getStudentClass() != null) {
+                dto.setClassName(
+                        attendance.getUser()
+                                  .getStudentClass()
+                                  .getClassName()
+                );
+            }
+        }
+
+        return dto;
+    }
 }
-

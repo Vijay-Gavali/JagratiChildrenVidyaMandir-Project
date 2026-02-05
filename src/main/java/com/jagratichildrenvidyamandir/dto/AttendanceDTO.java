@@ -14,6 +14,17 @@ public class AttendanceDTO {
     private String studentName;
 
 	private Integer userId;
+	
+	 private String className;
+
+	    public String getClassName() {
+	        return className;
+	    }
+
+	    public void setClassName(String className) {
+	        this.className = className;
+	    }
+	
 
 	public AttendanceDTO() {
 	}

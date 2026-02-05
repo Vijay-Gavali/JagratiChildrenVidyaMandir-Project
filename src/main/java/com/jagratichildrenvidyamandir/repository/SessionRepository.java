@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface SessionRepository extends JpaRepository<SessionEntity, Integer> {
 	Optional<SessionEntity> findByName(String name);
+	
+
 }
