@@ -78,30 +78,55 @@ public class AttendanceService {
                 .collect(Collectors.toList());
     }
 
+    /* ================= CHECK ATTENDANCE EXISTS (CLASS + DATE) ================= */
+    public boolean isAttendanceMarkedForClass(Integer classId, LocalDate date) {
+        return repository.existsByUser_StudentClass_ClassIdAndDate(classId, date);
+    }
+
+    /* ================= GET ATTENDANCE BY CLASS + DATE ================= */
+    public List<AttendanceDTO> getAttendanceByClassAndDate(Integer classId, LocalDate date) {
+
+        return repository.findByUser_StudentClass_ClassIdAndDate(classId, date)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     /* ================= MARK ATTENDANCE (BULK) ================= */
     @Transactional
     public List<AttendanceDTO> markAttendanceBulk(List<AttendanceDTO> dtoList) {
 
-        LocalDate today = LocalDate.now();
+        if (dtoList == null || dtoList.isEmpty()) {
+            return List.of();
+        }
 
-        boolean alreadyMarked = dtoList.stream()
-                .anyMatch(dto ->
-                        repository.existsByUser_UserIdAndDate(dto.getUserId(), today)
-                );
+        Integer classId = dtoList.get(0).getClassId();
+        if (classId == null) {
+            throw new RuntimeException("ClassId missing in request");
+        }
 
-        // 🔁 If already marked → return today's attendance
+        LocalDate date = dtoList.get(0).getDate();
+        if (date == null) {
+            date = LocalDate.now();
+        }
+
+        // ✅ if already marked → return same records
+        boolean alreadyMarked = repository.existsByUser_StudentClass_ClassIdAndDate(classId, date);
+
         if (alreadyMarked) {
-            return repository.findByDate(today)
+            return repository.findByUser_StudentClass_ClassIdAndDate(classId, date)
                     .stream()
                     .map(this::mapToDTO)
                     .collect(Collectors.toList());
         }
 
+        LocalDate finalDate = date;
+
         // ✅ Save attendance
         List<Attendance> attendanceList = dtoList.stream().map(dto -> {
 
             Attendance attendance = new Attendance();
-            attendance.setDate(today);
+            attendance.setDate(finalDate);
             attendance.setStatus(dto.getStatus());
 
             User user = new User();
@@ -114,7 +139,7 @@ public class AttendanceService {
 
         repository.saveAll(attendanceList);
 
-        return repository.findByDate(today)
+        return repository.findByUser_StudentClass_ClassIdAndDate(classId, finalDate)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
@@ -132,7 +157,22 @@ public class AttendanceService {
                 .collect(Collectors.toList());
     }
 
-    /* ================= DTO MAPPER (🔥 FINAL FIX) ================= */
+    /* ================= EDIT ATTENDANCE ================= */
+    @Transactional
+    public AttendanceDTO editAttendance(Integer attendanceId, String status) {
+
+        Attendance attendance = repository.findById(attendanceId).orElse(null);
+
+        if (attendance == null) return null;
+
+        attendance.setStatus(status);
+
+        Attendance updated = repository.save(attendance);
+
+        return mapToDTO(updated);
+    }
+
+    /* ================= DTO MAPPER ================= */
     private AttendanceDTO mapToDTO(Attendance attendance) {
 
         AttendanceDTO dto = new AttendanceDTO();
@@ -145,13 +185,9 @@ public class AttendanceService {
             dto.setUserId(attendance.getUser().getUserId());
             dto.setStudentName(attendance.getUser().getName());
 
-            // ✅ CLASS NAME FIX (ROOT CAUSE SOLVED)
             if (attendance.getUser().getStudentClass() != null) {
-                dto.setClassName(
-                        attendance.getUser()
-                                  .getStudentClass()
-                                  .getClassName()
-                );
+                dto.setClassName(attendance.getUser().getStudentClass().getClassName());
+                dto.setClassId(attendance.getUser().getStudentClass().getClassId());
             }
         }
 
