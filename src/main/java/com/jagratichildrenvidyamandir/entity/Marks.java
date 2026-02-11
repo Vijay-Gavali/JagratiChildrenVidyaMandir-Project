@@ -7,223 +7,438 @@ import java.time.LocalDateTime;
 @Table(name = "marks")
 public class Marks {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer marksId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer marksId;
 
-	@ManyToOne
-	@JoinColumn(name = "student_id")
-	private User user;
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private User user;
 
-	@ManyToOne
-	@JoinColumn(name = "teacher_id")
-	private Teacher teacher;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
-	@ManyToOne
-	@JoinColumn(name = "class_id")
-	private ClassEntity classes;
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    private ClassEntity classes;
 
-	private Integer hindi;
-	private Integer english;
-	private Integer maths;
-	private Integer science;
-	private Integer socialScience;
-	private Integer evs;
-	private Integer computer;
-	private Integer gk;
-	private Integer drawing;
-	private Integer sanskrit;
+    // ================= Hindi =================
+    private Integer hindiTheory;
+    private Integer hindiProject;
+    private Integer hindiTotal;
 
-	private Integer totalMarks;
-	private Double percentage;
-	private String grade;
-	private String status;
-	// ✅ Exam
-	private String examType;
-	// ✅ SESSION (NEW FK)
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "session_id", nullable = false)
-	private SessionEntity session;
+    // ================= English =================
+    private Integer englishTheory;
+    private Integer englishProject;
+    private Integer englishTotal;
 
-	private LocalDateTime createdDate = LocalDateTime.now();
+    // ================= Maths =================
+    private Integer mathsTheory;
+    private Integer mathsProject;
+    private Integer mathsTotal;
 
-	private Integer marathi;
+    // ================= EVS =================
+    private Integer evsTheory;
+    private Integer evsProject;
+    private Integer evsTotal;
 
-	// Getters & setters
-	public Integer getMarksId() {
-		return marksId;
-	}
+    // ================= Science =================
+    private Integer scienceTheory;
+    private Integer scienceProject;
+    private Integer scienceTotal;
 
-	public void setMarksId(Integer marksId) {
-		this.marksId = marksId;
-	}
+    // ================= Social Science =================
+    private Integer socialScienceTheory;
+    private Integer socialScienceProject;
+    private Integer socialScienceTotal;
 
-	public User getUser() {
-		return user;
-	}
+    // ================= Sanskrit =================
+    private Integer sanskritTheory;
+    private Integer sanskritProject;
+    private Integer sanskritTotal;
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    // ================= Marathi =================
+    private Integer marathiTheory;
+    private Integer marathiProject;
+    private Integer marathiTotal;
 
-	public Teacher getTeacher() {
-		return teacher;
-	}
+    // ================= GK (NO PROJECT) =================
+    private Integer gkTheory;
+    private Integer gkTotal;
 
-	public void setTeacher(Teacher teacher) {
-		this.teacher = teacher;
-	}
+    // ================= Computer (NO PROJECT) =================
+    private Integer computerTheory;
+    private Integer computerTotal;
 
-	public ClassEntity getClasses() {
-		return classes;
-	}
+    // ================= Drawing (NO PROJECT) =================
+    private Integer drawingTheory;
+    private Integer drawingTotal;
 
-	public void setClasses(ClassEntity classes) {
-		this.classes = classes;
-	}
+    // ================= FINAL RESULT =================
+    private Integer totalMarks;
+    private Integer grandTotal;
+    private Double percentage;
+    private String grade;
+    private String status;
 
-	public SessionEntity getSession() {
-		return session;
-	}
+    // ✅ Exam Type
+    private String examType;
 
-	public void setSession(SessionEntity session) {
-		this.session = session;
-	}
+    // ✅ SESSION (FK)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id", nullable = false)
+    private SessionEntity session;
 
-	public Integer getMarathi() {
-		return marathi;
-	}
+    private LocalDateTime createdDate = LocalDateTime.now();
 
-	public void setMarathi(Integer marathi) {
-		this.marathi = marathi;
-	}
+    // ================= GETTERS & SETTERS =================
 
-	public Integer getHindi() {
-		return hindi;
-	}
+    public Integer getMarksId() {
+        return marksId;
+    }
 
-	public void setHindi(Integer hindi) {
-		this.hindi = hindi;
-	}
+    public void setMarksId(Integer marksId) {
+        this.marksId = marksId;
+    }
 
-	public Integer getEnglish() {
-		return english;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setEnglish(Integer english) {
-		this.english = english;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public Integer getSanskrit() {
-		return sanskrit;
-	}
+    public Teacher getTeacher() {
+        return teacher;
+    }
 
-	public void setSanskrit(Integer sanskrit) {
-		this.sanskrit = sanskrit;
-	}
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
 
-	public Integer getMaths() {
-		return maths;
-	}
+    public ClassEntity getClasses() {
+        return classes;
+    }
 
-	public void setMaths(Integer maths) {
-		this.maths = maths;
-	}
+    public void setClasses(ClassEntity classes) {
+        this.classes = classes;
+    }
 
-	public Integer getEvs() {
-		return evs;
-	}
+    public SessionEntity getSession() {
+        return session;
+    }
 
-	public void setEvs(Integer evs) {
-		this.evs = evs;
-	}
+    public void setSession(SessionEntity session) {
+        this.session = session;
+    }
 
-	public Integer getScience() {
-		return science;
-	}
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
 
-	public void setScience(Integer science) {
-		this.science = science;
-	}
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
 
-	public Integer getSocialScience() {
-		return socialScience;
-	}
+    public String getExamType() {
+        return examType;
+    }
 
-	public void setSocialScience(Integer socialScience) {
-		this.socialScience = socialScience;
-	}
+    public void setExamType(String examType) {
+        this.examType = examType;
+    }
 
-	public Integer getComputer() {
-		return computer;
-	}
+    // ================= Hindi =================
+    public Integer getHindiTheory() {
+        return hindiTheory;
+    }
 
-	public void setComputer(Integer computer) {
-		this.computer = computer;
-	}
+    public void setHindiTheory(Integer hindiTheory) {
+        this.hindiTheory = hindiTheory;
+    }
 
-	public Integer getGk() {
-		return gk;
-	}
+    public Integer getHindiProject() {
+        return hindiProject;
+    }
 
-	public void setGk(Integer gk) {
-		this.gk = gk;
-	}
+    public void setHindiProject(Integer hindiProject) {
+        this.hindiProject = hindiProject;
+    }
 
-	public Integer getDrawing() {
-		return drawing;
-	}
+    public Integer getHindiTotal() {
+        return hindiTotal;
+    }
 
-	public void setDrawing(Integer drawing) {
-		this.drawing = drawing;
-	}
+    public void setHindiTotal(Integer hindiTotal) {
+        this.hindiTotal = hindiTotal;
+    }
 
-	public Integer getTotalMarks() {
-		return totalMarks;
-	}
+    // ================= English =================
+    public Integer getEnglishTheory() {
+        return englishTheory;
+    }
 
-	public void setTotalMarks(Integer totalMarks) {
-		this.totalMarks = totalMarks;
-	}
+    public void setEnglishTheory(Integer englishTheory) {
+        this.englishTheory = englishTheory;
+    }
 
-	public Double getPercentage() {
-		return percentage;
-	}
+    public Integer getEnglishProject() {
+        return englishProject;
+    }
 
-	public void setPercentage(Double percentage) {
-		this.percentage = percentage;
-	}
+    public void setEnglishProject(Integer englishProject) {
+        this.englishProject = englishProject;
+    }
 
-	public String getGrade() {
-		return grade;
-	}
+    public Integer getEnglishTotal() {
+        return englishTotal;
+    }
 
-	public void setGrade(String grade) {
-		this.grade = grade;
-	}
+    public void setEnglishTotal(Integer englishTotal) {
+        this.englishTotal = englishTotal;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    // ================= Maths =================
+    public Integer getMathsTheory() {
+        return mathsTheory;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setMathsTheory(Integer mathsTheory) {
+        this.mathsTheory = mathsTheory;
+    }
 
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
-	}
+    public Integer getMathsProject() {
+        return mathsProject;
+    }
 
-	public void setCreatedDate(LocalDateTime createdDate) {
-		this.createdDate = createdDate;
-	}
+    public void setMathsProject(Integer mathsProject) {
+        this.mathsProject = mathsProject;
+    }
 
-	public String getExamType() {
-		return examType;
-	}
+    public Integer getMathsTotal() {
+        return mathsTotal;
+    }
 
-	public void setExamType(String examType) {
-		this.examType = examType;
-	}
+    public void setMathsTotal(Integer mathsTotal) {
+        this.mathsTotal = mathsTotal;
+    }
 
+    // ================= EVS =================
+    public Integer getEvsTheory() {
+        return evsTheory;
+    }
+
+    public void setEvsTheory(Integer evsTheory) {
+        this.evsTheory = evsTheory;
+    }
+
+    public Integer getEvsProject() {
+        return evsProject;
+    }
+
+    public void setEvsProject(Integer evsProject) {
+        this.evsProject = evsProject;
+    }
+
+    public Integer getEvsTotal() {
+        return evsTotal;
+    }
+
+    public void setEvsTotal(Integer evsTotal) {
+        this.evsTotal = evsTotal;
+    }
+
+    // ================= Science =================
+    public Integer getScienceTheory() {
+        return scienceTheory;
+    }
+
+    public void setScienceTheory(Integer scienceTheory) {
+        this.scienceTheory = scienceTheory;
+    }
+
+    public Integer getScienceProject() {
+        return scienceProject;
+    }
+
+    public void setScienceProject(Integer scienceProject) {
+        this.scienceProject = scienceProject;
+    }
+
+    public Integer getScienceTotal() {
+        return scienceTotal;
+    }
+
+    public void setScienceTotal(Integer scienceTotal) {
+        this.scienceTotal = scienceTotal;
+    }
+
+    // ================= Social Science =================
+    public Integer getSocialScienceTheory() {
+        return socialScienceTheory;
+    }
+
+    public void setSocialScienceTheory(Integer socialScienceTheory) {
+        this.socialScienceTheory = socialScienceTheory;
+    }
+
+    public Integer getSocialScienceProject() {
+        return socialScienceProject;
+    }
+
+    public void setSocialScienceProject(Integer socialScienceProject) {
+        this.socialScienceProject = socialScienceProject;
+    }
+
+    public Integer getSocialScienceTotal() {
+        return socialScienceTotal;
+    }
+
+    public void setSocialScienceTotal(Integer socialScienceTotal) {
+        this.socialScienceTotal = socialScienceTotal;
+    }
+
+    // ================= Sanskrit =================
+    public Integer getSanskritTheory() {
+        return sanskritTheory;
+    }
+
+    public void setSanskritTheory(Integer sanskritTheory) {
+        this.sanskritTheory = sanskritTheory;
+    }
+
+    public Integer getSanskritProject() {
+        return sanskritProject;
+    }
+
+    public void setSanskritProject(Integer sanskritProject) {
+        this.sanskritProject = sanskritProject;
+    }
+
+    public Integer getSanskritTotal() {
+        return sanskritTotal;
+    }
+
+    public void setSanskritTotal(Integer sanskritTotal) {
+        this.sanskritTotal = sanskritTotal;
+    }
+
+    // ================= Marathi =================
+    public Integer getMarathiTheory() {
+        return marathiTheory;
+    }
+
+    public void setMarathiTheory(Integer marathiTheory) {
+        this.marathiTheory = marathiTheory;
+    }
+
+    public Integer getMarathiProject() {
+        return marathiProject;
+    }
+
+    public void setMarathiProject(Integer marathiProject) {
+        this.marathiProject = marathiProject;
+    }
+
+    public Integer getMarathiTotal() {
+        return marathiTotal;
+    }
+
+    public void setMarathiTotal(Integer marathiTotal) {
+        this.marathiTotal = marathiTotal;
+    }
+
+    // ================= GK =================
+    public Integer getGkTheory() {
+        return gkTheory;
+    }
+
+    public void setGkTheory(Integer gkTheory) {
+        this.gkTheory = gkTheory;
+    }
+
+    public Integer getGkTotal() {
+        return gkTotal;
+    }
+
+    public void setGkTotal(Integer gkTotal) {
+        this.gkTotal = gkTotal;
+    }
+
+    // ================= Computer =================
+    public Integer getComputerTheory() {
+        return computerTheory;
+    }
+
+    public void setComputerTheory(Integer computerTheory) {
+        this.computerTheory = computerTheory;
+    }
+
+    public Integer getComputerTotal() {
+        return computerTotal;
+    }
+
+    public void setComputerTotal(Integer computerTotal) {
+        this.computerTotal = computerTotal;
+    }
+
+    // ================= Drawing =================
+    public Integer getDrawingTheory() {
+        return drawingTheory;
+    }
+
+    public void setDrawingTheory(Integer drawingTheory) {
+        this.drawingTheory = drawingTheory;
+    }
+
+    public Integer getDrawingTotal() {
+        return drawingTotal;
+    }
+
+    public void setDrawingTotal(Integer drawingTotal) {
+        this.drawingTotal = drawingTotal;
+    }
+
+    // ================= FINAL RESULT =================
+    public Integer getTotalMarks() {
+        return totalMarks;
+    }
+
+    public void setTotalMarks(Integer totalMarks) {
+        this.totalMarks = totalMarks;
+    }
+
+    public Integer getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setGrandTotal(Integer grandTotal) {
+        this.grandTotal = grandTotal;
+    }
+
+    public Double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(Double percentage) {
+        this.percentage = percentage;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

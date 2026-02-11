@@ -39,23 +39,62 @@ public class MarksMapper {
             dto.setSessionName(marks.getSession().getName());
         }
 
-        // ✅ Exam
+        // ✅ Exam Type
         dto.setExamType(marks.getExamType());
 
-        // ✅ Subject Marks (INCLUDING MARATHI)
-        dto.setMarathi(marks.getMarathi());
-        dto.setHindi(marks.getHindi());
-        dto.setEnglish(marks.getEnglish());
-        dto.setMaths(marks.getMaths());
-        dto.setScience(marks.getScience());
-        dto.setSocialScience(marks.getSocialScience());
-        dto.setEvs(marks.getEvs());
-        dto.setComputer(marks.getComputer());
-        dto.setGk(marks.getGk());
-        dto.setDrawing(marks.getDrawing());
-        dto.setSanskrit(marks.getSanskrit());
+        // ================= Hindi =================
+        dto.setHindiTheory(marks.getHindiTheory());
+        dto.setHindiProject(marks.getHindiProject());
+        dto.setHindiTotal(marks.getHindiTotal());
 
-        // ✅ Result
+        // ================= English =================
+        dto.setEnglishTheory(marks.getEnglishTheory());
+        dto.setEnglishProject(marks.getEnglishProject());
+        dto.setEnglishTotal(marks.getEnglishTotal());
+
+        // ================= Maths =================
+        dto.setMathsTheory(marks.getMathsTheory());
+        dto.setMathsProject(marks.getMathsProject());
+        dto.setMathsTotal(marks.getMathsTotal());
+
+        // ================= EVS =================
+        dto.setEvsTheory(marks.getEvsTheory());
+        dto.setEvsProject(marks.getEvsProject());
+        dto.setEvsTotal(marks.getEvsTotal());
+
+        // ================= Science =================
+        dto.setScienceTheory(marks.getScienceTheory());
+        dto.setScienceProject(marks.getScienceProject());
+        dto.setScienceTotal(marks.getScienceTotal());
+
+        // ================= Social Science =================
+        dto.setSocialScienceTheory(marks.getSocialScienceTheory());
+        dto.setSocialScienceProject(marks.getSocialScienceProject());
+        dto.setSocialScienceTotal(marks.getSocialScienceTotal());
+
+        // ================= Sanskrit =================
+        dto.setSanskritTheory(marks.getSanskritTheory());
+        dto.setSanskritProject(marks.getSanskritProject());
+        dto.setSanskritTotal(marks.getSanskritTotal());
+
+        // ================= Marathi =================
+        dto.setMarathiTheory(marks.getMarathiTheory());
+        dto.setMarathiProject(marks.getMarathiProject());
+        dto.setMarathiTotal(marks.getMarathiTotal());
+
+        // ================= GK (NO PROJECT) =================
+        dto.setGkTheory(marks.getGkTheory());
+        dto.setGkTotal(marks.getGkTotal());
+
+        // ================= Computer (NO PROJECT) =================
+        dto.setComputerTheory(marks.getComputerTheory());
+        dto.setComputerTotal(marks.getComputerTotal());
+
+        // ================= Drawing (NO PROJECT) =================
+        dto.setDrawingTheory(marks.getDrawingTheory());
+        dto.setDrawingTotal(marks.getDrawingTotal());
+
+        // ================= FINAL RESULT =================
         dto.setTotalMarks(marks.getTotalMarks());
         dto.setPercentage(marks.getPercentage());
         dto.setGrade(marks.getGrade());
