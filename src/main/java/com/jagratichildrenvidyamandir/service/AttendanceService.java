@@ -110,7 +110,6 @@ public class AttendanceService {
             date = LocalDate.now();
         }
 
-        // ✅ if already marked → return same records
         boolean alreadyMarked = repository.existsByUser_StudentClass_ClassIdAndDate(classId, date);
 
         if (alreadyMarked) {
@@ -122,7 +121,6 @@ public class AttendanceService {
 
         LocalDate finalDate = date;
 
-        // ✅ Save attendance
         List<Attendance> attendanceList = dtoList.stream().map(dto -> {
 
             Attendance attendance = new Attendance();
@@ -170,6 +168,37 @@ public class AttendanceService {
         Attendance updated = repository.save(attendance);
 
         return mapToDTO(updated);
+    }
+
+    /* ===================================================== */
+    /* ================= SAVE OR UPDATE SINGLE ============== */
+    /* ===================================================== */
+    @Transactional
+    public AttendanceDTO saveOrUpdateAttendance(AttendanceDTO dto) {
+
+        if (dto.getUserId() == null || dto.getDate() == null || dto.getStatus() == null) {
+            throw new RuntimeException("userId/date/status missing");
+        }
+
+        Attendance existing = repository.findByUser_UserIdAndDate(dto.getUserId(), dto.getDate());
+
+        if (existing != null) {
+            existing.setStatus(dto.getStatus());
+            Attendance updated = repository.save(existing);
+            return mapToDTO(updated);
+        }
+
+        Attendance attendance = new Attendance();
+        attendance.setDate(dto.getDate());
+        attendance.setStatus(dto.getStatus());
+
+        User user = new User();
+        user.setUserId(dto.getUserId());
+        attendance.setUser(user);
+
+        Attendance saved = repository.save(attendance);
+
+        return mapToDTO(saved);
     }
 
     /* ================= DTO MAPPER ================= */
