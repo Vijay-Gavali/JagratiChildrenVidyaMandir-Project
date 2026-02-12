@@ -16,116 +16,123 @@ import java.util.Map;
 @RequestMapping("/api/teachers")
 public class TeacherController {
 
-    private final TeacherService teacherService;
-    private final AttendanceService attendanceService;
-    private final UserService userService;
-    private final UserExcelService excelService;
-    private final ClassRepository classRepository;
+	private final TeacherService teacherService;
+	private final AttendanceService attendanceService;
+	private final UserService userService;
+	private final UserExcelService excelService;
+	private final ClassRepository classRepository;
 
-    public TeacherController(
-            TeacherService teacherService,
-            AttendanceService attendanceService,
-            UserService userService,
-            UserExcelService excelService,
-            ClassRepository classRepository) {
+	public TeacherController(TeacherService teacherService, AttendanceService attendanceService,
+			UserService userService, UserExcelService excelService, ClassRepository classRepository) {
 
-        this.teacherService = teacherService;
-        this.attendanceService = attendanceService;
-        this.userService = userService;
-        this.excelService = excelService;
-        this.classRepository = classRepository;
-    }
+		this.teacherService = teacherService;
+		this.attendanceService = attendanceService;
+		this.userService = userService;
+		this.excelService = excelService;
+		this.classRepository = classRepository;
+	}
 
-    // ================= REGISTER =================
-    @PostMapping("/register")
-    public ResponseEntity<TeacherDTO> registerTeacher(@RequestBody TeacherDTO dto) {
-        return ResponseEntity.ok(teacherService.registerTeacher(dto));
-    }
+	// ================= REGISTER =================
+	@PostMapping("/register")
+	public ResponseEntity<?> registerTeacher(@RequestBody TeacherDTO dto) {
+		try {
+			TeacherDTO created = teacherService.registerTeacher(dto);
 
-    // ================= GET ALL =================
-    @GetMapping
-    public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
-        return ResponseEntity.ok(teacherService.getAllTeachers());
-    }
+			if (created == null) {
+				return ResponseEntity.badRequest()
+						.body(new ErrorResponse("Duplicate field value - check email, phone or Aadhaar"));
+			}
 
-    // ================= GET BY ID =================
-    @GetMapping("/{id}")
-    public ResponseEntity<TeacherDTO> getTeacherById(@PathVariable Integer id) {
-        return ResponseEntity.ok(teacherService.getTeacherById(id));
-    }
+			return ResponseEntity.status(HttpStatus.CREATED).body(created);
 
-    // ================= UPDATE =================
-    @PutMapping("/{id}")
-    public ResponseEntity<TeacherDTO> updateTeacher(
-            @PathVariable Integer id,
-            @RequestBody TeacherDTO dto) {
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new ErrorResponse("Registration failed: " + e.getMessage()));
+		}
+	}
 
-        return ResponseEntity.ok(teacherService.updateTeacher(id, dto));
-    }
+	// ================= GET ALL =================
+	@GetMapping
+	public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
+		return ResponseEntity.ok(teacherService.getAllTeachers());
+	}
 
-    // ================= DELETE =================
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTeacher(@PathVariable Integer id) {
-        teacherService.deleteTeacher(id);
-        return ResponseEntity.ok("Teacher deleted successfully");
-    }
+	// ================= GET BY ID =================
+	@GetMapping("/{id}")
+	public ResponseEntity<TeacherDTO> getTeacherById(@PathVariable Integer id) {
+		return ResponseEntity.ok(teacherService.getTeacherById(id));
+	}
 
-    // ================= LOGIN =================
-    @PostMapping("/login")
-    public ResponseEntity<Teacher> login(@RequestBody LoginRequest req) {
-        Teacher teacher =
-                teacherService.authenticateTeacher(req.getPhone(), req.getPassword());
+	// ================= UPDATE =================
+	@PutMapping("/{id}")
+	public ResponseEntity<TeacherDTO> updateTeacher(@PathVariable Integer id, @RequestBody TeacherDTO dto) {
 
-        if (teacher == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		return ResponseEntity.ok(teacherService.updateTeacher(id, dto));
+	}
 
-        return ResponseEntity.ok(teacher);
-    }
+	// ================= DELETE =================
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteTeacher(@PathVariable Integer id) {
+		teacherService.deleteTeacher(id);
+		return ResponseEntity.ok("Teacher deleted successfully");
+	}
 
-    // ================= CLASSES BY TEACHER =================
-    @GetMapping("/{teacherId}/classes")
-    public ResponseEntity<List<ClassDTO>> getClassesByTeacher(
-            @PathVariable Integer teacherId) {
+	// ================= LOGIN =================
+	@PostMapping("/login")
+	public ResponseEntity<Teacher> login(@RequestBody LoginRequest req) {
+		Teacher teacher = teacherService.authenticateTeacher(req.getPhone(), req.getPassword());
 
-        return ResponseEntity.ok(
-                teacherService.getClassesByTeacher(teacherId)
-        );
-    }
+		if (teacher == null)
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-    // ================= STUDENTS BY TEACHER =================
-    @GetMapping("/{teacherId}/students")
-    public ResponseEntity<List<UserDTO>> getStudentsByTeacher(
-            @PathVariable Integer teacherId) {
+		return ResponseEntity.ok(teacher);
+	}
 
-        return ResponseEntity.ok(
-                teacherService.getStudentsByTeacher(teacherId)
-        );
-    }
+	// ================= CLASSES BY TEACHER =================
+	@GetMapping("/{teacherId}/classes")
+	public ResponseEntity<List<ClassDTO>> getClassesByTeacher(@PathVariable Integer teacherId) {
 
-    // ================= STUDENTS BY TEACHER & CLASS =================
-    @GetMapping("/{teacherId}/class/{classId}/students")
-    public ResponseEntity<List<Map<String, Object>>> getStudentsByTeacherClass(
-            @PathVariable Integer teacherId,
-            @PathVariable Integer classId) {
+		return ResponseEntity.ok(teacherService.getClassesByTeacher(teacherId));
+	}
 
-        List<Map<String, Object>> students =
-                teacherService.getStudentsByTeacherAndClass(teacherId, classId);
+	// ================= STUDENTS BY TEACHER =================
+	@GetMapping("/{teacherId}/students")
+	public ResponseEntity<List<UserDTO>> getStudentsByTeacher(@PathVariable Integer teacherId) {
 
-        if (students.isEmpty())
-            return ResponseEntity.noContent().build();
+		return ResponseEntity.ok(teacherService.getStudentsByTeacher(teacherId));
+	}
 
-        return ResponseEntity.ok(students);
-    }
+	// ================= STUDENTS BY TEACHER & CLASS =================
+	@GetMapping("/{teacherId}/class/{classId}/students")
+	public ResponseEntity<List<Map<String, Object>>> getStudentsByTeacherClass(@PathVariable Integer teacherId,
+			@PathVariable Integer classId) {
 
-    // ================= LOGIN REQUEST =================
-    public static class LoginRequest {
-        private String phone;
-        private String password;
+		List<Map<String, Object>> students = teacherService.getStudentsByTeacherAndClass(teacherId, classId);
 
-        public String getPhone() { return phone; }
-        public void setPhone(String phone) { this.phone = phone; }
+		if (students.isEmpty())
+			return ResponseEntity.noContent().build();
 
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-    }
+		return ResponseEntity.ok(students);
+	}
+
+	// ================= LOGIN REQUEST =================
+	public static class LoginRequest {
+		private String phone;
+		private String password;
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+	}
 }

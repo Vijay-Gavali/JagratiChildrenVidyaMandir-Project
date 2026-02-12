@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.jagratichildrenvidyamandir.dto.ClassDTO;
 import com.jagratichildrenvidyamandir.dto.TeacherDTO;
@@ -25,7 +27,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TeacherService {
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
@@ -37,41 +39,49 @@ public class TeacherService {
 
 	@Autowired
 	private TeacherMapper teacherMapper;
-	
+
 	@Autowired
 	private TeacherDocumentRepository documentRepository;
 
 	@Transactional
 	public TeacherDTO registerTeacher(TeacherDTO dto) {
 
-		if (teacherRepository.existsByEmail(dto.getEmail())) {
-			throw new RuntimeException("Email already exists!");
-		}
-		if (teacherRepository.existsByPhone(dto.getPhone())) {
-			throw new RuntimeException("Phone already exists!");
-		}
+	    if (dto == null)
+	        return null;
 
-		if (dto.getClassNames() == null || dto.getClassNames().isEmpty()) {
-			throw new RuntimeException("At least one class is required");
-		}
+	    // Duplicate checks like User
+	    if (dto.getAadharNo() != null &&
+	            teacherRepository.existsByAadharNo(dto.getAadharNo()))
+	        throw new IllegalArgumentException("Aadhaar number already exists");
 
-		if (dto.getPassword() == null || dto.getPassword().isEmpty()) {
-			throw new RuntimeException("enter the password");
-		}
+	    if (dto.getEmail() != null &&
+	            teacherRepository.existsByEmail(dto.getEmail()))
+	        throw new IllegalArgumentException("Email already exists");
 
-		Teacher teacher = teacherMapper.toEntity(dto);
+	    if (dto.getPhone() != null &&
+	            teacherRepository.existsByPhone(dto.getPhone()))
+	        throw new IllegalArgumentException("Phone already exists");
 
-		List<ClassEntity> classes = classRepository.findByClassNameIn(dto.getClassNames());
+	    if (dto.getClassNames() == null || dto.getClassNames().isEmpty())
+	        throw new IllegalArgumentException("At least one class is required");
 
-		if (classes.size() != dto.getClassNames().size()) {
-			throw new RuntimeException("Invalid class name found");
-		}
+	    if (dto.getPassword() == null || dto.getPassword().isBlank())
+	        throw new IllegalArgumentException("Password is required");
 
-		teacher.setClasses(classes);
+	    Teacher teacher = teacherMapper.toEntity(dto);
+	    teacher.setTeacherId(null);
 
-		Teacher saved = teacherRepository.save(teacher);
+	    List<ClassEntity> classes =
+	            classRepository.findByClassNameIn(dto.getClassNames());
 
-		return teacherMapper.toDTO(saved);
+	    if (classes.size() != dto.getClassNames().size())
+	        throw new IllegalArgumentException("Invalid class name found");
+
+	    teacher.setClasses(classes);
+
+	    Teacher saved = teacherRepository.save(teacher);
+
+	    return teacherMapper.toDTO(saved);
 	}
 
 	// ================= UPDATE TEACHER =================
@@ -129,7 +139,7 @@ public class TeacherService {
 			cls.getTeachers().remove(teacher);
 		}
 		teacher.getClasses().clear();
-        documentRepository.deleteByTeacherId(id);
+		documentRepository.deleteByTeacherId(id);
 		teacherRepository.delete(teacher);
 	}
 
@@ -226,70 +236,62 @@ public class TeacherService {
 		}).collect(Collectors.toList());
 	}
 
-		 // Get students by classId and map to simplified structure
-	    public List<Map<String, Object>> getStudentsByClassId(Integer classId) {
-	        List<User> students = userRepository.findByStudentClass_ClassId(classId);
+	// Get students by classId and map to simplified structure
+	public List<Map<String, Object>> getStudentsByClassId(Integer classId) {
+		List<User> students = userRepository.findByStudentClass_ClassId(classId);
 
-	        return students.stream().map(u -> {
-	            Map<String, Object> map = new HashMap<>();
-	            map.put("userId", u.getUserId());
-	            map.put("name", u.getName());
+		return students.stream().map(u -> {
+			Map<String, Object> map = new HashMap<>();
+			map.put("userId", u.getUserId());
+			map.put("name", u.getName());
 
-	            if (u.getStudentClass() != null) {
-	                map.put("classId", u.getStudentClass().getClassId());
-	                map.put("className", u.getStudentClass().getClassName());
-	                // List of teacherIds for that class
-	                List<Integer> teacherIds = u.getStudentClass().getTeachers().stream()
-	                        .map(t -> t.getTeacherId())
-	                        .collect(Collectors.toList());
-	                map.put("teacherIds", teacherIds);
-	            }
+			if (u.getStudentClass() != null) {
+				map.put("classId", u.getStudentClass().getClassId());
+				map.put("className", u.getStudentClass().getClassName());
+				// List of teacherIds for that class
+				List<Integer> teacherIds = u.getStudentClass().getTeachers().stream().map(t -> t.getTeacherId())
+						.collect(Collectors.toList());
+				map.put("teacherIds", teacherIds);
+			}
 
-	            if (u.getSession() != null) {
-	                map.put("sessionId", u.getSession().getSessionId());
-	                map.put("sessionName", u.getSession().getName());
-	            }
+			if (u.getSession() != null) {
+				map.put("sessionId", u.getSession().getSessionId());
+				map.put("sessionName", u.getSession().getName());
+			}
 
-	            return map;
-	        }).collect(Collectors.toList());
-	    }
-
-	    // Optional: Filter by teacherId as well
-	    public List<Map<String, Object>> getStudentsByTeacherAndClass(Integer teacherId, Integer classId) {
-
-	        List<User> students = userRepository.findByStudentClass_ClassId(classId);
-
-	        return students.stream()
-	                .filter(u -> u.getStudentClass() != null &&
-	                        u.getStudentClass().getTeachers().stream()
-	                                .anyMatch(t -> t.getTeacherId().equals(teacherId)))
-	                .map(u -> {
-	                    Map<String, Object> map = new HashMap<>();
-
-	                    // Student basic info
-	                    map.put("userId", u.getUserId());
-	                    map.put("name", u.getName());
-	                    map.put("gender", u.getGender());           // ✅ added
-	                    map.put("studentPhone", u.getStudentPhone()); // ✅ added
-
-	                    // Class info
-	                    map.put("classId", u.getStudentClass().getClassId());
-	                    map.put("className", u.getStudentClass().getClassName());
-
-	                    // Session info
-	                    if (u.getSession() != null) {
-	                        map.put("sessionId", u.getSession().getSessionId());
-	                        map.put("sessionName", u.getSession().getName());
-	                    }
-
-	                    return map;
-	                })
-	                .collect(Collectors.toList());
-	    }
-	    
-	    
-	    
-	    
+			return map;
+		}).collect(Collectors.toList());
 	}
-	
 
+	// Optional: Filter by teacherId as well
+	public List<Map<String, Object>> getStudentsByTeacherAndClass(Integer teacherId, Integer classId) {
+
+		List<User> students = userRepository.findByStudentClass_ClassId(classId);
+
+		return students.stream()
+				.filter(u -> u.getStudentClass() != null
+						&& u.getStudentClass().getTeachers().stream().anyMatch(t -> t.getTeacherId().equals(teacherId)))
+				.map(u -> {
+					Map<String, Object> map = new HashMap<>();
+
+					// Student basic info
+					map.put("userId", u.getUserId());
+					map.put("name", u.getName());
+					map.put("gender", u.getGender()); // ✅ added
+					map.put("studentPhone", u.getStudentPhone()); // ✅ added
+
+					// Class info
+					map.put("classId", u.getStudentClass().getClassId());
+					map.put("className", u.getStudentClass().getClassName());
+
+					// Session info
+					if (u.getSession() != null) {
+						map.put("sessionId", u.getSession().getSessionId());
+						map.put("sessionName", u.getSession().getName());
+					}
+
+					return map;
+				}).collect(Collectors.toList());
+	}
+
+}
