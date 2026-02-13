@@ -106,7 +106,7 @@ public class AttendanceController {
         return ResponseEntity.ok(updated);
     }
 
-    // ================= SAVE SINGLE ATTENDANCE (NEW) =================
+    // ================= SAVE SINGLE ATTENDANCE =================
     @PostMapping("/save-single")
     public ResponseEntity<AttendanceDTO> saveSingleAttendance(@RequestBody AttendanceDTO dto) {
         return ResponseEntity.ok(attendanceService.saveOrUpdateAttendance(dto));
