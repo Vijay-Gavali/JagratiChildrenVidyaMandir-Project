@@ -47,52 +47,93 @@ public class MarksMapper {
         dto.setHindiProject(marks.getHindiProject());
         dto.setHindiTotal(marks.getHindiTotal());
 
+        dto.setHindiTheoryOutOf(marks.getHindiTheoryOutof());
+        dto.setHindiProjectOutOf(marks.getHindiProjectOutof());
+        dto.setHindiTotalOutOf(marks.getHindiTotalOutof());
+
         // ================= English =================
         dto.setEnglishTheory(marks.getEnglishTheory());
         dto.setEnglishProject(marks.getEnglishProject());
         dto.setEnglishTotal(marks.getEnglishTotal());
+
+        dto.setEnglishTheoryOutOf(marks.getEnglishTheoryOutof());
+        dto.setEnglishProjectOutOf(marks.getEnglishProjectOutof());
+        dto.setEnglishTotalOutOf(marks.getEnglishTotalOutof());
 
         // ================= Maths =================
         dto.setMathsTheory(marks.getMathsTheory());
         dto.setMathsProject(marks.getMathsProject());
         dto.setMathsTotal(marks.getMathsTotal());
 
+        dto.setMathsTheoryOutOf(marks.getMathsTheoryOutof());
+        dto.setMathsProjectOutOf(marks.getMathsProjectOutof());
+        dto.setMathsTotalOutOf(marks.getMathsTotalOutof());
+
         // ================= EVS =================
         dto.setEvsTheory(marks.getEvsTheory());
         dto.setEvsProject(marks.getEvsProject());
         dto.setEvsTotal(marks.getEvsTotal());
+
+        dto.setEvsTheoryOutOf(marks.getEvsTheoryOutof());
+        dto.setEvsProjectOutOf(marks.getEvsProjectOutof());
+        dto.setEvsTotalOutOf(marks.getEvsTotalOutof());
 
         // ================= Science =================
         dto.setScienceTheory(marks.getScienceTheory());
         dto.setScienceProject(marks.getScienceProject());
         dto.setScienceTotal(marks.getScienceTotal());
 
+        dto.setScienceTheoryOutOf(marks.getScienceTheoryOutof());
+        dto.setScienceProjectOutOf(marks.getScienceProjectOutof());
+        dto.setScienceTotalOutOf(marks.getScienceTotalOutof());
+
         // ================= Social Science =================
         dto.setSocialScienceTheory(marks.getSocialScienceTheory());
         dto.setSocialScienceProject(marks.getSocialScienceProject());
         dto.setSocialScienceTotal(marks.getSocialScienceTotal());
+
+        dto.setSocialScienceTheoryOutOf(marks.getSocialScienceTheoryOutof());
+        dto.setSocialScienceProjectOutOf(marks.getSocialScienceProjectOutof());
+        dto.setSocialScienceTotalOutOf(marks.getSocialScienceTotalOutof());
 
         // ================= Sanskrit =================
         dto.setSanskritTheory(marks.getSanskritTheory());
         dto.setSanskritProject(marks.getSanskritProject());
         dto.setSanskritTotal(marks.getSanskritTotal());
 
+        dto.setSanskritTheoryOutOf(marks.getSanskritTheoryOutof());
+        dto.setSanskritProjectOutOf(marks.getSanskritProjectOutof());
+        dto.setSanskritTotalOutOf(marks.getSanskritTotalOutof());
+
         // ================= Marathi =================
         dto.setMarathiTheory(marks.getMarathiTheory());
         dto.setMarathiProject(marks.getMarathiProject());
         dto.setMarathiTotal(marks.getMarathiTotal());
 
+        dto.setMarathiTheoryOutOf(marks.getMarathiTheoryOutof());
+        dto.setMarathiProjectOutOf(marks.getMarathiProjectOutof());
+        dto.setMarathiTotalOutOf(marks.getMarathiTotalOutof());
+
         // ================= GK (NO PROJECT) =================
         dto.setGkTheory(marks.getGkTheory());
         dto.setGkTotal(marks.getGkTotal());
+
+        dto.setGkTheoryOutOf(marks.getGkTheoryOutof());
+        dto.setGkTotalOutOf(marks.getGkTotalOutof());
 
         // ================= Computer (NO PROJECT) =================
         dto.setComputerTheory(marks.getComputerTheory());
         dto.setComputerTotal(marks.getComputerTotal());
 
+        dto.setComputerTheoryOutOf(marks.getComputerTheoryOutof());
+        dto.setComputerTotalOutOf(marks.getComputerTotalOutof());
+
         // ================= Drawing (NO PROJECT) =================
         dto.setDrawingTheory(marks.getDrawingTheory());
         dto.setDrawingTotal(marks.getDrawingTotal());
+
+        dto.setDrawingTheoryOutOf(marks.getDrawingTheoryOutof());
+        dto.setDrawingTotalOutOf(marks.getDrawingTotalOutof());
 
         // ================= FINAL RESULT =================
         dto.setTotalMarks(marks.getTotalMarks());

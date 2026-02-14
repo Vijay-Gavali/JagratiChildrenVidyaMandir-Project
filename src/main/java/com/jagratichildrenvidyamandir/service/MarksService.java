@@ -57,7 +57,7 @@ public class MarksService {
 
             marks.setExamType(dto.getExamType());
 
-            // ✅ Set Subject Marks (Theory + Project)
+            // ================= MARKS =================
             marks.setHindiTheory(dto.getHindiTheory());
             marks.setHindiProject(dto.getHindiProject());
 
@@ -82,12 +82,42 @@ public class MarksService {
             marks.setMarathiTheory(dto.getMarathiTheory());
             marks.setMarathiProject(dto.getMarathiProject());
 
-            // ✅ ONLY THEORY SUBJECTS
+            // Only theory subjects
             marks.setGkTheory(dto.getGkTheory());
             marks.setComputerTheory(dto.getComputerTheory());
             marks.setDrawingTheory(dto.getDrawingTheory());
 
-            // ✅ Calculate totals + result
+            // ================= OUT OF =================
+            marks.setHindiTheoryOutof(dto.getHindiTheoryOutOf());
+            marks.setHindiProjectOutof(dto.getHindiProjectOutOf());
+
+            marks.setEnglishTheoryOutof(dto.getEnglishTheoryOutOf());
+            marks.setEnglishProjectOutof(dto.getEnglishProjectOutOf());
+
+            marks.setMathsTheoryOutof(dto.getMathsTheoryOutOf());
+            marks.setMathsProjectOutof(dto.getMathsProjectOutOf());
+
+            marks.setEvsTheoryOutof(dto.getEvsTheoryOutOf());
+            marks.setEvsProjectOutof(dto.getEvsProjectOutOf());
+
+            marks.setScienceTheoryOutof(dto.getScienceTheoryOutOf());
+            marks.setScienceProjectOutof(dto.getScienceProjectOutOf());
+
+            marks.setSocialScienceTheoryOutof(dto.getSocialScienceTheoryOutOf());
+            marks.setSocialScienceProjectOutof(dto.getSocialScienceProjectOutOf());
+
+            marks.setSanskritTheoryOutof(dto.getSanskritTheoryOutOf());
+            marks.setSanskritProjectOutof(dto.getSanskritProjectOutOf());
+
+            marks.setMarathiTheoryOutof(dto.getMarathiTheoryOutOf());
+            marks.setMarathiProjectOutof(dto.getMarathiProjectOutOf());
+
+            // only theory outof
+            marks.setGkTheoryOutof(dto.getGkTheoryOutOf());
+            marks.setComputerTheoryOutof(dto.getComputerTheoryOutOf());
+            marks.setDrawingTheoryOutof(dto.getDrawingTheoryOutOf());
+
+            // Calculate totals + outof totals + result
             calculateResult(marks);
 
             return mapper.toDTO(marksRepo.save(marks));
@@ -101,7 +131,7 @@ public class MarksService {
         Marks marks = marksRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Marks not found"));
 
-        // ✅ Update subject marks
+        // ================= MARKS =================
         marks.setHindiTheory(dto.getHindiTheory());
         marks.setHindiProject(dto.getHindiProject());
 
@@ -126,10 +156,39 @@ public class MarksService {
         marks.setMarathiTheory(dto.getMarathiTheory());
         marks.setMarathiProject(dto.getMarathiProject());
 
-        // ✅ Only theory subjects
+        // only theory subjects
         marks.setGkTheory(dto.getGkTheory());
         marks.setComputerTheory(dto.getComputerTheory());
         marks.setDrawingTheory(dto.getDrawingTheory());
+
+        // ================= OUT OF =================
+        marks.setHindiTheoryOutof(dto.getHindiTheoryOutOf());
+        marks.setHindiProjectOutof(dto.getHindiProjectOutOf());
+
+        marks.setEnglishTheoryOutof(dto.getEnglishTheoryOutOf());
+        marks.setEnglishProjectOutof(dto.getEnglishProjectOutOf());
+
+        marks.setMathsTheoryOutof(dto.getMathsTheoryOutOf());
+        marks.setMathsProjectOutof(dto.getMathsProjectOutOf());
+
+        marks.setEvsTheoryOutof(dto.getEvsTheoryOutOf());
+        marks.setEvsProjectOutof(dto.getEvsProjectOutOf());
+
+        marks.setScienceTheoryOutof(dto.getScienceTheoryOutOf());
+        marks.setScienceProjectOutof(dto.getScienceProjectOutOf());
+
+        marks.setSocialScienceTheoryOutof(dto.getSocialScienceTheoryOutOf());
+        marks.setSocialScienceProjectOutof(dto.getSocialScienceProjectOutOf());
+
+        marks.setSanskritTheoryOutof(dto.getSanskritTheoryOutOf());
+        marks.setSanskritProjectOutof(dto.getSanskritProjectOutOf());
+
+        marks.setMarathiTheoryOutof(dto.getMarathiTheoryOutOf());
+        marks.setMarathiProjectOutof(dto.getMarathiProjectOutOf());
+
+        marks.setGkTheoryOutof(dto.getGkTheoryOutOf());
+        marks.setComputerTheoryOutof(dto.getComputerTheoryOutOf());
+        marks.setDrawingTheoryOutof(dto.getDrawingTheoryOutOf());
 
         calculateResult(marks);
 
@@ -155,7 +214,6 @@ public class MarksService {
                 .stream().map(mapper::toDTO).toList();
     }
 
-    // ================= GET MARKS BY ID =================
     public MarksDTO getMarksById(Integer id) {
         return marksRepo.findById(id)
                 .map(mapper::toDTO)
@@ -165,7 +223,7 @@ public class MarksService {
     // ================= RESULT CALCULATION =================
     private void calculateResult(Marks m) {
 
-        // ===== Subject totals =====
+        // ===== Subject totals (MARKS) =====
         int hindiTotal = safe(m.getHindiTheory()) + safe(m.getHindiProject());
         int englishTotal = safe(m.getEnglishTheory()) + safe(m.getEnglishProject());
         int mathsTotal = safe(m.getMathsTheory()) + safe(m.getMathsProject());
@@ -175,12 +233,12 @@ public class MarksService {
         int sanskritTotal = safe(m.getSanskritTheory()) + safe(m.getSanskritProject());
         int marathiTotal = safe(m.getMarathiTheory()) + safe(m.getMarathiProject());
 
-        // ===== ONLY THEORY SUBJECTS =====
+        // ===== Only theory subjects =====
         int gkTotal = safe(m.getGkTheory());
         int computerTotal = safe(m.getComputerTheory());
         int drawingTotal = safe(m.getDrawingTheory());
 
-        // ===== Save totals in entity =====
+        // ===== Save totals (MARKS) =====
         m.setHindiTotal(hindiTotal);
         m.setEnglishTotal(englishTotal);
         m.setMathsTotal(mathsTotal);
@@ -194,20 +252,52 @@ public class MarksService {
         m.setComputerTotal(computerTotal);
         m.setDrawingTotal(drawingTotal);
 
-        // ===== Grand Total =====
-        int total =
+        // ===== Subject totals (OUT OF) =====
+        int hindiTotalOutOf = safe(m.getHindiTheoryOutof()) + safe(m.getHindiProjectOutof());
+        int englishTotalOutOf = safe(m.getEnglishTheoryOutof()) + safe(m.getEnglishProjectOutof());
+        int mathsTotalOutOf = safe(m.getMathsTheoryOutof()) + safe(m.getMathsProjectOutof());
+        int evsTotalOutOf = safe(m.getEvsTheoryOutof()) + safe(m.getEvsProjectOutof());
+        int scienceTotalOutOf = safe(m.getScienceTheoryOutof()) + safe(m.getScienceProjectOutof());
+        int socialTotalOutOf = safe(m.getSocialScienceTheoryOutof()) + safe(m.getSocialScienceProjectOutof());
+        int sanskritTotalOutOf = safe(m.getSanskritTheoryOutof()) + safe(m.getSanskritProjectOutof());
+        int marathiTotalOutOf = safe(m.getMarathiTheoryOutof()) + safe(m.getMarathiProjectOutof());
+
+        int gkTotalOutOf = safe(m.getGkTheoryOutof());
+        int computerTotalOutOf = safe(m.getComputerTheoryOutof());
+        int drawingTotalOutOf = safe(m.getDrawingTheoryOutof());
+
+        // ===== Save totals (OUT OF) =====
+        m.setHindiTotalOutof(hindiTotalOutOf);
+        m.setEnglishTotalOutof(englishTotalOutOf);
+        m.setMathsTotalOutof(mathsTotalOutOf);
+        m.setEvsTotalOutof(evsTotalOutOf);
+        m.setScienceTotalOutof(scienceTotalOutOf);
+        m.setSocialScienceTotalOutof(socialTotalOutOf);
+        m.setSanskritTotalOutof(sanskritTotalOutOf);
+        m.setMarathiTotalOutof(marathiTotalOutOf);
+
+        m.setGkTotalOutof(gkTotalOutOf);
+        m.setComputerTotalOutof(computerTotalOutOf);
+        m.setDrawingTotalOutof(drawingTotalOutOf);
+
+        // ===== Grand Total Marks (Obtained) =====
+        int totalMarks =
                 hindiTotal + englishTotal + mathsTotal + evsTotal + scienceTotal +
                 socialTotal + sanskritTotal + marathiTotal +
                 gkTotal + computerTotal + drawingTotal;
 
-        m.setTotalMarks(total);
-        m.setGrandTotal(total);
+        m.setTotalMarks(totalMarks);
+
+        // ===== Grand Total Out Of =====
+        int grandOutOf =
+                hindiTotalOutOf + englishTotalOutOf + mathsTotalOutOf + evsTotalOutOf + scienceTotalOutOf +
+                socialTotalOutOf + sanskritTotalOutOf + marathiTotalOutOf +
+                gkTotalOutOf + computerTotalOutOf + drawingTotalOutOf;
+
+        m.setGrandTotal(grandOutOf);
 
         // ===== Percentage =====
-        int totalSubjects = 11;
-        int maxMarks = 100;
-
-        double percentage = (double) total / (totalSubjects * maxMarks) * 100;
+        double percentage = grandOutOf == 0 ? 0 : ((double) totalMarks / grandOutOf) * 100;
         m.setPercentage(percentage);
 
         // ===== Grade =====

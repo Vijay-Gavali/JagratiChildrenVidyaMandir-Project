@@ -25,55 +25,100 @@ public class MarksDTO {
     private Integer hindiProject;
     private Integer hindiTotal;
 
+    private Integer hindiTheoryOutOf;
+    private Integer hindiProjectOutOf;
+    private Integer hindiTotalOutOf;
+
     // ================= English =================
     private Integer englishTheory;
     private Integer englishProject;
     private Integer englishTotal;
+
+    private Integer englishTheoryOutOf;
+    private Integer englishProjectOutOf;
+    private Integer englishTotalOutOf;
 
     // ================= Maths =================
     private Integer mathsTheory;
     private Integer mathsProject;
     private Integer mathsTotal;
 
+    private Integer mathsTheoryOutOf;
+    private Integer mathsProjectOutOf;
+    private Integer mathsTotalOutOf;
+
     // ================= EVS =================
     private Integer evsTheory;
     private Integer evsProject;
     private Integer evsTotal;
+
+    private Integer evsTheoryOutOf;
+    private Integer evsProjectOutOf;
+    private Integer evsTotalOutOf;
 
     // ================= Science =================
     private Integer scienceTheory;
     private Integer scienceProject;
     private Integer scienceTotal;
 
+    private Integer scienceTheoryOutOf;
+    private Integer scienceProjectOutOf;
+    private Integer scienceTotalOutOf;
+
     // ================= Social Science =================
     private Integer socialScienceTheory;
     private Integer socialScienceProject;
     private Integer socialScienceTotal;
+
+    private Integer socialScienceTheoryOutOf;
+    private Integer socialScienceProjectOutOf;
+    private Integer socialScienceTotalOutOf;
 
     // ================= Sanskrit =================
     private Integer sanskritTheory;
     private Integer sanskritProject;
     private Integer sanskritTotal;
 
+    private Integer sanskritTheoryOutOf;
+    private Integer sanskritProjectOutOf;
+    private Integer sanskritTotalOutOf;
+
     // ================= Marathi =================
     private Integer marathiTheory;
     private Integer marathiProject;
     private Integer marathiTotal;
 
+    private Integer marathiTheoryOutOf;
+    private Integer marathiProjectOutOf;
+    private Integer marathiTotalOutOf;
+
     // ================= GK (NO PROJECT) =================
     private Integer gkTheory;
     private Integer gkTotal;
+
+    private Integer gkTheoryOutOf;
+    private Integer gkTotalOutOf;
 
     // ================= Computer (NO PROJECT) =================
     private Integer computerTheory;
     private Integer computerTotal;
 
+    private Integer computerTheoryOutOf;
+    private Integer computerTotalOutOf;
+
     // ================= Drawing (NO PROJECT) =================
     private Integer drawingTheory;
     private Integer drawingTotal;
 
+    private Integer drawingTheoryOutOf;
+    private Integer drawingTotalOutOf;
+
     // ================= FINAL RESULT =================
     private Integer totalMarks;
+
+    // This will store GRAND TOTAL OUT OF
+    private Integer grandTotal;
+
     private Double percentage;
     private String grade;
     private String status;
@@ -187,6 +232,30 @@ public class MarksDTO {
         this.hindiTotal = hindiTotal;
     }
 
+    public Integer getHindiTheoryOutOf() {
+        return hindiTheoryOutOf;
+    }
+
+    public void setHindiTheoryOutOf(Integer hindiTheoryOutOf) {
+        this.hindiTheoryOutOf = hindiTheoryOutOf;
+    }
+
+    public Integer getHindiProjectOutOf() {
+        return hindiProjectOutOf;
+    }
+
+    public void setHindiProjectOutOf(Integer hindiProjectOutOf) {
+        this.hindiProjectOutOf = hindiProjectOutOf;
+    }
+
+    public Integer getHindiTotalOutOf() {
+        return hindiTotalOutOf;
+    }
+
+    public void setHindiTotalOutOf(Integer hindiTotalOutOf) {
+        this.hindiTotalOutOf = hindiTotalOutOf;
+    }
+
     // ================= English =================
     public Integer getEnglishTheory() {
         return englishTheory;
@@ -210,6 +279,30 @@ public class MarksDTO {
 
     public void setEnglishTotal(Integer englishTotal) {
         this.englishTotal = englishTotal;
+    }
+
+    public Integer getEnglishTheoryOutOf() {
+        return englishTheoryOutOf;
+    }
+
+    public void setEnglishTheoryOutOf(Integer englishTheoryOutOf) {
+        this.englishTheoryOutOf = englishTheoryOutOf;
+    }
+
+    public Integer getEnglishProjectOutOf() {
+        return englishProjectOutOf;
+    }
+
+    public void setEnglishProjectOutOf(Integer englishProjectOutOf) {
+        this.englishProjectOutOf = englishProjectOutOf;
+    }
+
+    public Integer getEnglishTotalOutOf() {
+        return englishTotalOutOf;
+    }
+
+    public void setEnglishTotalOutOf(Integer englishTotalOutOf) {
+        this.englishTotalOutOf = englishTotalOutOf;
     }
 
     // ================= Maths =================
@@ -237,6 +330,30 @@ public class MarksDTO {
         this.mathsTotal = mathsTotal;
     }
 
+    public Integer getMathsTheoryOutOf() {
+        return mathsTheoryOutOf;
+    }
+
+    public void setMathsTheoryOutOf(Integer mathsTheoryOutOf) {
+        this.mathsTheoryOutOf = mathsTheoryOutOf;
+    }
+
+    public Integer getMathsProjectOutOf() {
+        return mathsProjectOutOf;
+    }
+
+    public void setMathsProjectOutOf(Integer mathsProjectOutOf) {
+        this.mathsProjectOutOf = mathsProjectOutOf;
+    }
+
+    public Integer getMathsTotalOutOf() {
+        return mathsTotalOutOf;
+    }
+
+    public void setMathsTotalOutOf(Integer mathsTotalOutOf) {
+        this.mathsTotalOutOf = mathsTotalOutOf;
+    }
+
     // ================= EVS =================
     public Integer getEvsTheory() {
         return evsTheory;
@@ -260,6 +377,30 @@ public class MarksDTO {
 
     public void setEvsTotal(Integer evsTotal) {
         this.evsTotal = evsTotal;
+    }
+
+    public Integer getEvsTheoryOutOf() {
+        return evsTheoryOutOf;
+    }
+
+    public void setEvsTheoryOutOf(Integer evsTheoryOutOf) {
+        this.evsTheoryOutOf = evsTheoryOutOf;
+    }
+
+    public Integer getEvsProjectOutOf() {
+        return evsProjectOutOf;
+    }
+
+    public void setEvsProjectOutOf(Integer evsProjectOutOf) {
+        this.evsProjectOutOf = evsProjectOutOf;
+    }
+
+    public Integer getEvsTotalOutOf() {
+        return evsTotalOutOf;
+    }
+
+    public void setEvsTotalOutOf(Integer evsTotalOutOf) {
+        this.evsTotalOutOf = evsTotalOutOf;
     }
 
     // ================= Science =================
@@ -287,6 +428,30 @@ public class MarksDTO {
         this.scienceTotal = scienceTotal;
     }
 
+    public Integer getScienceTheoryOutOf() {
+        return scienceTheoryOutOf;
+    }
+
+    public void setScienceTheoryOutOf(Integer scienceTheoryOutOf) {
+        this.scienceTheoryOutOf = scienceTheoryOutOf;
+    }
+
+    public Integer getScienceProjectOutOf() {
+        return scienceProjectOutOf;
+    }
+
+    public void setScienceProjectOutOf(Integer scienceProjectOutOf) {
+        this.scienceProjectOutOf = scienceProjectOutOf;
+    }
+
+    public Integer getScienceTotalOutOf() {
+        return scienceTotalOutOf;
+    }
+
+    public void setScienceTotalOutOf(Integer scienceTotalOutOf) {
+        this.scienceTotalOutOf = scienceTotalOutOf;
+    }
+
     // ================= Social Science =================
     public Integer getSocialScienceTheory() {
         return socialScienceTheory;
@@ -310,6 +475,30 @@ public class MarksDTO {
 
     public void setSocialScienceTotal(Integer socialScienceTotal) {
         this.socialScienceTotal = socialScienceTotal;
+    }
+
+    public Integer getSocialScienceTheoryOutOf() {
+        return socialScienceTheoryOutOf;
+    }
+
+    public void setSocialScienceTheoryOutOf(Integer socialScienceTheoryOutOf) {
+        this.socialScienceTheoryOutOf = socialScienceTheoryOutOf;
+    }
+
+    public Integer getSocialScienceProjectOutOf() {
+        return socialScienceProjectOutOf;
+    }
+
+    public void setSocialScienceProjectOutOf(Integer socialScienceProjectOutOf) {
+        this.socialScienceProjectOutOf = socialScienceProjectOutOf;
+    }
+
+    public Integer getSocialScienceTotalOutOf() {
+        return socialScienceTotalOutOf;
+    }
+
+    public void setSocialScienceTotalOutOf(Integer socialScienceTotalOutOf) {
+        this.socialScienceTotalOutOf = socialScienceTotalOutOf;
     }
 
     // ================= Sanskrit =================
@@ -337,6 +526,30 @@ public class MarksDTO {
         this.sanskritTotal = sanskritTotal;
     }
 
+    public Integer getSanskritTheoryOutOf() {
+        return sanskritTheoryOutOf;
+    }
+
+    public void setSanskritTheoryOutOf(Integer sanskritTheoryOutOf) {
+        this.sanskritTheoryOutOf = sanskritTheoryOutOf;
+    }
+
+    public Integer getSanskritProjectOutOf() {
+        return sanskritProjectOutOf;
+    }
+
+    public void setSanskritProjectOutOf(Integer sanskritProjectOutOf) {
+        this.sanskritProjectOutOf = sanskritProjectOutOf;
+    }
+
+    public Integer getSanskritTotalOutOf() {
+        return sanskritTotalOutOf;
+    }
+
+    public void setSanskritTotalOutOf(Integer sanskritTotalOutOf) {
+        this.sanskritTotalOutOf = sanskritTotalOutOf;
+    }
+
     // ================= Marathi =================
     public Integer getMarathiTheory() {
         return marathiTheory;
@@ -362,6 +575,30 @@ public class MarksDTO {
         this.marathiTotal = marathiTotal;
     }
 
+    public Integer getMarathiTheoryOutOf() {
+        return marathiTheoryOutOf;
+    }
+
+    public void setMarathiTheoryOutOf(Integer marathiTheoryOutOf) {
+        this.marathiTheoryOutOf = marathiTheoryOutOf;
+    }
+
+    public Integer getMarathiProjectOutOf() {
+        return marathiProjectOutOf;
+    }
+
+    public void setMarathiProjectOutOf(Integer marathiProjectOutOf) {
+        this.marathiProjectOutOf = marathiProjectOutOf;
+    }
+
+    public Integer getMarathiTotalOutOf() {
+        return marathiTotalOutOf;
+    }
+
+    public void setMarathiTotalOutOf(Integer marathiTotalOutOf) {
+        this.marathiTotalOutOf = marathiTotalOutOf;
+    }
+
     // ================= GK =================
     public Integer getGkTheory() {
         return gkTheory;
@@ -377,6 +614,22 @@ public class MarksDTO {
 
     public void setGkTotal(Integer gkTotal) {
         this.gkTotal = gkTotal;
+    }
+
+    public Integer getGkTheoryOutOf() {
+        return gkTheoryOutOf;
+    }
+
+    public void setGkTheoryOutOf(Integer gkTheoryOutOf) {
+        this.gkTheoryOutOf = gkTheoryOutOf;
+    }
+
+    public Integer getGkTotalOutOf() {
+        return gkTotalOutOf;
+    }
+
+    public void setGkTotalOutOf(Integer gkTotalOutOf) {
+        this.gkTotalOutOf = gkTotalOutOf;
     }
 
     // ================= Computer =================
@@ -396,6 +649,22 @@ public class MarksDTO {
         this.computerTotal = computerTotal;
     }
 
+    public Integer getComputerTheoryOutOf() {
+        return computerTheoryOutOf;
+    }
+
+    public void setComputerTheoryOutOf(Integer computerTheoryOutOf) {
+        this.computerTheoryOutOf = computerTheoryOutOf;
+    }
+
+    public Integer getComputerTotalOutOf() {
+        return computerTotalOutOf;
+    }
+
+    public void setComputerTotalOutOf(Integer computerTotalOutOf) {
+        this.computerTotalOutOf = computerTotalOutOf;
+    }
+
     // ================= Drawing =================
     public Integer getDrawingTheory() {
         return drawingTheory;
@@ -413,6 +682,22 @@ public class MarksDTO {
         this.drawingTotal = drawingTotal;
     }
 
+    public Integer getDrawingTheoryOutOf() {
+        return drawingTheoryOutOf;
+    }
+
+    public void setDrawingTheoryOutOf(Integer drawingTheoryOutOf) {
+        this.drawingTheoryOutOf = drawingTheoryOutOf;
+    }
+
+    public Integer getDrawingTotalOutOf() {
+        return drawingTotalOutOf;
+    }
+
+    public void setDrawingTotalOutOf(Integer drawingTotalOutOf) {
+        this.drawingTotalOutOf = drawingTotalOutOf;
+    }
+
     // ================= FINAL RESULT =================
     public Integer getTotalMarks() {
         return totalMarks;
@@ -420,6 +705,14 @@ public class MarksDTO {
 
     public void setTotalMarks(Integer totalMarks) {
         this.totalMarks = totalMarks;
+    }
+
+    public Integer getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setGrandTotal(Integer grandTotal) {
+        this.grandTotal = grandTotal;
     }
 
     public Double getPercentage() {

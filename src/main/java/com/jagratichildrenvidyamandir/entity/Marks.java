@@ -28,64 +28,155 @@ public class Marks {
     private Integer hindiProject;
     private Integer hindiTotal;
 
+    @Column(name = "hindi_theory_outof")
+    private Integer hindiTheoryOutof;
+
+    @Column(name = "hindi_project_outof")
+    private Integer hindiProjectOutof;
+
+    @Column(name = "hindi_total_outof")
+    private Integer hindiTotalOutof;
+
     // ================= English =================
     private Integer englishTheory;
     private Integer englishProject;
     private Integer englishTotal;
+
+    @Column(name = "english_theory_outof")
+    private Integer englishTheoryOutof;
+
+    @Column(name = "english_project_outof")
+    private Integer englishProjectOutof;
+
+    @Column(name = "english_total_outof")
+    private Integer englishTotalOutof;
 
     // ================= Maths =================
     private Integer mathsTheory;
     private Integer mathsProject;
     private Integer mathsTotal;
 
+    @Column(name = "maths_theory_outof")
+    private Integer mathsTheoryOutof;
+
+    @Column(name = "maths_project_outof")
+    private Integer mathsProjectOutof;
+
+    @Column(name = "maths_total_outof")
+    private Integer mathsTotalOutof;
+
     // ================= EVS =================
     private Integer evsTheory;
     private Integer evsProject;
     private Integer evsTotal;
+
+    @Column(name = "evs_theory_outof")
+    private Integer evsTheoryOutof;
+
+    @Column(name = "evs_project_outof")
+    private Integer evsProjectOutof;
+
+    @Column(name = "evs_total_outof")
+    private Integer evsTotalOutof;
 
     // ================= Science =================
     private Integer scienceTheory;
     private Integer scienceProject;
     private Integer scienceTotal;
 
+    @Column(name = "science_theory_outof")
+    private Integer scienceTheoryOutof;
+
+    @Column(name = "science_project_outof")
+    private Integer scienceProjectOutof;
+
+    @Column(name = "science_total_outof")
+    private Integer scienceTotalOutof;
+
     // ================= Social Science =================
     private Integer socialScienceTheory;
     private Integer socialScienceProject;
     private Integer socialScienceTotal;
+
+    @Column(name = "social_science_theory_outof")
+    private Integer socialScienceTheoryOutof;
+
+    @Column(name = "social_science_project_outof")
+    private Integer socialScienceProjectOutof;
+
+    @Column(name = "social_science_total_outof")
+    private Integer socialScienceTotalOutof;
 
     // ================= Sanskrit =================
     private Integer sanskritTheory;
     private Integer sanskritProject;
     private Integer sanskritTotal;
 
+    @Column(name = "sanskrit_theory_outof")
+    private Integer sanskritTheoryOutof;
+
+    @Column(name = "sanskrit_project_outof")
+    private Integer sanskritProjectOutof;
+
+    @Column(name = "sanskrit_total_outof")
+    private Integer sanskritTotalOutof;
+
     // ================= Marathi =================
     private Integer marathiTheory;
     private Integer marathiProject;
     private Integer marathiTotal;
 
+    @Column(name = "marathi_theory_outof")
+    private Integer marathiTheoryOutof;
+
+    @Column(name = "marathi_project_outof")
+    private Integer marathiProjectOutof;
+
+    @Column(name = "marathi_total_outof")
+    private Integer marathiTotalOutof;
+
     // ================= GK (NO PROJECT) =================
     private Integer gkTheory;
     private Integer gkTotal;
+
+    @Column(name = "gk_theory_outof")
+    private Integer gkTheoryOutof;
+
+    @Column(name = "gk_total_outof")
+    private Integer gkTotalOutof;
 
     // ================= Computer (NO PROJECT) =================
     private Integer computerTheory;
     private Integer computerTotal;
 
+    @Column(name = "computer_theory_outof")
+    private Integer computerTheoryOutof;
+
+    @Column(name = "computer_total_outof")
+    private Integer computerTotalOutof;
+
     // ================= Drawing (NO PROJECT) =================
     private Integer drawingTheory;
     private Integer drawingTotal;
 
+    @Column(name = "drawing_theory_outof")
+    private Integer drawingTheoryOutof;
+
+    @Column(name = "drawing_total_outof")
+    private Integer drawingTotalOutof;
+
     // ================= FINAL RESULT =================
     private Integer totalMarks;
+
+    // now it will store GRAND OUT OF
     private Integer grandTotal;
+
     private Double percentage;
     private String grade;
     private String status;
 
-    // ✅ Exam Type
     private String examType;
 
-    // ✅ SESSION (FK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
     private SessionEntity session;
@@ -175,6 +266,30 @@ public class Marks {
         this.hindiTotal = hindiTotal;
     }
 
+    public Integer getHindiTheoryOutof() {
+        return hindiTheoryOutof;
+    }
+
+    public void setHindiTheoryOutof(Integer hindiTheoryOutof) {
+        this.hindiTheoryOutof = hindiTheoryOutof;
+    }
+
+    public Integer getHindiProjectOutof() {
+        return hindiProjectOutof;
+    }
+
+    public void setHindiProjectOutof(Integer hindiProjectOutof) {
+        this.hindiProjectOutof = hindiProjectOutof;
+    }
+
+    public Integer getHindiTotalOutof() {
+        return hindiTotalOutof;
+    }
+
+    public void setHindiTotalOutof(Integer hindiTotalOutof) {
+        this.hindiTotalOutof = hindiTotalOutof;
+    }
+
     // ================= English =================
     public Integer getEnglishTheory() {
         return englishTheory;
@@ -198,6 +313,30 @@ public class Marks {
 
     public void setEnglishTotal(Integer englishTotal) {
         this.englishTotal = englishTotal;
+    }
+
+    public Integer getEnglishTheoryOutof() {
+        return englishTheoryOutof;
+    }
+
+    public void setEnglishTheoryOutof(Integer englishTheoryOutof) {
+        this.englishTheoryOutof = englishTheoryOutof;
+    }
+
+    public Integer getEnglishProjectOutof() {
+        return englishProjectOutof;
+    }
+
+    public void setEnglishProjectOutof(Integer englishProjectOutof) {
+        this.englishProjectOutof = englishProjectOutof;
+    }
+
+    public Integer getEnglishTotalOutof() {
+        return englishTotalOutof;
+    }
+
+    public void setEnglishTotalOutof(Integer englishTotalOutof) {
+        this.englishTotalOutof = englishTotalOutof;
     }
 
     // ================= Maths =================
@@ -225,6 +364,30 @@ public class Marks {
         this.mathsTotal = mathsTotal;
     }
 
+    public Integer getMathsTheoryOutof() {
+        return mathsTheoryOutof;
+    }
+
+    public void setMathsTheoryOutof(Integer mathsTheoryOutof) {
+        this.mathsTheoryOutof = mathsTheoryOutof;
+    }
+
+    public Integer getMathsProjectOutof() {
+        return mathsProjectOutof;
+    }
+
+    public void setMathsProjectOutof(Integer mathsProjectOutof) {
+        this.mathsProjectOutof = mathsProjectOutof;
+    }
+
+    public Integer getMathsTotalOutof() {
+        return mathsTotalOutof;
+    }
+
+    public void setMathsTotalOutof(Integer mathsTotalOutof) {
+        this.mathsTotalOutof = mathsTotalOutof;
+    }
+
     // ================= EVS =================
     public Integer getEvsTheory() {
         return evsTheory;
@@ -248,6 +411,30 @@ public class Marks {
 
     public void setEvsTotal(Integer evsTotal) {
         this.evsTotal = evsTotal;
+    }
+
+    public Integer getEvsTheoryOutof() {
+        return evsTheoryOutof;
+    }
+
+    public void setEvsTheoryOutof(Integer evsTheoryOutof) {
+        this.evsTheoryOutof = evsTheoryOutof;
+    }
+
+    public Integer getEvsProjectOutof() {
+        return evsProjectOutof;
+    }
+
+    public void setEvsProjectOutof(Integer evsProjectOutof) {
+        this.evsProjectOutof = evsProjectOutof;
+    }
+
+    public Integer getEvsTotalOutof() {
+        return evsTotalOutof;
+    }
+
+    public void setEvsTotalOutof(Integer evsTotalOutof) {
+        this.evsTotalOutof = evsTotalOutof;
     }
 
     // ================= Science =================
@@ -275,6 +462,30 @@ public class Marks {
         this.scienceTotal = scienceTotal;
     }
 
+    public Integer getScienceTheoryOutof() {
+        return scienceTheoryOutof;
+    }
+
+    public void setScienceTheoryOutof(Integer scienceTheoryOutof) {
+        this.scienceTheoryOutof = scienceTheoryOutof;
+    }
+
+    public Integer getScienceProjectOutof() {
+        return scienceProjectOutof;
+    }
+
+    public void setScienceProjectOutof(Integer scienceProjectOutof) {
+        this.scienceProjectOutof = scienceProjectOutof;
+    }
+
+    public Integer getScienceTotalOutof() {
+        return scienceTotalOutof;
+    }
+
+    public void setScienceTotalOutof(Integer scienceTotalOutof) {
+        this.scienceTotalOutof = scienceTotalOutof;
+    }
+
     // ================= Social Science =================
     public Integer getSocialScienceTheory() {
         return socialScienceTheory;
@@ -298,6 +509,30 @@ public class Marks {
 
     public void setSocialScienceTotal(Integer socialScienceTotal) {
         this.socialScienceTotal = socialScienceTotal;
+    }
+
+    public Integer getSocialScienceTheoryOutof() {
+        return socialScienceTheoryOutof;
+    }
+
+    public void setSocialScienceTheoryOutof(Integer socialScienceTheoryOutof) {
+        this.socialScienceTheoryOutof = socialScienceTheoryOutof;
+    }
+
+    public Integer getSocialScienceProjectOutof() {
+        return socialScienceProjectOutof;
+    }
+
+    public void setSocialScienceProjectOutof(Integer socialScienceProjectOutof) {
+        this.socialScienceProjectOutof = socialScienceProjectOutof;
+    }
+
+    public Integer getSocialScienceTotalOutof() {
+        return socialScienceTotalOutof;
+    }
+
+    public void setSocialScienceTotalOutof(Integer socialScienceTotalOutof) {
+        this.socialScienceTotalOutof = socialScienceTotalOutof;
     }
 
     // ================= Sanskrit =================
@@ -325,6 +560,30 @@ public class Marks {
         this.sanskritTotal = sanskritTotal;
     }
 
+    public Integer getSanskritTheoryOutof() {
+        return sanskritTheoryOutof;
+    }
+
+    public void setSanskritTheoryOutof(Integer sanskritTheoryOutof) {
+        this.sanskritTheoryOutof = sanskritTheoryOutof;
+    }
+
+    public Integer getSanskritProjectOutof() {
+        return sanskritProjectOutof;
+    }
+
+    public void setSanskritProjectOutof(Integer sanskritProjectOutof) {
+        this.sanskritProjectOutof = sanskritProjectOutof;
+    }
+
+    public Integer getSanskritTotalOutof() {
+        return sanskritTotalOutof;
+    }
+
+    public void setSanskritTotalOutof(Integer sanskritTotalOutof) {
+        this.sanskritTotalOutof = sanskritTotalOutof;
+    }
+
     // ================= Marathi =================
     public Integer getMarathiTheory() {
         return marathiTheory;
@@ -350,6 +609,30 @@ public class Marks {
         this.marathiTotal = marathiTotal;
     }
 
+    public Integer getMarathiTheoryOutof() {
+        return marathiTheoryOutof;
+    }
+
+    public void setMarathiTheoryOutof(Integer marathiTheoryOutof) {
+        this.marathiTheoryOutof = marathiTheoryOutof;
+    }
+
+    public Integer getMarathiProjectOutof() {
+        return marathiProjectOutof;
+    }
+
+    public void setMarathiProjectOutof(Integer marathiProjectOutof) {
+        this.marathiProjectOutof = marathiProjectOutof;
+    }
+
+    public Integer getMarathiTotalOutof() {
+        return marathiTotalOutof;
+    }
+
+    public void setMarathiTotalOutof(Integer marathiTotalOutof) {
+        this.marathiTotalOutof = marathiTotalOutof;
+    }
+
     // ================= GK =================
     public Integer getGkTheory() {
         return gkTheory;
@@ -365,6 +648,22 @@ public class Marks {
 
     public void setGkTotal(Integer gkTotal) {
         this.gkTotal = gkTotal;
+    }
+
+    public Integer getGkTheoryOutof() {
+        return gkTheoryOutof;
+    }
+
+    public void setGkTheoryOutof(Integer gkTheoryOutof) {
+        this.gkTheoryOutof = gkTheoryOutof;
+    }
+
+    public Integer getGkTotalOutof() {
+        return gkTotalOutof;
+    }
+
+    public void setGkTotalOutof(Integer gkTotalOutof) {
+        this.gkTotalOutof = gkTotalOutof;
     }
 
     // ================= Computer =================
@@ -384,6 +683,22 @@ public class Marks {
         this.computerTotal = computerTotal;
     }
 
+    public Integer getComputerTheoryOutof() {
+        return computerTheoryOutof;
+    }
+
+    public void setComputerTheoryOutof(Integer computerTheoryOutof) {
+        this.computerTheoryOutof = computerTheoryOutof;
+    }
+
+    public Integer getComputerTotalOutof() {
+        return computerTotalOutof;
+    }
+
+    public void setComputerTotalOutof(Integer computerTotalOutof) {
+        this.computerTotalOutof = computerTotalOutof;
+    }
+
     // ================= Drawing =================
     public Integer getDrawingTheory() {
         return drawingTheory;
@@ -399,6 +714,22 @@ public class Marks {
 
     public void setDrawingTotal(Integer drawingTotal) {
         this.drawingTotal = drawingTotal;
+    }
+
+    public Integer getDrawingTheoryOutof() {
+        return drawingTheoryOutof;
+    }
+
+    public void setDrawingTheoryOutof(Integer drawingTheoryOutof) {
+        this.drawingTheoryOutof = drawingTheoryOutof;
+    }
+
+    public Integer getDrawingTotalOutof() {
+        return drawingTotalOutof;
+    }
+
+    public void setDrawingTotalOutof(Integer drawingTotalOutof) {
+        this.drawingTotalOutof = drawingTotalOutof;
     }
 
     // ================= FINAL RESULT =================
