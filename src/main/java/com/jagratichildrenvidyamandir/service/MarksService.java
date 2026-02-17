@@ -29,30 +29,46 @@ public class MarksService {
                 dto.getClassId() == null ||
                 dto.getSessionId() == null) {
                 throw new IllegalArgumentException(
-                    "studentId, teacherId, classId, sessionId must not be null"
+                        "studentId, teacherId, classId, sessionId must not be null"
                 );
+            }
+
+            // ✅ Grade validation only if grade is selected
+            if (dto.getGkTheory() != null && !dto.getGkTheory().trim().isEmpty()) {
+                if (!isValidGrade(dto.getGkTheory()))
+                    throw new RuntimeException("Invalid GK Grade");
+            }
+
+            if (dto.getComputerTheory() != null && !dto.getComputerTheory().trim().isEmpty()) {
+                if (!isValidGrade(dto.getComputerTheory()))
+                    throw new RuntimeException("Invalid Computer Grade");
+            }
+
+            if (dto.getDrawingTheory() != null && !dto.getDrawingTheory().trim().isEmpty()) {
+                if (!isValidGrade(dto.getDrawingTheory()))
+                    throw new RuntimeException("Invalid Drawing Grade");
             }
 
             Marks marks = new Marks();
 
             marks.setUser(
-                userRepo.findById(dto.getStudentId())
-                    .orElseThrow(() -> new RuntimeException("User not found: " + dto.getStudentId()))
+                    userRepo.findById(dto.getStudentId())
+                            .orElseThrow(() -> new RuntimeException("User not found: " + dto.getStudentId()))
             );
 
             marks.setTeacher(
-                teacherRepo.findById(dto.getTeacherId())
-                    .orElseThrow(() -> new RuntimeException("Teacher not found: " + dto.getTeacherId()))
+                    teacherRepo.findById(dto.getTeacherId())
+                            .orElseThrow(() -> new RuntimeException("Teacher not found: " + dto.getTeacherId()))
             );
 
             marks.setClasses(
-                classRepo.findById(dto.getClassId())
-                    .orElseThrow(() -> new RuntimeException("Class not found: " + dto.getClassId()))
+                    classRepo.findById(dto.getClassId())
+                            .orElseThrow(() -> new RuntimeException("Class not found: " + dto.getClassId()))
             );
 
             marks.setSession(
-                sessionRepo.findById(dto.getSessionId())
-                    .orElseThrow(() -> new RuntimeException("Session not found: " + dto.getSessionId()))
+                    sessionRepo.findById(dto.getSessionId())
+                            .orElseThrow(() -> new RuntimeException("Session not found: " + dto.getSessionId()))
             );
 
             marks.setExamType(dto.getExamType());
@@ -82,7 +98,7 @@ public class MarksService {
             marks.setMarathiTheory(dto.getMarathiTheory());
             marks.setMarathiProject(dto.getMarathiProject());
 
-            // Only theory subjects
+            // ================= GRADE SUBJECTS =================
             marks.setGkTheory(dto.getGkTheory());
             marks.setComputerTheory(dto.getComputerTheory());
             marks.setDrawingTheory(dto.getDrawingTheory());
@@ -112,10 +128,10 @@ public class MarksService {
             marks.setMarathiTheoryOutof(dto.getMarathiTheoryOutOf());
             marks.setMarathiProjectOutof(dto.getMarathiProjectOutOf());
 
-            // only theory outof
-            marks.setGkTheoryOutof(dto.getGkTheoryOutOf());
-            marks.setComputerTheoryOutof(dto.getComputerTheoryOutOf());
-            marks.setDrawingTheoryOutof(dto.getDrawingTheoryOutOf());
+            // Grade subjects fixed OutOf
+            marks.setGkTheoryOutof(100);
+            marks.setComputerTheoryOutof(100);
+            marks.setDrawingTheoryOutof(100);
 
             // Calculate totals + outof totals + result
             calculateResult(marks);
@@ -130,6 +146,22 @@ public class MarksService {
 
         Marks marks = marksRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Marks not found"));
+
+        // ✅ Grade validation only if grade is selected
+        if (dto.getGkTheory() != null && !dto.getGkTheory().trim().isEmpty()) {
+            if (!isValidGrade(dto.getGkTheory()))
+                throw new RuntimeException("Invalid GK Grade");
+        }
+
+        if (dto.getComputerTheory() != null && !dto.getComputerTheory().trim().isEmpty()) {
+            if (!isValidGrade(dto.getComputerTheory()))
+                throw new RuntimeException("Invalid Computer Grade");
+        }
+
+        if (dto.getDrawingTheory() != null && !dto.getDrawingTheory().trim().isEmpty()) {
+            if (!isValidGrade(dto.getDrawingTheory()))
+                throw new RuntimeException("Invalid Drawing Grade");
+        }
 
         // ================= MARKS =================
         marks.setHindiTheory(dto.getHindiTheory());
@@ -156,7 +188,7 @@ public class MarksService {
         marks.setMarathiTheory(dto.getMarathiTheory());
         marks.setMarathiProject(dto.getMarathiProject());
 
-        // only theory subjects
+        // ================= GRADE SUBJECTS =================
         marks.setGkTheory(dto.getGkTheory());
         marks.setComputerTheory(dto.getComputerTheory());
         marks.setDrawingTheory(dto.getDrawingTheory());
@@ -186,9 +218,10 @@ public class MarksService {
         marks.setMarathiTheoryOutof(dto.getMarathiTheoryOutOf());
         marks.setMarathiProjectOutof(dto.getMarathiProjectOutOf());
 
-        marks.setGkTheoryOutof(dto.getGkTheoryOutOf());
-        marks.setComputerTheoryOutof(dto.getComputerTheoryOutOf());
-        marks.setDrawingTheoryOutof(dto.getDrawingTheoryOutOf());
+        // Grade subjects fixed OutOf
+        marks.setGkTheoryOutof(100);
+        marks.setComputerTheoryOutof(100);
+        marks.setDrawingTheoryOutof(100);
 
         calculateResult(marks);
 
@@ -233,10 +266,10 @@ public class MarksService {
         int sanskritTotal = safe(m.getSanskritTheory()) + safe(m.getSanskritProject());
         int marathiTotal = safe(m.getMarathiTheory()) + safe(m.getMarathiProject());
 
-        // ===== Only theory subjects =====
-        int gkTotal = safe(m.getGkTheory());
-        int computerTotal = safe(m.getComputerTheory());
-        int drawingTotal = safe(m.getDrawingTheory());
+        // ===== Grade Subjects =====
+        int gkTotal = gradeToMarks(m.getGkTheory());
+        int computerTotal = gradeToMarks(m.getComputerTheory());
+        int drawingTotal = gradeToMarks(m.getDrawingTheory());
 
         // ===== Save totals (MARKS) =====
         m.setHindiTotal(hindiTotal);
@@ -248,9 +281,10 @@ public class MarksService {
         m.setSanskritTotal(sanskritTotal);
         m.setMarathiTotal(marathiTotal);
 
-        m.setGkTotal(gkTotal);
-        m.setComputerTotal(computerTotal);
-        m.setDrawingTotal(drawingTotal);
+        // store grade in total columns also
+        m.setGkTotal(m.getGkTheory());
+        m.setComputerTotal(m.getComputerTheory());
+        m.setDrawingTotal(m.getDrawingTheory());
 
         // ===== Subject totals (OUT OF) =====
         int hindiTotalOutOf = safe(m.getHindiTheoryOutof()) + safe(m.getHindiProjectOutof());
@@ -262,9 +296,10 @@ public class MarksService {
         int sanskritTotalOutOf = safe(m.getSanskritTheoryOutof()) + safe(m.getSanskritProjectOutof());
         int marathiTotalOutOf = safe(m.getMarathiTheoryOutof()) + safe(m.getMarathiProjectOutof());
 
-        int gkTotalOutOf = safe(m.getGkTheoryOutof());
-        int computerTotalOutOf = safe(m.getComputerTheoryOutof());
-        int drawingTotalOutOf = safe(m.getDrawingTheoryOutof());
+        // fixed outof for grade subjects
+        int gkTotalOutOf = 100;
+        int computerTotalOutOf = 100;
+        int drawingTotalOutOf = 100;
 
         // ===== Save totals (OUT OF) =====
         m.setHindiTotalOutof(hindiTotalOutOf);
@@ -313,5 +348,45 @@ public class MarksService {
 
     private int safe(Integer v) {
         return v == null ? 0 : v;
+    }
+
+    // ================= VALIDATE GRADE =================
+    private boolean isValidGrade(String grade) {
+        if (grade == null) return false;
+
+        switch (grade.trim().toUpperCase()) {
+            case "A+":
+            case "A":
+            case "B+":
+            case "B":
+            case "C+":
+            case "C":
+            case "D+":
+            case "D":
+            case "E+":
+            case "E":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    // ================= GRADE TO MARKS =================
+    private int gradeToMarks(String grade) {
+        if (grade == null || grade.trim().isEmpty()) return 0;
+
+        switch (grade.trim().toUpperCase()) {
+            case "A+": return 100;
+            case "A":  return 90;
+            case "B+": return 80;
+            case "B":  return 70;
+            case "C+": return 60;
+            case "C":  return 50;
+            case "D+": return 40;
+            case "D":  return 30;
+            case "E+": return 20;
+            case "E":  return 10;
+            default: return 0;
+        }
     }
 }
