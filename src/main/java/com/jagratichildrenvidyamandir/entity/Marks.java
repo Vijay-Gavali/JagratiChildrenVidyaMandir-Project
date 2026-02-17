@@ -135,9 +135,9 @@ public class Marks {
     @Column(name = "marathi_total_outof")
     private Integer marathiTotalOutof;
 
-    // ================= GK (NO PROJECT) =================
-    private Integer gkTheory;
-    private Integer gkTotal;
+    // ================= GK (GRADE) =================
+    private String gkTheory;
+    private String gkTotal;
 
     @Column(name = "gk_theory_outof")
     private Integer gkTheoryOutof;
@@ -145,9 +145,9 @@ public class Marks {
     @Column(name = "gk_total_outof")
     private Integer gkTotalOutof;
 
-    // ================= Computer (NO PROJECT) =================
-    private Integer computerTheory;
-    private Integer computerTotal;
+    // ================= Computer (GRADE) =================
+    private String computerTheory;
+    private String computerTotal;
 
     @Column(name = "computer_theory_outof")
     private Integer computerTheoryOutof;
@@ -155,9 +155,9 @@ public class Marks {
     @Column(name = "computer_total_outof")
     private Integer computerTotalOutof;
 
-    // ================= Drawing (NO PROJECT) =================
-    private Integer drawingTheory;
-    private Integer drawingTotal;
+    // ================= Drawing (GRADE) =================
+    private String drawingTheory;
+    private String drawingTotal;
 
     @Column(name = "drawing_theory_outof")
     private Integer drawingTheoryOutof;
@@ -634,19 +634,19 @@ public class Marks {
     }
 
     // ================= GK =================
-    public Integer getGkTheory() {
+    public String getGkTheory() {
         return gkTheory;
     }
 
-    public void setGkTheory(Integer gkTheory) {
+    public void setGkTheory(String gkTheory) {
         this.gkTheory = gkTheory;
     }
 
-    public Integer getGkTotal() {
+    public String getGkTotal() {
         return gkTotal;
     }
 
-    public void setGkTotal(Integer gkTotal) {
+    public void setGkTotal(String gkTotal) {
         this.gkTotal = gkTotal;
     }
 
@@ -667,19 +667,19 @@ public class Marks {
     }
 
     // ================= Computer =================
-    public Integer getComputerTheory() {
+    public String getComputerTheory() {
         return computerTheory;
     }
 
-    public void setComputerTheory(Integer computerTheory) {
+    public void setComputerTheory(String computerTheory) {
         this.computerTheory = computerTheory;
     }
 
-    public Integer getComputerTotal() {
+    public String getComputerTotal() {
         return computerTotal;
     }
 
-    public void setComputerTotal(Integer computerTotal) {
+    public void setComputerTotal(String computerTotal) {
         this.computerTotal = computerTotal;
     }
 
@@ -700,19 +700,19 @@ public class Marks {
     }
 
     // ================= Drawing =================
-    public Integer getDrawingTheory() {
+    public String getDrawingTheory() {
         return drawingTheory;
     }
 
-    public void setDrawingTheory(Integer drawingTheory) {
+    public void setDrawingTheory(String drawingTheory) {
         this.drawingTheory = drawingTheory;
     }
 
-    public Integer getDrawingTotal() {
+    public String getDrawingTotal() {
         return drawingTotal;
     }
 
-    public void setDrawingTotal(Integer drawingTotal) {
+    public void setDrawingTotal(String drawingTotal) {
         this.drawingTotal = drawingTotal;
     }
 
