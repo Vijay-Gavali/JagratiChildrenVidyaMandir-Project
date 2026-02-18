@@ -12,69 +12,60 @@ import java.util.*;
 @RequestMapping("/api/marks")
 public class MarksController {
 
-    @Autowired
-    private MarksService service;
+	@Autowired
+	private MarksService service;
 
-    // ✅ ADD SINGLE
-    /*@PostMapping
-    public ResponseEntity<?> add(@RequestBody MarksDTO dto) {
+	// ✅ ADD SINGLE
+	/*
+	 * @PostMapping public ResponseEntity<?> add(@RequestBody MarksDTO dto) {
+	 * 
+	 * MarksDTO saved = service.addMarks(dto);
+	 * 
+	 * return new ResponseEntity<>(Map.of( "message", "Marks added successfully",
+	 * "data", saved ), HttpStatus.CREATED); }
+	 */
 
-        MarksDTO saved = service.addMarks(dto);
+	// ✅ ADD BULK
+	@PostMapping("/bulk")
+	public ResponseEntity<?> addBulk(@RequestBody List<MarksDTO> dtoList) {
 
-        return new ResponseEntity<>(Map.of(
-                "message", "Marks added successfully",
-                "data", saved
-        ), HttpStatus.CREATED);
-    }*/
+		List<MarksDTO> saved = service.addBulkMarks(dtoList);
 
-    // ✅ ADD BULK
-    @PostMapping("/bulk")
-    public ResponseEntity<?> addBulk(@RequestBody List<MarksDTO> dtoList) {
+		return new ResponseEntity<>(
+				Map.of("message", "Bulk marks added successfully", "totalRecords", saved.size(), "data", saved),
+				HttpStatus.CREATED);
+	}
 
-        List<MarksDTO> saved = service.addBulkMarks(dtoList);
+	// ✅ UPDATE
+	@PutMapping("/{id}")
+	public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody MarksDTO dto) {
 
-        return new ResponseEntity<>(Map.of(
-                "message", "Bulk marks added successfully",
-                "totalRecords", saved.size(),
-                "data", saved
-        ), HttpStatus.CREATED);
-    }
+		return ResponseEntity.ok(Map.of("message", "Marks updated successfully", "data", service.updateMarks(id, dto)));
+	}
 
-    // ✅ UPDATE
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id,
-                                    @RequestBody MarksDTO dto) {
+	// ✅ DELETE
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable Integer id) {
+		service.deleteMarks(id);
+		return ResponseEntity.ok(Map.of("message", "Marks deleted successfully"));
+	}
 
-        return ResponseEntity.ok(Map.of(
-                "message", "Marks updated successfully",
-                "data", service.updateMarks(id, dto)
-        ));
-    }
+	// ✅ GET ALL
+	@GetMapping
+	public ResponseEntity<List<MarksDTO>> getAll() {
+		return ResponseEntity.ok(service.getAll());
+	}
 
-    // ✅ DELETE
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-        service.deleteMarks(id);
-        return ResponseEntity.ok(Map.of("message", "Marks deleted successfully"));
-    }
+	// ✅ GET BY STUDENT
+	@GetMapping("/student/{studentId}")
+	public ResponseEntity<List<MarksDTO>> getByStudent(@PathVariable Integer studentId) {
 
-    // ✅ GET ALL
-    @GetMapping
-    public ResponseEntity<List<MarksDTO>> getAll() {
-        return ResponseEntity.ok(service.getAll());
-    }
+		return ResponseEntity.ok(service.getByStudent(studentId));
+	}
 
-    // ✅ GET BY STUDENT
-    @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<MarksDTO>> getByStudent(
-            @PathVariable Integer studentId) {
-
-        return ResponseEntity.ok(service.getByStudent(studentId));
-    }
-    
- // ✅ GET BY ID (FOR EDIT MARKS)
-    @GetMapping("/{id}")
-    public ResponseEntity<MarksDTO> getMarksById(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.getMarksById(id));
-    }
+	// ✅ GET BY ID (FOR EDIT MARKS)
+	@GetMapping("/{id}")
+	public ResponseEntity<MarksDTO> getMarksById(@PathVariable Integer id) {
+		return ResponseEntity.ok(service.getMarksById(id));
+	}
 }
