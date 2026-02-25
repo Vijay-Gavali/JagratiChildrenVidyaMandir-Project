@@ -7,6 +7,7 @@ import com.jagratichildrenvidyamandir.service.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,11 +63,16 @@ public class TeacherController {
 		return ResponseEntity.ok(teacherService.getTeacherById(id));
 	}
 
-	// ================= UPDATE =================
 	@PutMapping("/{id}")
-	public ResponseEntity<TeacherDTO> updateTeacher(@PathVariable Integer id, @RequestBody TeacherDTO dto) {
-
-		return ResponseEntity.ok(teacherService.updateTeacher(id, dto));
+	public ResponseEntity<?> updateTeacher(@PathVariable Integer id, @RequestBody TeacherDTO dto) {
+	    try {
+	        return ResponseEntity.ok(teacherService.updateTeacher(id, dto));
+	    } catch (HttpMessageNotReadableException e) {
+	        return ResponseEntity.badRequest()
+	            .body("Invalid request format: classNames should be an array, not a string");
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());
+	    }
 	}
 
 	// ================= DELETE =================

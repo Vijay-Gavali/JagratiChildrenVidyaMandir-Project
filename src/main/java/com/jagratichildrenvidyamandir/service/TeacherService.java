@@ -84,38 +84,41 @@ public class TeacherService {
 	    return teacherMapper.toDTO(saved);
 	}
 
-	// ================= UPDATE TEACHER =================
 	public TeacherDTO updateTeacher(Integer id, TeacherDTO dto) {
 
-		Teacher existing = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
+	    Teacher existing = teacherRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Teacher not found"));
 
-		// Validate email & phone uniqueness
-		if (!existing.getEmail().equals(dto.getEmail()) && teacherRepository.existsByEmail(dto.getEmail())) {
-			throw new RuntimeException("Email already exists!");
-		}
-		if (!existing.getPhone().equals(dto.getPhone()) && teacherRepository.existsByPhone(dto.getPhone())) {
-			throw new RuntimeException("Phone already exists!");
-		}
+	    if (!existing.getEmail().equals(dto.getEmail()) &&
+	            teacherRepository.existsByEmail(dto.getEmail())) {
+	        throw new RuntimeException("Email already exists!");
+	    }
 
-		// Update fields
-		existing.setName(dto.getName());
-		existing.setEmail(dto.getEmail());
-		existing.setPhone(dto.getPhone());
-		existing.setPassword(dto.getPassword());
-		existing.setEducationalDetails(dto.getEducationalDetails());
-		existing.setYearOfExperience(dto.getYearOfExperience());
-		existing.setDateOfBirth(dto.getDateOfBirth());
-		existing.setAadharNo(dto.getAadharNo());
-		existing.setAddress(dto.getAddress());
+	    if (!existing.getPhone().equals(dto.getPhone()) &&
+	            teacherRepository.existsByPhone(dto.getPhone())) {
+	        throw new RuntimeException("Phone already exists!");
+	    }
 
-		Teacher updated = teacherRepository.save(existing);
+	    existing.setName(dto.getName());
+	    existing.setEmail(dto.getEmail());
+	    existing.setPhone(dto.getPhone());
+	    existing.setPassword(dto.getPassword());
+	    existing.setEducationalDetails(dto.getEducationalDetails());
+	    existing.setYearOfExperience(dto.getYearOfExperience());
+	    existing.setDateOfBirth(dto.getDateOfBirth());
+	    existing.setAadharNo(dto.getAadharNo());
+	    existing.setAddress(dto.getAddress());
 
-		TeacherDTO response = teacherMapper.toDTO(updated);
-		response.setClassNames(updated.getClasses() != null
-				? updated.getClasses().stream().map(ClassEntity::getClassName).collect(Collectors.toList())
-				: new ArrayList<>());
+	    // ✅ Update Classes Properly
+	    if (dto.getClassNames() != null) {
+	        List<ClassEntity> classes =
+	                classRepository.findByClassNameIn(dto.getClassNames());
+	        existing.setClasses(classes);
+	    }
 
-		return response;
+	    Teacher updated = teacherRepository.save(existing);
+
+	    return teacherMapper.toDTO(updated);
 	}
 
 	// ================= GET TEACHER BY ID =================

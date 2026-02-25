@@ -3,6 +3,8 @@ package com.jagratichildrenvidyamandir.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TeacherDTO {
 
 	private Integer teacherId;
@@ -16,6 +18,7 @@ public class TeacherDTO {
 	private String aadharNo;
 	private String address;
 
+	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private List<String> classNames;
 
 	public TeacherDTO() {
