@@ -24,118 +24,129 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class ClassService {
 
-    private final ClassRepository repository;
-    private final ClassMapper mapper;
-    private final ClassRepository classRepository;
-    private final TeacherRepository teacherRepository;
-    private final SessionRepository sessionRepository;
+	private final ClassRepository repository;
+	private final ClassMapper mapper;
+	private final ClassRepository classRepository;
+	private final TeacherRepository teacherRepository;
+	private final SessionRepository sessionRepository;
 
-    public ClassService(ClassRepository repository, ClassMapper mapper, ClassRepository classRepository,
-            TeacherRepository teacherRepository,SessionRepository sessionRepository) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.classRepository = classRepository;
-        this.teacherRepository = teacherRepository;
+	public ClassService(ClassRepository repository, ClassMapper mapper, ClassRepository classRepository,
+			TeacherRepository teacherRepository, SessionRepository sessionRepository) {
+		this.repository = repository;
+		this.mapper = mapper;
+		this.classRepository = classRepository;
+		this.teacherRepository = teacherRepository;
 		this.sessionRepository = sessionRepository;
-    }
+	}
 
-    // CREATE
-    public ClassDTO createClass(ClassDTO dto) {
-        ClassEntity entity = mapper.toEntity(dto);
-        entity.setClassId(null); // auto-increment
-        ClassEntity saved = repository.save(entity);
-        return mapper.toDto(saved);
-    }
+	// CREATE
+	public ClassDTO createClass(ClassDTO dto) {
 
-    // GET ONE
-    public ClassDTO getClassById(Integer id) {
-        return repository.findById(id)
-                .map(mapper::toFullDto)
-                .orElse(null);
-    }
+		if (classRepository.existsByClassNameIgnoreCase(dto.getClassName())) {
+			throw new RuntimeException("Class name already exists");
+		}
 
-    // GET ALL
-    public List<ClassDTO> getAllClasses() {
-        return repository.findAll()
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
-    }
+		ClassEntity entity = mapper.toEntity(dto);
+		entity.setClassId(null); // auto-increment
+		ClassEntity saved = repository.save(entity);
+		return mapper.toDto(saved);
+	}
 
-    // UPDATE
-    public ClassDTO updateClass(Integer id, ClassDTO dto) {
-        return repository.findById(id)
-                .map(existing -> {
-                    mapper.updateEntityFromDto(dto, existing);
-                    ClassEntity updated = repository.save(existing);
-                    return mapper.toDto(updated);
-                })
-                .orElse(null);
-    }
+	// GET ONE
+	public ClassDTO getClassById(Integer id) {
+		return repository.findById(id).map(mapper::toFullDto).orElse(null);
+	}
 
-    // DELETE
-    public boolean deleteClass(Integer id) {
-        if (!repository.existsById(id))
-            return false;
-        repository.deleteById(id);
-        return true;
-    }
+	// GET ALL
+	public List<ClassDTO> getAllClasses() {
+		return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
+	}
 
-    public ClassWithTeachersDTO getClassWithTeachers(Integer classId) {
+	// UPDATE
+	public ClassDTO updateClass(Integer id, ClassDTO dto) {
+		return repository.findById(id).map(existing -> {
+			mapper.updateEntityFromDto(dto, existing);
+			ClassEntity updated = repository.save(existing);
+			return mapper.toDto(updated);
+		}).orElse(null);
+	}
 
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new RuntimeException("Class not found"));
+	// DELETE
+	public boolean deleteClass(Integer id) {
+		if (!repository.existsById(id))
+			return false;
 
-        ClassWithTeachersDTO response = new ClassWithTeachersDTO();
-        response.setClassId(classEntity.getClassId());
-        response.setClassName(classEntity.getClassName());
+		// ✅ 1. Remove from teachers (already done)
+		List<Teacher> teachers = teacherRepository.findAllByClasses_ClassId(id);
+		for (Teacher teacher : teachers) {
+			teacher.getClasses().removeIf(c -> c.getClassId().equals(id));
+		}
+		teacherRepository.saveAll(teachers);
 
-        // response.setTeachers(
-        // classEntity.getTeachers()
-        // .stream()
-        // .map(this::mapTeacher)
-        // .collect(Collectors.toList())
-        // );
+		// ✅ 2. Remove from students (IMPORTANT FIX)
+		ClassEntity classEntity = repository.findById(id).get();
 
-        return response;
-    }
+		if (classEntity.getStudents() != null) {
+			classEntity.getStudents().forEach(student -> {
+				student.setStudentClass(null); // break FK
+			});
+		}
 
-    private TeacherDTO mapTeacher(Teacher teacher) {
-        TeacherDTO dto = new TeacherDTO();
-        dto.setTeacherId(teacher.getTeacherId());
-        dto.setName(teacher.getName());
-        dto.setEmail(teacher.getEmail());
-        dto.setPhone(teacher.getPhone());
-        dto.setPassword(teacher.getPassword());
-        dto.setEducationalDetails(teacher.getEducationalDetails());
-        dto.setYearOfExperience(teacher.getYearOfExperience());
-        dto.setDateOfBirth(teacher.getDateOfBirth());
-        dto.setAadharNo(teacher.getAadharNo());
-        dto.setAddress(teacher.getAddress());
+		// ✅ 3. Now delete class
+		repository.deleteById(id);
 
-        // Map class names instead of IDs
-        if (teacher.getClasses() != null && !teacher.getClasses().isEmpty()) {
-            dto.setClassNames(
-                    teacher.getClasses()
-                            .stream()
-                            .map(c -> c.getClassName())
-                            .collect(Collectors.toList()));
-        } else {
-            dto.setClassNames(new ArrayList<>());
-        }
+		return true;
+	}
 
-        return dto;
-    }
+	public ClassWithTeachersDTO getClassWithTeachers(Integer classId) {
 
-    public List<ClassDTO> getClassesBySessionId(Integer sessionId) {
+		ClassEntity classEntity = classRepository.findById(classId)
+				.orElseThrow(() -> new RuntimeException("Class not found"));
 
-        if (!sessionRepository.existsById(sessionId)) {
-            throw new EntityNotFoundException("Session not found with id: " + sessionId);
-        }
+		ClassWithTeachersDTO response = new ClassWithTeachersDTO();
+		response.setClassId(classEntity.getClassId());
+		response.setClassName(classEntity.getClassName());
 
-        return classRepository.findBySession_SessionId(sessionId)
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
-    }
+		// response.setTeachers(
+		// classEntity.getTeachers()
+		// .stream()
+		// .map(this::mapTeacher)
+		// .collect(Collectors.toList())
+		// );
+
+		return response;
+	}
+
+	private TeacherDTO mapTeacher(Teacher teacher) {
+		TeacherDTO dto = new TeacherDTO();
+		dto.setTeacherId(teacher.getTeacherId());
+		dto.setName(teacher.getName());
+		dto.setEmail(teacher.getEmail());
+		dto.setPhone(teacher.getPhone());
+		dto.setPassword(teacher.getPassword());
+		dto.setEducationalDetails(teacher.getEducationalDetails());
+		dto.setYearOfExperience(teacher.getYearOfExperience());
+		dto.setDateOfBirth(teacher.getDateOfBirth());
+		dto.setAadharNo(teacher.getAadharNo());
+		dto.setAddress(teacher.getAddress());
+
+		// Map class names instead of IDs
+		if (teacher.getClasses() != null && !teacher.getClasses().isEmpty()) {
+			dto.setClassNames(teacher.getClasses().stream().map(c -> c.getClassName()).collect(Collectors.toList()));
+		} else {
+			dto.setClassNames(new ArrayList<>());
+		}
+
+		return dto;
+	}
+
+	public List<ClassDTO> getClassesBySessionId(Integer sessionId) {
+
+		if (!sessionRepository.existsById(sessionId)) {
+			throw new EntityNotFoundException("Session not found with id: " + sessionId);
+		}
+
+		return classRepository.findBySession_SessionId(sessionId).stream().map(mapper::toDto)
+				.collect(Collectors.toList());
+	}
 }
